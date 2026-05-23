@@ -9,7 +9,7 @@ export default function WorkBody() {
       </div>
 
       <p>
-        <span className="com">&gt;</span> Long-form roles, mostly. I&apos;d rather see a thing
+        <span className="com">&gt; </span>Long-form roles, mostly. I&apos;d rather see a thing
         all the way through.
       </p>
 

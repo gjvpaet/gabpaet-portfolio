@@ -26,7 +26,7 @@ export function TweaksPanel() {
 
       {t.isPanelOpen && (
         <div
-          className="fixed bottom-[38px] right-3.5 z-50 w-60 overflow-hidden rounded-lg border border-[var(--border-2)] bg-[var(--panel)] text-[11.5px] text-[var(--fg)]"
+          className="fixed bottom-[38px] right-3.5 z-50 w-72 overflow-hidden rounded-lg border border-[var(--border-2)] bg-[var(--panel)] text-[11.5px] text-[var(--fg)]"
           style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}
         >
           <div className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--side)] px-3.5 py-2.5">
