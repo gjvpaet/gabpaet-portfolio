@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>gab — ~/portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0d1b2a;
+    --side:      #0b1624;
+    --panel:    #11243a;
+    --hover:     rgba(255,255,255,0.04);
+    --border:    rgba(255,255,255,0.07);
+    --border-2:  rgba(255,255,255,0.12);
+    --accent:    #2ee5b4;
+    --accent-ink:#04211a;
+    --fg:        #dbe4f0;
+    --fg-bright: #ffffff;
+    --fg-dim:    #7b8aa3;
+    --fg-dim-2:  #4d5e7a;
+    --yellow:    #f2c14e;
+    --orange:    #ef8a5b;
+    --blue:      #6db4e0;
+    --pink:      #ec9bb3;
+
+    /* density vars — overwritten by Tweaks panel */
+    --doc-fs:        14px;
+    --doc-lh:        1.85;
+    --doc-pad-y:     22px;
+    --doc-pad-x:     28px;
+    --side-item-pad: 5px;
+    --gutter-pad-y:  22px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button { font: inherit; cursor: pointer; }
+
+  .ide {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 38px 1fr 26px;
+  }
+
+  /* ============ TITLE BAR ============ */
+  .titlebar {
+    grid-column: 1 / -1;
+    background: var(--side);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--fg-dim);
+  }
+  .titlebar .dots { display: flex; gap: 6px; }
+  .titlebar .dots span {
+    width: 11px; height: 11px;
+    border-radius: 50%;
+  }
+  .titlebar .dots span:nth-child(1) { background: #ff5f56; }
+  .titlebar .dots span:nth-child(2) { background: #ffbd2e; }
+  .titlebar .dots span:nth-child(3) { background: #27c93f; }
+  .titlebar .path {
+    color: var(--fg);
+    margin-left: 12px;
+    font-size: 12px;
+  }
+  .titlebar .path .accent { color: var(--accent); }
+
+  .palette-trigger {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--fg-dim);
+    font: 11px "JetBrains Mono", monospace;
+    padding: 3px 10px 3px 10px;
+    margin-left: auto;
+    display: flex; align-items: center; gap: 10px;
+    min-width: 240px;
+    transition: all .12s;
+  }
+  .palette-trigger:hover { border-color: var(--accent); color: var(--fg); }
+  .palette-trigger .lbl { flex: 1; text-align: left; }
+  .palette-trigger kbd {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+    color: var(--fg-dim);
+    font-family: inherit;
+  }
+
+  .top-right {
+    display: flex; gap: 14px;
+    color: var(--fg-dim);
+    font-size: 11px;
+  }
+  .top-right .item { display: flex; align-items: center; gap: 5px; }
+  .top-right .dot { color: var(--accent); }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    grid-column: 1;
+    grid-row: 2;
+    background: var(--side);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 14px 0 22px;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-2); }
+
+  .side-block { margin-bottom: 16px; }
+
+  .side-title {
+    padding: 0 14px 6px;
+    font-size: 10.5px;
+    color: var(--fg-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+  .side-title .chev { color: var(--fg-dim); transition: transform .15s; display: inline-block; }
+  .side-title.collapsed .chev { transform: rotate(-90deg); }
+  .side-title .count {
+    margin-left: auto;
+    color: var(--fg-dim-2);
+    font-size: 10px;
+  }
+
+  .side-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: var(--side-item-pad) 14px var(--side-item-pad) 24px;
+    font-size: 13px;
+    color: var(--fg);
+    cursor: pointer;
+    transition: background .1s;
+    border-left: 2px solid transparent;
+    line-height: 1.4;
+    user-select: none;
+  }
+  .side-item:hover { background: var(--hover); }
+  .side-item.active {
+    background: rgba(46,229,180,0.08);
+    border-left-color: var(--accent);
+    color: var(--fg-bright);
+  }
+  .side-item.nested { padding-left: 38px; }
+  .side-item.nested-2 { padding-left: 52px; }
+  .side-item .icn {
+    width: 14px; height: 14px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 8px;
+    font-weight: 700;
+    border-radius: 3px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .side-item .name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .side-item.folder .icn-folder {
+    color: var(--fg-dim);
+    transition: transform .15s;
+    display: inline-block;
+    width: 12px; text-align: center;
+  }
+  .side-item.folder.collapsed .icn-folder { transform: rotate(-90deg); }
+  .side-item.folder .name { color: var(--fg); font-weight: 500; }
+
+  .icn.md   { background: var(--blue);   color: #0a1a26; }
+  .icn.rs   { background: var(--orange); color: #2a0e00; }
+  .icn.ts   { background: #3178c6;       color: #fff; }
+  .icn.go   { background: #00add8;       color: #00282e; }
+  .icn.json { background: var(--yellow); color: #1a1100; }
+  .icn.sh   { background: #6cc04a;       color: #061a00; }
+  .icn.lock { background: var(--fg-dim); color: var(--side); }
+
+  .sidebar .footer-block {
+    margin-top: auto;
+    padding: 14px 14px 0;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--fg-dim);
+    line-height: 1.7;
+  }
+  .sidebar .footer-block .row {
+    display: flex; align-items: center; gap: 6px;
+  }
+  .sidebar .footer-block .row .pulse {
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.3; } }
+  .sidebar .footer-block .row .accent { color: var(--accent); }
+
+  /* ============ MAIN ============ */
+  .main {
+    grid-column: 2;
+    grid-row: 2;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    min-width: 0;
+  }
+
+  .tabs {
+    display: flex;
+    background: var(--side);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  .tabs::-webkit-scrollbar { height: 0; }
+  .tab {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 14px;
+    font-size: 12.5px;
+    color: var(--fg-dim);
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    user-select: none;
+    transition: background .1s, color .1s;
+  }
+  .tab:hover { color: var(--fg); }
+  .tab.active {
+    color: var(--fg-bright);
+    background: var(--bg);
+  }
+  .tab.active::after {
+    content: ""; position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--accent);
+  }
+  .tab .name { line-height: 1; }
+  .tab .x {
+    color: var(--fg-dim);
+    margin-left: 2px;
+    width: 16px; height: 16px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .tab .x:hover { background: rgba(255,255,255,0.1); color: var(--fg-bright); }
+  .tab.active .x .dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .tab .x .dot { display: none; }
+  .tab.active .x .dot { display: inline-block; }
+  .tab.active .x .close { display: none; }
+  .tab .x .close { display: inline-block; }
+  .tab:hover .x .close { display: inline-block; }
+  .tab:hover .x .dot { display: none; }
+
+  .breadcrumb {
+    padding: 5px 18px;
+    font-size: 11px;
+    color: var(--fg-dim);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .breadcrumb .crumb {
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .breadcrumb .accent { color: var(--accent); }
+  .breadcrumb .sep { color: var(--fg-dim-2); }
+  .breadcrumb .meta-r { margin-left: auto; }
+
+  /* ============ CONTENT ============ */
+  .content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    overflow: hidden;
+  }
+  .gutter {
+    background: var(--bg);
+    padding: var(--gutter-pad-y) 0;
+    text-align: right;
+    color: var(--fg-dim-2);
+    font-size: 12px;
+    line-height: 1.85;
+    user-select: none;
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .gutter span {
+    display: block;
+    padding-right: 14px;
+  }
+  .gutter span.cur {
+    color: var(--accent);
+    background: rgba(46,229,180,0.06);
+  }
+
+  .doc {
+    padding: var(--doc-pad-y) var(--doc-pad-x) 32px var(--doc-pad-x);
+    overflow-y: auto;
+    line-height: var(--doc-lh);
+    font-size: var(--doc-fs);
+    background: var(--bg);
+    transition: padding .2s, font-size .2s, line-height .2s;
+  }
+  .doc::-webkit-scrollbar { width: 6px; }
+  .doc::-webkit-scrollbar-thumb { background: var(--border-2); }
+
+  /* doc tokens — markdown render */
+  .doc .h1 {
+    color: var(--fg-bright); font-size: 30px; font-weight: 700;
+    margin: 4px 0 4px; letter-spacing: -0.5px; line-height: 1.15;
+  }
+  .doc .h1 .hash { color: var(--accent); margin-right: 12px; font-weight: 500; }
+  .doc .sub { color: var(--fg-dim); font-size: 13px; margin-bottom: 18px; }
+  .doc .h2 {
+    color: var(--accent); font-size: 14px; margin: 26px 0 8px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .doc .h2 .hash { color: var(--fg-dim); margin-right: 4px; font-weight: 400; }
+  .doc .h2 .annot { color: var(--fg-dim); font-weight: 400; font-size: 12px; margin-left: auto; }
+  .doc .h2-rule {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
+    margin-left: 6px;
+  }
+  .doc p { color: var(--fg); margin-bottom: 4px; max-width: 760px; }
+  .doc .em { color: var(--accent); }
+  .doc .str { color: var(--orange); }
+  .doc .com { color: var(--fg-dim); font-style: italic; }
+  .doc .lnk { color: var(--blue); text-decoration: underline; }
+  .doc ul { list-style: none; max-width: 760px; }
+  .doc ul li {
+    padding: 1px 0;
+    color: var(--fg);
+  }
+  .doc ul li::before {
+    content: "—";
+    color: var(--accent);
+    margin-right: 8px;
+  }
+  .doc ul li b { color: var(--fg-bright); font-weight: 500; }
+
+  .doc .grid {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 2px 18px;
+    max-width: 720px;
+    margin: 6px 0;
+  }
+  .doc .grid .k { color: var(--fg-dim); }
+  .doc .grid .v { color: var(--fg); }
+  .doc .grid .v .accent { color: var(--accent); }
+  .doc .grid .v .str { color: var(--orange); }
+
+  .doc .quote {
+    border-left: 2px solid var(--accent);
+    padding: 4px 0 4px 14px;
+    color: var(--fg-dim);
+    max-width: 720px;
+    margin: 8px 0 10px;
+  }
+  .doc .quote .em { color: var(--fg); }
+
+  .doc .cb {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 12px 16px;
+    margin: 8px 0;
+    max-width: 760px;
+    font-size: 12.5px;
+    color: var(--fg);
+    white-space: pre-wrap;
+    line-height: 1.8;
+  }
+
+  /* work / project rows */
+  .doc .row-table {
+    max-width: 800px;
+    margin: 6px 0;
+  }
+  .doc .row-table .row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 18px;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+    align-items: baseline;
+  }
+  .doc .row-table .row:last-child { border-bottom: 0; }
+  .doc .row-table .year { color: var(--fg-dim); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .doc .row-table .body .title {
+    color: var(--fg-bright); font-weight: 500; margin-bottom: 2px;
+  }
+  .doc .row-table .body .title .at { color: var(--fg-dim); font-weight: 400; }
+  .doc .row-table .body .title .at .co { color: var(--accent); }
+  .doc .row-table .body .desc {
+    color: var(--fg-dim); font-size: 12.5px; line-height: 1.55;
+  }
+  .doc .row-table .stack {
+    display: flex; gap: 4px; flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 220px;
+  }
+  .doc .stack-chip {
+    border: 1px solid var(--border-2);
+    padding: 0 7px;
+    font-size: 11px;
+    color: var(--fg-dim);
+    border-radius: 3px;
+    line-height: 1.7;
+  }
+
+  .doc .proj-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--border);
+    align-items: baseline;
+    max-width: 800px;
+  }
+  .doc .proj-row:last-child { border-bottom: 0; }
+  .doc .proj-row .name {
+    color: var(--accent);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .doc .proj-row .name:hover { text-decoration: underline; }
+  .doc .proj-row .name .arrow { color: var(--fg-dim); margin-right: 8px; }
+  .doc .proj-row .blurb {
+    color: var(--fg); font-size: 13px; display: inline;
+  }
+  .doc .proj-row .blurb::before { content: " — "; color: var(--fg-dim); }
+  .doc .proj-row .meta-r {
+    color: var(--fg-dim); font-size: 12px; white-space: nowrap;
+  }
+
+  /* quick actions */
+  .doc .qa-row { display: flex; gap: 10px; margin: 14px 0 4px; flex-wrap: wrap; }
+  .qa {
+    display: inline-flex; align-items: center; gap: 7px;
+    border: 1px solid var(--border-2);
+    padding: 7px 14px;
+    border-radius: 5px;
+    color: var(--fg);
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all .15s;
+    background: transparent;
+  }
+  .qa:hover { border-color: var(--accent); color: var(--accent); }
+  .qa.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .qa.primary:hover { background: var(--fg-bright); color: var(--accent-ink); border-color: var(--fg-bright); }
+  .qa svg { width: 13px; height: 13px; }
+
+  .doc .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 28px;
+    font-size: 13px;
+    max-width: 720px;
+    margin: 8px 0 14px;
+  }
+  .doc .contact-grid .row {
+    display: flex; justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .doc .contact-grid .row .k { color: var(--fg-dim); }
+  .doc .contact-grid .row .v { color: var(--accent); }
+
+  .doc .status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 4px 12px 4px 10px;
+    border: 1px solid var(--border-2);
+    border-radius: 999px;
+    font-size: 11.5px;
+    color: var(--fg);
+    margin-bottom: 18px;
+  }
+  .doc .status-pill .pulse {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* SYNTAX-HIGHLIGHTED CODE (used in source files like .rs .ts .go .json .zshrc) */
+  .doc pre.src {
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.85;
+    white-space: pre;
+    color: var(--fg);
+  }
+  .tk-kw  { color: #ff7eb6; }     /* keyword */
+  .tk-fn  { color: var(--yellow); } /* function name */
+  .tk-str { color: var(--orange); }
+  .tk-num { color: #b5e853; }
+  .tk-cmt { color: var(--fg-dim); font-style: italic; }
+  .tk-typ { color: var(--blue); }
+  .tk-cls { color: var(--blue); }
+  .tk-pun { color: var(--fg-dim); }
+  .tk-var { color: var(--fg); }
+  .tk-tag { color: var(--accent); }
+
+  /* caret */
+  .caret-blink {
+    display: inline-block;
+    width: 2px; height: 14px;
+    background: var(--accent);
+    vertical-align: middle;
+    animation: blink 1.05s steps(2) infinite;
+    margin-left: 2px;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ============ STATUS BAR ============ */
+  .statusbar {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    background: var(--accent);
+    color: var(--accent-ink);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    gap: 16px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .statusbar .seg { display: flex; align-items: center; gap: 6px; }
+  .statusbar .right { margin-left: auto; display: flex; gap: 16px; }
+  .statusbar svg { width: 11px; height: 11px; }
+
+  /* ============ COMMAND PALETTE ============ */
+  .palette-overlay {
+    position: fixed; inset: 0;
+    background: rgba(7, 13, 21, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 100;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 100px;
+  }
+  .palette-overlay.open { display: flex; }
+  .palette {
+    width: 560px;
+    max-width: 90vw;
+    background: var(--panel);
+    border: 1px solid var(--border-2);
+    border-radius: 8px;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  .palette input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--fg-bright);
+    font: 14px "JetBrains Mono", monospace;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .palette input::placeholder { color: var(--fg-dim); }
+  .palette .results {
+    max-height: 360px;
+    overflow-y: auto;
+    padding: 6px 0;
+  }
+  .palette .results::-webkit-scrollbar { width: 5px; }
+  .palette .results::-webkit-scrollbar-thumb { background: var(--border-2); }
+  .palette .res-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 18px;
+    font-size: 13px;
+    color: var(--fg);
+    cursor: pointer;
+  }
+  .palette .res-item.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .palette .res-item.active .path { color: var(--accent-ink); opacity: 0.8; }
+  .palette .res-item .icn { width: 14px; height: 14px; font-size: 8px; }
+  .palette .res-item .path {
+    color: var(--fg-dim);
+    font-size: 11.5px;
+    margin-left: auto;
+  }
+  .palette .footer {
+    border-top: 1px solid var(--border);
+    padding: 8px 18px;
+    font-size: 10.5px;
+    color: var(--fg-dim);
+    display: flex; gap: 16px;
+  }
+  .palette .footer kbd {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    font-size: 10px;
+    border-radius: 3px;
+    color: var(--fg);
+    font-family: inherit;
+  }
+
+  /* ============ TWEAKS PANEL (custom, IDE-styled) ============ */
+  .tweaks {
+    position: fixed;
+    right: 14px;
+    bottom: 38px;
+    width: 240px;
+    background: var(--panel);
+    border: 1px solid var(--border-2);
+    border-radius: 8px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    font-size: 11.5px;
+    color: var(--fg);
+    z-index: 50;
+    overflow: hidden;
+    display: none;
+    transform: scale(var(--dc-inv-zoom,1));
+    transform-origin: bottom right;
+  }
+  .tweaks.open { display: block; }
+  .tweaks .hd {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--side);
+  }
+  .tweaks .hd b { color: var(--accent); font-weight: 600; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
+  .tweaks .hd .close { background: transparent; border: 0; color: var(--fg-dim); padding: 0; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 3px; }
+  .tweaks .hd .close:hover { color: var(--fg-bright); background: rgba(255,255,255,0.06); }
+  .tweaks .body { padding: 12px 14px; }
+  .tweaks .group { margin-bottom: 14px; }
+  .tweaks .group:last-child { margin-bottom: 0; }
+  .tweaks .lbl {
+    color: var(--fg-dim);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex; align-items: center;
+  }
+  .tweaks .lbl .cur {
+    margin-left: auto;
+    color: var(--accent);
+    text-transform: none;
+    letter-spacing: 0.5px;
+    font-size: 10.5px;
+  }
+  .tweaks .desc {
+    color: var(--fg-dim-2);
+    font-size: 10.5px;
+    margin-top: 8px;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .tweaks .swatches { display: flex; gap: 6px; }
+  .tweaks .sw {
+    width: 26px; height: 26px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border-2);
+    cursor: pointer;
+    background: var(--c);
+    transition: transform .12s;
+  }
+  .tweaks .sw.active {
+    border-color: var(--fg-bright);
+    transform: scale(1.1);
+  }
+  .tweaks .seg {
+    display: flex;
+    background: var(--side);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px;
+  }
+  .tweaks .seg button {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    color: var(--fg-dim);
+    font-size: 11px;
+    padding: 4px 0;
+    border-radius: 3px;
+    transition: all .12s;
+  }
+  .tweaks .seg button.active {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+</style>
+</head>
+<body>
+<div class="ide">
+
+  <!-- TITLE BAR -->
+  <div class="titlebar">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="path"><span class="accent">~</span>/portfolio · <span id="tb-file" class="accent">about.md</span></div>
+    <button class="palette-trigger" id="paletteBtn">
+      <span style="opacity:0.6">⌕</span>
+      <span class="lbl">Search files… (type to filter)</span>
+      <kbd>⌘K</kbd>
+    </button>
+    <div class="top-right">
+      <div class="item"><span class="dot">●</span> main</div>
+      <div class="item">UTF-8</div>
+      <div class="item">LF</div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="side-block">
+      <div class="side-title"><span class="chev">▾</span> Explorer</div>
+    </div>
+
+    <div class="side-block">
+      <div class="side-title"><span class="chev">▾</span> portfolio <span class="count">3</span></div>
+      <div class="side-item" data-file="about.md"><span class="icn md">M↓</span><span class="name">about.md</span></div>
+      <div class="side-item" data-file="work.md"><span class="icn md">M↓</span><span class="name">work.md</span></div>
+      <div class="side-item" data-file="contact.md"><span class="icn md">M↓</span><span class="name">contact.md</span></div>
+      <!-- to re-enable writing.md, add this line back AND uncomment it in FILE_ORDER:
+      <div class="side-item" data-file="writing.md"><span class="icn md">M↓</span><span class="name">writing.md</span></div>
+      -->
+    </div>
+
+    <div class="side-block">
+      <div class="side-title"><span class="chev">▾</span> projects/ <span class="count">1</span></div>
+      <div class="side-item folder" data-folder="gabpaet-dev"><span class="icn-folder">▾</span><span class="icn ts">Ts</span><span class="name">gabpaet.dev</span></div>
+      <div class="side-item nested-2" data-file="projects/gabpaet-dev/page.tsx"><span class="icn ts">Ts</span><span class="name">page.tsx</span></div>
+      <div class="side-item nested-2" data-file="projects/gabpaet-dev/README.md"><span class="icn md">M↓</span><span class="name">README.md</span></div>
+    </div>
+
+    <div class="side-block">
+      <div class="side-item" data-file="package.json"><span class="icn json">{ }</span><span class="name">package.json</span></div>
+      <div class="side-item" data-file=".zshrc"><span class="icn sh">Sh</span><span class="name">.zshrc</span></div>
+    </div>
+
+    <div class="footer-block">
+      <div class="row"><span class="pulse" style="background:var(--orange);box-shadow:0 0 6px var(--orange)"></span><span style="color:var(--orange)">currently @ lumora</span></div>
+      <div style="margin-top:6px">v 1.0.0 · pasay · utc+8</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TABS -->
+    <div class="tabs" id="tabs"></div>
+
+    <!-- BREADCRUMB -->
+    <div class="breadcrumb" id="breadcrumb">
+      <span class="crumb"><span class="accent">~</span></span>
+      <span class="sep">›</span>
+      <span class="crumb">portfolio</span>
+      <span class="sep">›</span>
+      <span class="crumb"><span class="accent" id="bc-file">about.md</span></span>
+      <span class="meta-r" id="bc-meta">· <span id="bc-lines">22</span> lines</span>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="gutter" id="gutter"></div>
+      <div class="doc" id="doc"></div>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="statusbar">
+    <span class="seg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2"/><path d="M6 8v9"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M11 6h4a3 3 0 0 1 3 3v7"/></svg>
+      main
+    </span>
+    <span class="seg">↑ 0 ↓ 0</span>
+    <span class="seg">✓ no errors</span>
+    <span class="seg">⚠ 0</span>
+    <span class="right">
+      <span id="sb-pos">Ln 1, Col 1</span>
+      <span id="sb-spaces">Spaces: 2</span>
+      <span>UTF-8</span>
+      <span id="sb-lang">Markdown</span>
+      <span>● pasay city · @ lumora capital</span>
+    </span>
+  </div>
+
+</div>
+
+<!-- COMMAND PALETTE -->
+<div class="palette-overlay" id="palette">
+  <div class="palette">
+    <input id="paletteInput" placeholder="Go to file… (type to filter)" />
+    <div class="results" id="paletteResults"></div>
+    <div class="footer">
+      <span><kbd>↑↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+      <span><kbd>esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<!-- TWEAKS -->
+<div class="tweaks" id="tweaks">
+  <div class="hd">
+    <b>Tweaks</b>
+    <button class="close" id="tweaksClose" aria-label="close">×</button>
+  </div>
+  <div class="body">
+    <div class="group">
+      <div class="lbl">Accent <span class="cur" id="accentCur">mint</span></div>
+      <div class="swatches" id="swatches"></div>
+      <div class="desc">recolors the active tab, status bar, sidebar selection &amp; links.</div>
+    </div>
+    <div class="group">
+      <div class="lbl">Density <span class="cur" id="densityCur">cozy</span></div>
+      <div class="seg" id="density">
+        <button data-v="compact">compact</button>
+        <button data-v="cozy">cozy</button>
+        <button data-v="spacious">spacious</button>
+      </div>
+      <div class="desc">changes editor font size, line height &amp; document padding.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tweakable defaults — host rewrites this JSON on persisted tweak changes.
+window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "#2ee5b4",
+  "density": "cozy"
+}/*EDITMODE-END*/;
+</script>
+<script>
+// portfolio-files.js — content for every "file" in the sidebar.
+// Each entry has: { name, path, icon, lang, lines, html }
+
+window.FILES = {
+
+  // ============================================================
+  "about.md": {
+    name: "about.md",
+    path: "~ › portfolio",
+    icon: "md",
+    lang: "Markdown",
+    lines: 36,
+    html: `
+      <div class="h1"><span class="hash">#</span>Gabriel Joshua Paet</div>
+      <div class="sub">senior programmer · pasay city, ph · 9 years shipping<span class="caret-blink"></span></div>
+
+      <div class="status-pill">
+        <span class="pulse" style="background:var(--orange);box-shadow:0 0 6px var(--orange)"></span>
+        currently @ Lumora Capital · not actively looking
+      </div>
+
+      <p><span class="com">&gt;</span> Always view problems as an opportunity.</p>
+
+      <div class="h2"><span class="hash">##</span><span>about</span><span class="h2-rule"></span><span class="annot">// the basics</span></div>
+      <div class="grid">
+        <div class="k">name</div>          <div class="v"><span class="str">"Gabriel Joshua Paet"</span></div>
+        <div class="k">role</div>          <div class="v"><span class="str">"senior programmer"</span></div>
+        <div class="k">based_in</div>      <div class="v"><span class="str">"pasay city, philippines"</span> <span style="color:var(--fg-dim)">// utc+8</span></div>
+        <div class="k">years_shipping</div><div class="v">9</div>
+        <div class="k">primary_stack</div> <div class="v">[<span class="str">"node.js"</span>, <span class="str">"express"</span>, <span class="str">"react"</span>, <span class="str">"next.js"</span>, <span class="str">"postgres"</span>]</div>
+        <div class="k">currently_at</div>  <div class="v"><span class="str">"lumora capital"</span> <span style="color:var(--fg-dim)">// senior programmer</span></div>
+      </div>
+
+      <div class="h2"><span class="hash">##</span><span>focus</span><span class="h2-rule"></span><span class="annot">// where i spend my time</span></div>
+      <ul>
+        <li><b>AI development</b> — putting LLMs and agents into real product workflows, not demos</li>
+        <li><b>Workflow automation</b> — replacing manual ops with tight, observable pipelines</li>
+        <li><b>DevOps</b> — AWS, CI/CD on GitHub, Elastic Beanstalk, S3, infra you can read in one sitting</li>
+        <li><b>Web development</b> — full-stack node + react + next.js, postgres at rest</li>
+      </ul>
+
+      <div class="h2"><span class="hash">##</span><span>currently</span><span class="h2-rule"></span><span class="annot">// what i'm shipping</span></div>
+      <div class="quote">Senior programmer at <span class="em">Lumora Capital</span>, based in NCR, Philippines.
+        Heads-down on internal tooling and product work. <span class="em">Not actively looking</span>,
+        but always happy to chat about interesting problems.</div>
+
+      <div class="qa-row">
+        <button class="qa primary" data-action="open-contact">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          say hello
+        </button>
+        <button class="qa" data-action="open-work">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
+          see work
+        </button>
+        <a class="qa" href="https://github.com/gjvpaet" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-1.92c-3.2.7-3.87-1.54-3.87-1.54-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.76 2.69 1.25 3.34.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.12 3.04.73.81 1.18 1.83 1.18 3.09 0 4.42-2.7 5.4-5.27 5.69.42.36.79 1.07.79 2.15v3.19c0 .31.21.66.79.55A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg>
+          github
+        </a>
+      </div>
+    `
+  },
+
+  // ============================================================
+  "work.md": {
+    name: "work.md",
+    path: "~ › portfolio",
+    icon: "md",
+    lang: "Markdown",
+    lines: 78,
+    html: `
+      <div class="h1"><span class="hash">#</span>Work</div>
+      <div class="sub">~10 years across IC, team lead, scrum master · 2015 → today</div>
+
+      <p><span class="com">&gt;</span> Long-form roles, mostly. I'd rather see a thing all the way through.</p>
+
+      <div class="h2"><span class="hash">##</span><span>employment</span><span class="h2-rule"></span></div>
+      <div class="row-table">
+
+        <div class="row" style="grid-template-columns: 100px 1fr; row-gap: 4px">
+          <div class="year">2026·05 →</div>
+          <div class="body">
+            <div class="title">Senior Programmer <span class="at">@ <span class="co">Lumora Capital</span> · Full-time · Philippines · Hybrid</span></div>
+            <div class="stack" style="justify-content: flex-start; max-width: none; margin-top: 8px">
+              <span class="stack-chip">JavaScript</span><span class="stack-chip">React.js</span>
+              <span class="stack-chip">Next.js</span><span class="stack-chip">Node.js</span>
+              <span class="stack-chip">Express.js</span><span class="stack-chip">PostgreSQL</span>
+              <span class="stack-chip">n8n</span><span class="stack-chip">GCP</span>
+              <span class="stack-chip">Claude Code</span><span class="stack-chip">OpenClaw</span>
+              <span class="stack-chip">Git</span><span class="stack-chip">GitHub</span>
+              <span class="stack-chip">GitKraken</span><span class="stack-chip">DigitalOcean</span>
+              <span class="stack-chip">Docker</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="grid-template-columns: 100px 1fr; row-gap: 4px">
+          <div class="year">2024·09 — 2026·04</div>
+          <div class="body">
+            <div class="title">Senior Programmer <span class="at">@ <span class="co">ahaStudio</span> · Full-time · 1 yr 8 mos · Hybrid</span></div>
+            <div class="stack" style="justify-content: flex-start; max-width: none; margin-top: 8px">
+              <span class="stack-chip">JavaScript</span><span class="stack-chip">Node.js</span>
+              <span class="stack-chip">Next.js</span><span class="stack-chip">React.js</span>
+              <span class="stack-chip">React Native</span><span class="stack-chip">Flutter</span>
+              <span class="stack-chip">AI</span>
+              <span class="stack-chip">LangChain</span><span class="stack-chip">LangGraph</span>
+              <span class="stack-chip">OpenAI API</span><span class="stack-chip">AWS Bedrock Agents</span>
+              <span class="stack-chip">Google Vertex AI</span>
+              <span class="stack-chip">GCP</span><span class="stack-chip">Vercel</span>
+              <span class="stack-chip">DigitalOcean</span><span class="stack-chip">AWS S3</span>
+              <span class="stack-chip">Azure File Share</span><span class="stack-chip">Supabase</span>
+              <span class="stack-chip">PostgreSQL</span><span class="stack-chip">SQL</span>
+              <span class="stack-chip">HTML5</span><span class="stack-chip">CSS</span>
+              <span class="stack-chip">Docker</span><span class="stack-chip">Git</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="grid-template-columns: 100px 1fr; row-gap: 4px">
+          <div class="year">2024·01 — 2024·09</div>
+          <div class="body">
+            <div class="title">Programmer <span class="at">@ <span class="co">ahaStudio</span> · Full-time · 9 mos · Remote</span></div>
+            <div class="desc">ahaStudio is a division within the Volenday Group — I transitioned here
+              following an organizational restructuring and rebranding initiative.</div>
+            <div class="stack" style="justify-content: flex-start; max-width: none; margin-top: 8px">
+              <span class="stack-chip">JavaScript</span><span class="stack-chip">Node.js</span>
+              <span class="stack-chip">Next.js</span><span class="stack-chip">React.js</span>
+              <span class="stack-chip">React Native</span><span class="stack-chip">Flutter</span>
+              <span class="stack-chip">AI</span><span class="stack-chip">GCP</span>
+              <span class="stack-chip">Vercel</span><span class="stack-chip">DigitalOcean</span>
+              <span class="stack-chip">AWS S3</span><span class="stack-chip">Azure File Share</span>
+              <span class="stack-chip">Supabase</span><span class="stack-chip">PostgreSQL</span>
+              <span class="stack-chip">SQL</span><span class="stack-chip">HTML5</span>
+              <span class="stack-chip">CSS</span><span class="stack-chip">Docker</span>
+              <span class="stack-chip">Git</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="grid-template-columns: 100px 1fr; row-gap: 4px">
+          <div class="year">2017·05 — 2024·01</div>
+          <div class="body">
+            <div class="title">Programmer <span class="at">@ <span class="co">Volenday Group</span> · Full-time · 6 yrs 9 mos · Remote</span></div>
+            <div class="desc">
+              Significantly contributed to the company's digital services, starting with
+              a React Native mobile app providing multi-language support — specifically for
+              Danish and Norwegian users — and a RESTful API backend.
+              <div style="margin-top: 8px">Led a team for a web application serving offshore employees:
+                scrum master, agile methodologies, sprints managed with JIRA, and hands-on coding.
+                The role also encompasses overseeing Azure's CI/CD pipeline for streamlined
+                development, deployment, and faster release cycles.</div>
+              <div style="margin-top: 8px">Key achievements include migrating the application to Microsoft Azure to
+                improve deployment speeds, integrating MSSQL for database management, and employing
+                Azure File Share for efficient file storage — enhancing overall data management and
+                application reliability.</div>
+            </div>
+            <div class="stack" style="justify-content: flex-start; max-width: none; margin-top: 8px">
+              <span class="stack-chip">React Native</span><span class="stack-chip">React.js</span>
+              <span class="stack-chip">Next.js</span><span class="stack-chip">Node.js</span>
+              <span class="stack-chip">SQL</span><span class="stack-chip">NoSQL</span>
+              <span class="stack-chip">MongoDB</span><span class="stack-chip">Azure File Share</span>
+              <span class="stack-chip">AWS S3</span><span class="stack-chip">GCP</span>
+              <span class="stack-chip">Docker</span><span class="stack-chip">Git</span>
+              <span class="stack-chip">HTML5</span><span class="stack-chip">CSS</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="grid-template-columns: 100px 1fr; row-gap: 4px">
+          <div class="year">2015·11 — 2016·04</div>
+          <div class="body">
+            <div class="title">Intern <span class="at">@ <span class="co">Hewlett Packard Enterprise</span> · Internship · 6 mos · Taguig City · On-site</span></div>
+            <div class="desc">Designed and implemented an application to facilitate managerial
+              oversight of employee Full-Time Equivalent (FTE) allocations and FTE requirements
+              across various projects.</div>
+            <div class="stack" style="justify-content: flex-start; max-width: none; margin-top: 8px">
+              <span class="stack-chip">C#</span><span class="stack-chip">OOP</span>
+              <span class="stack-chip">LINQ</span><span class="stack-chip">MVVM</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="h2"><span class="hash">##</span><span>shape of the work</span><span class="h2-rule"></span></div>
+      <ul>
+        <li><b>Long-tenure IC</b> — 7 years at Volenday → ahaStudio across two rebrand cycles</li>
+        <li><b>Team lead + scrum master</b> for a multi-year React Native + web product (DK/NO market)</li>
+        <li><b>Owned Azure CI/CD</b>, migrated production from on-prem to Microsoft Azure</li>
+        <li><b>Production AI</b> — LangChain / LangGraph, OpenAI + Bedrock Agents + Vertex in real workflows</li>
+      </ul>
+    `
+  },
+
+  // ============================================================
+  "writing.md": {
+    name: "writing.md",
+    path: "~ › portfolio",
+    icon: "md",
+    lang: "Markdown",
+    lines: 12,
+    html: `
+      <div class="h1"><span class="hash">#</span>Writing</div>
+      <div class="sub">coming soon</div>
+      <p><span class="com">&gt;</span> Not publishing yet — placeholder until i have something worth posting.</p>
+      <div class="quote">To enable this in the sidebar, uncomment the
+        <span class="em">writing.md</span> line in the sidebar block of
+        <span class="em">portfolio.html</span> (and add <span class="em">"writing.md"</span> to FILE_ORDER).</div>
+    `
+  },
+
+  // ============================================================
+  "contact.md": {
+    name: "contact.md",
+    path: "~ › portfolio",
+    icon: "md",
+    lang: "Markdown",
+    lines: 28,
+    html: `
+      <div class="h1"><span class="hash">#</span>Contact</div>
+      <div class="sub">say hi · i actually read these</div>
+
+      <p><span class="com">&gt;</span> Plain email works best. LinkedIn for formal stuff.
+        Not actively looking but always happy to chat about interesting problems.</p>
+
+      <div class="h2"><span class="hash">##</span><span>direct</span><span class="h2-rule"></span></div>
+      <div class="contact-grid">
+        <div class="row"><span class="k">email</span><a class="v" href="mailto:gjvpaet@gmail.com">gjvpaet@gmail.com</a></div>
+        <div class="row"><span class="k">mobile</span><span class="v" style="color:var(--fg)">+63 976 003 6773</span></div>
+      </div>
+
+      <div class="h2"><span class="hash">##</span><span>online</span><span class="h2-rule"></span></div>
+      <div class="contact-grid">
+        <div class="row"><span class="k">github</span><a class="v" href="https://github.com/gjvpaet" target="_blank">github.com/gjvpaet</a></div>
+        <div class="row"><span class="k">linkedin</span><a class="v" href="https://www.linkedin.com/in/gjvpaet/" target="_blank">in/gjvpaet</a></div>
+        <div class="row"><span class="k">portfolio</span><a class="v" href="https://gabpaet.dev/" target="_blank">gabpaet.dev</a></div>
+      </div>
+
+      <div class="h2"><span class="hash">##</span><span>availability</span><span class="h2-rule"></span></div>
+      <div class="quote">currently <span class="em">senior programmer @ Lumora Capital</span>.<br>
+        <span class="em">not actively looking</span> — feel free to reach out anyway, especially for
+        AI / automation / web work conversations.</div>
+
+      <div class="qa-row">
+        <a class="qa primary" href="mailto:gjvpaet@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          send mail
+        </a>
+        <a class="qa" href="https://www.linkedin.com/in/gjvpaet/" target="_blank">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.01 2.5 2.5 0 0 1 0-5Zm.02 6.5h-.04A2 2 0 0 0 3 12v8.5c0 .55.45 1 1 1h2c.55 0 1-.45 1-1V12a2 2 0 0 0-2-2Zm6 0a2 2 0 0 0-2 2v8.5c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-4.5c0-1.65 1.35-3 3-3s3 1.35 3 3v4.5c0 .55.45 1 1 1h2c.55 0 1-.45 1-1V14.5c0-3-2.5-5.5-5.5-5.5-1.42 0-2.71.54-3.7 1.41V11c0-.55-.45-1-1-1h-1.8Z"/></svg>
+          message on linkedin
+        </a>
+      </div>
+    `
+  },
+
+  // ============================================================
+  "projects/gabpaet-dev/page.tsx": {
+    name: "page.tsx",
+    path: "~ › projects › gabpaet.dev",
+    icon: "ts",
+    lang: "TypeScript JSX",
+    lines: 42,
+    html: `<pre class="src"><span class="tk-cmt">// app/page.tsx — gabpaet.dev portfolio root.</span>
+<span class="tk-cmt">// next.js 15 · react 19 · tailwind. shipped solo, 2026.</span>
+
+<span class="tk-kw">import</span> { <span class="tk-typ">Metadata</span> } <span class="tk-kw">from</span> <span class="tk-str">"next"</span>;
+<span class="tk-kw">import</span> { <span class="tk-typ">FileTree</span> } <span class="tk-kw">from</span> <span class="tk-str">"@/components/file-tree"</span>;
+<span class="tk-kw">import</span> { <span class="tk-typ">Editor</span> } <span class="tk-kw">from</span> <span class="tk-str">"@/components/editor"</span>;
+<span class="tk-kw">import</span> { <span class="tk-typ">CommandPalette</span> } <span class="tk-kw">from</span> <span class="tk-str">"@/components/command-palette"</span>;
+<span class="tk-kw">import</span> { files, fileOrder } <span class="tk-kw">from</span> <span class="tk-str">"@/content/files"</span>;
+
+<span class="tk-kw">export const</span> <span class="tk-var">metadata</span>: <span class="tk-typ">Metadata</span> = {
+  title:       <span class="tk-str">"Gabriel Joshua Paet — Senior Programmer"</span>,
+  description: <span class="tk-str">"9 years shipping. AI · automation · DevOps · web."</span>,
+};
+
+<span class="tk-kw">export default function</span> <span class="tk-fn">Page</span>() {
+  <span class="tk-kw">return</span> (
+    &lt;<span class="tk-tag">main</span> <span class="tk-var">className</span>=<span class="tk-str">"ide grid h-screen"</span>&gt;
+      &lt;<span class="tk-tag">TitleBar</span> <span class="tk-var">path</span>=<span class="tk-str">"~/portfolio"</span> /&gt;
+
+      &lt;<span class="tk-tag">FileTree</span>
+        <span class="tk-var">order</span>={fileOrder}
+        <span class="tk-var">files</span>={files}
+        <span class="tk-var">onOpen</span>={(id) =&gt; <span class="tk-fn">openFile</span>(id)}
+      /&gt;
+
+      &lt;<span class="tk-tag">Editor</span>
+        <span class="tk-var">active</span>={active}
+        <span class="tk-var">tabs</span>={openTabs}
+        <span class="tk-var">file</span>={files[active]}
+      /&gt;
+
+      &lt;<span class="tk-tag">CommandPalette</span>
+        <span class="tk-var">shortcut</span>={[<span class="tk-str">"mod+k"</span>, <span class="tk-str">"mod+p"</span>]}
+        <span class="tk-var">items</span>={fileOrder.<span class="tk-fn">map</span>((id) =&gt; files[id])}
+      /&gt;
+
+      &lt;<span class="tk-tag">StatusBar</span> <span class="tk-var">where</span>=<span class="tk-str">"pasay · utc+8"</span> /&gt;
+    &lt;/<span class="tk-tag">main</span>&gt;
+  );
+}
+
+<span class="tk-cmt">// see ./components/* for the actual rendering. this is the assembly.</span></pre>`
+  },
+
+  // ============================================================
+  "projects/gabpaet-dev/README.md": {
+    name: "README.md",
+    path: "~ › projects › gabpaet.dev",
+    icon: "md",
+    lang: "Markdown",
+    lines: 24,
+    html: `
+      <div class="h1"><span class="hash">#</span>gabpaet.dev</div>
+      <div class="sub">this portfolio · v1 · 2026</div>
+
+      <p><span class="com">&gt;</span> What you're looking at right now.</p>
+
+      <div class="h2"><span class="hash">##</span><span>idea</span><span class="h2-rule"></span></div>
+      <p>Render the whole portfolio as an IDE — sidebar, tabs, command palette,
+        the works. Each section is a file you open. Reads honest, feels familiar
+        for the audience.</p>
+
+      <div class="h2"><span class="hash">##</span><span>stack</span><span class="h2-rule"></span></div>
+      <div class="grid">
+        <div class="k">framework</div> <div class="v">next.js 15 · react 19</div>
+        <div class="k">styles</div>    <div class="v">tailwind + tokens</div>
+        <div class="k">deploy</div>    <div class="v">vercel</div>
+        <div class="k">repo</div>      <div class="v"><a class="lnk" href="https://github.com/gjvpaet" target="_blank">github.com/gjvpaet</a></div>
+      </div>
+
+      <div class="h2"><span class="hash">##</span><span>todo</span><span class="h2-rule"></span></div>
+      <ul>
+        <li>more projects in the sidebar (write-once-render-anywhere file format)</li>
+        <li>print-to-pdf CV export from the same data</li>
+        <li>search across file contents (not just filenames)</li>
+        <li>switch to using actual file contents from the repo at build time</li>
+      </ul>
+    `
+  },
+
+  // ============================================================
+  "package.json": {
+    name: "package.json",
+    path: "~ › portfolio",
+    icon: "json",
+    lang: "JSON",
+    lines: 28,
+    html: `<pre class="src">{
+  <span class="tk-str">"name"</span>: <span class="tk-str">"gabpaet"</span>,
+  <span class="tk-str">"version"</span>: <span class="tk-str">"1.0.0"</span>,
+  <span class="tk-str">"description"</span>: <span class="tk-str">"senior programmer · 9y shipping · ai · automation · web"</span>,
+  <span class="tk-str">"main"</span>: <span class="tk-str">"about.md"</span>,
+  <span class="tk-str">"homepage"</span>: <span class="tk-str">"https://gabpaet.dev"</span>,
+  <span class="tk-str">"author"</span>: {
+    <span class="tk-str">"name"</span>:  <span class="tk-str">"Gabriel Joshua Paet"</span>,
+    <span class="tk-str">"email"</span>: <span class="tk-str">"gjvpaet@gmail.com"</span>,
+    <span class="tk-str">"url"</span>:   <span class="tk-str">"https://gabpaet.dev"</span>
+  },
+  <span class="tk-str">"keywords"</span>: [
+    <span class="tk-str">"node"</span>, <span class="tk-str">"express"</span>, <span class="tk-str">"react"</span>, <span class="tk-str">"next.js"</span>,
+    <span class="tk-str">"postgres"</span>, <span class="tk-str">"aws"</span>, <span class="tk-str">"ai"</span>, <span class="tk-str">"automation"</span>, <span class="tk-str">"devops"</span>
+  ],
+  <span class="tk-str">"scripts"</span>: {
+    <span class="tk-str">"hire"</span>:     <span class="tk-str">"mailto:gjvpaet@gmail.com"</span>,
+    <span class="tk-str">"linkedin"</span>: <span class="tk-str">"open https://www.linkedin.com/in/gjvpaet/"</span>,
+    <span class="tk-str">"github"</span>:   <span class="tk-str">"open https://github.com/gjvpaet"</span>,
+    <span class="tk-str">"portfolio"</span>:<span class="tk-str">"open https://gabpaet.dev"</span>
+  },
+  <span class="tk-str">"engines"</span>: {
+    <span class="tk-str">"coffee"</span>: <span class="tk-str">">=1 cup/day"</span>,
+    <span class="tk-str">"sleep"</span>:  <span class="tk-str">">=7 hours/night"</span>
+  },
+  <span class="tk-str">"availability"</span>: <span class="tk-str">"not actively looking"</span>,
+  <span class="tk-str">"license"</span>: <span class="tk-str">"MIT"</span>
+}</pre>`
+  },
+
+  // ============================================================
+  ".zshrc": {
+    name: ".zshrc",
+    path: "~",
+    icon: "sh",
+    lang: "Shell",
+    lines: 32,
+    html: `<pre class="src"><span class="tk-cmt"># ~/.zshrc — just the good parts</span>
+
+<span class="tk-cmt"># --- editor + shell ---</span>
+<span class="tk-kw">export</span> EDITOR=code
+<span class="tk-kw">export</span> PAGER=<span class="tk-str">"less -FX"</span>
+<span class="tk-kw">setopt</span> HIST_IGNORE_DUPS HIST_IGNORE_SPACE INC_APPEND_HISTORY
+
+<span class="tk-cmt"># --- node / pnpm ---</span>
+<span class="tk-kw">export</span> NVM_DIR=<span class="tk-str">"$HOME/.nvm"</span>
+[ -s <span class="tk-str">"$NVM_DIR/nvm.sh"</span> ] &amp;&amp; <span class="tk-kw">source</span> <span class="tk-str">"$NVM_DIR/nvm.sh"</span>
+<span class="tk-fn">alias</span> n=<span class="tk-str">"node"</span>
+<span class="tk-fn">alias</span> ni=<span class="tk-str">"pnpm install"</span>
+<span class="tk-fn">alias</span> nd=<span class="tk-str">"pnpm dev"</span>
+<span class="tk-fn">alias</span> nb=<span class="tk-str">"pnpm build"</span>
+<span class="tk-fn">alias</span> nt=<span class="tk-str">"pnpm test"</span>
+<span class="tk-fn">alias</span> nx=<span class="tk-str">"pnpm dlx"</span>
+
+<span class="tk-cmt"># --- git + github ---</span>
+<span class="tk-fn">alias</span> g=<span class="tk-str">"git"</span>
+<span class="tk-fn">alias</span> gs=<span class="tk-str">"git status -sb"</span>
+<span class="tk-fn">alias</span> gl=<span class="tk-str">"git log --oneline --graph --decorate -20"</span>
+<span class="tk-fn">alias</span> gco=<span class="tk-str">"git checkout"</span>
+<span class="tk-fn">alias</span> gp=<span class="tk-str">"git push"</span>
+
+<span class="tk-cmt"># --- aws / devops ---</span>
+<span class="tk-fn">alias</span> awl=<span class="tk-str">"aws sso login"</span>
+<span class="tk-fn">alias</span> awsls=<span class="tk-str">"aws s3 ls"</span>
+<span class="tk-fn">alias</span> eb=<span class="tk-str">"eb"</span>     <span class="tk-cmt"># elastic beanstalk cli</span>
+
+<span class="tk-cmt"># --- helpers ---</span>
+<span class="tk-fn">mkcd</span>() { mkdir -p <span class="tk-str">"$1"</span> &amp;&amp; cd <span class="tk-str">"$1"</span>; }
+<span class="tk-fn">weather</span>() { curl <span class="tk-str">"wttr.in/\${1:-pasay}?format=3"</span>; }
+<span class="tk-fn">port</span>()    { lsof -nP -iTCP:<span class="tk-str">$1</span> -sTCP:LISTEN; }</pre>`
+  },
+};
+
+// Order of files in the command palette
+window.FILE_ORDER = [
+  "about.md",
+  "work.md",
+  // "writing.md",   // hidden — uncomment to show in palette + sidebar
+  "contact.md",
+  "projects/gabpaet-dev/page.tsx",
+  "projects/gabpaet-dev/README.md",
+  "package.json",
+  ".zshrc",
+];
+
+// portfolio-app.js — IDE shell logic.
+// Wires sidebar, tabs, breadcrumb, gutter, status bar, command palette, tweaks.
+
+(function () {
+  const FILES = window.FILES;
+  const FILE_ORDER = window.FILE_ORDER;
+
+  // ---------- state ----------
+  const state = {
+    active: "about.md",
+    openTabs: ["about.md", "work.md", "projects/gabpaet-dev/page.tsx", ".zshrc"],
+  };
+
+  // ---------- el refs ----------
+  const $ = (s) => document.querySelector(s);
+  const tabsEl       = $("#tabs");
+  const sidebar      = $("#sidebar");
+  const doc          = $("#doc");
+  const gutter       = $("#gutter");
+  const breadcrumb   = $("#breadcrumb");
+  const bcFile       = $("#bc-file");
+  const bcLines      = $("#bc-lines");
+  const tbFile       = $("#tb-file");
+  const sbPos        = $("#sb-pos");
+  const sbLang       = $("#sb-lang");
+  const sbSpaces     = $("#sb-spaces");
+
+  // ---------- render ----------
+  function render() {
+    renderTabs();
+    renderSidebar();
+    renderDoc();
+    renderChrome();
+  }
+
+  function renderTabs() {
+    tabsEl.innerHTML = state.openTabs.map(id => {
+      const f = FILES[id];
+      if (!f) return "";
+      const isActive = id === state.active;
+      return `
+        <div class="tab${isActive ? " active" : ""}" data-file="${id}">
+          <span class="icn ${f.icon}">${iconText(f.icon)}</span>
+          <span class="name">${f.name}</span>
+          <span class="x" data-close="${id}"><span class="dot"></span><span class="close">×</span></span>
+        </div>`;
+    }).join("");
+  }
+
+  function iconText(icon) {
+    return {
+      md: "M↓", rs: "Rs", ts: "Ts", go: "Go",
+      json: "{ }", sh: "Sh", lock: "!",
+    }[icon] || "·";
+  }
+
+  function renderSidebar() {
+    sidebar.querySelectorAll(".side-item[data-file]").forEach(el => {
+      el.classList.toggle("active", el.dataset.file === state.active);
+    });
+  }
+
+  function renderDoc() {
+    const f = FILES[state.active];
+    if (!f) return;
+    doc.innerHTML = f.html;
+    doc.scrollTop = 0;
+    // build gutter to match the visible content lines
+    buildGutter(f.lines);
+    // wire any in-doc actions
+    doc.querySelectorAll("[data-action='open-contact']").forEach(b =>
+      b.addEventListener("click", () => openFile("contact.md")));
+    doc.querySelectorAll("[data-action='open-work']").forEach(b =>
+      b.addEventListener("click", () => openFile("work.md")));
+  }
+
+  function renderChrome() {
+    const f = FILES[state.active];
+    if (!f) return;
+    tbFile.textContent = f.name;
+    bcFile.textContent = f.name;
+    bcLines.textContent = f.lines;
+    sbLang.textContent = f.lang;
+    sbSpaces.textContent = (f.icon === "json" || f.icon === "rs" || f.icon === "go") ? "Spaces: 4" : "Spaces: 2";
+    sbPos.textContent = `Ln 1, Col 1`;
+    // breadcrumb crumbs
+    const parts = f.path.split(" › ").concat([f.name]);
+    breadcrumb.innerHTML = parts.map((p, i) => {
+      const isLast = i === parts.length - 1;
+      const isHome = p === "~";
+      const cls = (isLast || isHome) ? "accent" : "";
+      return `<span class="crumb"><span class="${cls}">${p}</span></span>` +
+             (isLast ? "" : `<span class="sep">›</span>`);
+    }).join("") + `<span class="meta-r">· <span>${f.lines}</span> lines</span>`;
+  }
+
+  function buildGutter(n) {
+    let html = "";
+    for (let i = 1; i <= Math.max(n, 1); i++) {
+      html += `<span${i === 1 ? ' class="cur"' : ""}>${i}</span>`;
+    }
+    gutter.innerHTML = html;
+  }
+
+  // ---------- actions ----------
+  function openFile(id) {
+    if (!FILES[id]) return;
+    state.active = id;
+    if (!state.openTabs.includes(id)) state.openTabs.push(id);
+    render();
+  }
+
+  function closeTab(id) {
+    const idx = state.openTabs.indexOf(id);
+    if (idx < 0) return;
+    state.openTabs.splice(idx, 1);
+    if (state.active === id) {
+      state.active = state.openTabs[Math.min(idx, state.openTabs.length - 1)] || "about.md";
+      if (state.openTabs.length === 0) state.openTabs.push("about.md");
+    }
+    render();
+  }
+
+  // ---------- event wiring ----------
+  sidebar.addEventListener("click", e => {
+    const item = e.target.closest(".side-item[data-file]");
+    if (item) openFile(item.dataset.file);
+    // folder collapse toggle (visual only — children are always visible since the tree is small)
+    const folder = e.target.closest(".side-item.folder");
+    if (folder) folder.classList.toggle("collapsed");
+  });
+
+  tabsEl.addEventListener("click", e => {
+    const closeBtn = e.target.closest("[data-close]");
+    if (closeBtn) {
+      e.stopPropagation();
+      closeTab(closeBtn.dataset.close);
+      return;
+    }
+    const tab = e.target.closest(".tab[data-file]");
+    if (tab) openFile(tab.dataset.file);
+  });
+
+  // ---------- COMMAND PALETTE ----------
+  const paletteOverlay = $("#palette");
+  const paletteInput   = $("#paletteInput");
+  const paletteResults = $("#paletteResults");
+  let paletteIdx = 0;
+  let paletteList = [];
+
+  function openPalette() {
+    paletteOverlay.classList.add("open");
+    paletteInput.value = "";
+    paletteIdx = 0;
+    refreshPalette();
+    setTimeout(() => paletteInput.focus(), 10);
+  }
+  function closePalette() {
+    paletteOverlay.classList.remove("open");
+  }
+  function refreshPalette() {
+    const q = paletteInput.value.trim().toLowerCase();
+    paletteList = FILE_ORDER.filter(id => {
+      if (!q) return true;
+      return id.toLowerCase().includes(q) ||
+             FILES[id].name.toLowerCase().includes(q) ||
+             FILES[id].lang.toLowerCase().includes(q);
+    });
+    if (paletteIdx >= paletteList.length) paletteIdx = 0;
+    paletteResults.innerHTML = paletteList.map((id, i) => {
+      const f = FILES[id];
+      const isActive = i === paletteIdx;
+      const pathParts = id.split("/");
+      const folder = pathParts.length > 1 ? pathParts.slice(0, -1).join("/") + "/" : "";
+      return `
+        <div class="res-item${isActive ? " active" : ""}" data-file="${id}">
+          <span class="icn ${f.icon}">${iconText(f.icon)}</span>
+          <span>${f.name}</span>
+          <span class="path">${folder || f.path}</span>
+        </div>`;
+    }).join("") || `<div class="res-item" style="color:var(--fg-dim)">no results</div>`;
+  }
+
+  paletteInput.addEventListener("input", () => { paletteIdx = 0; refreshPalette(); });
+  paletteInput.addEventListener("keydown", e => {
+    if (e.key === "Escape") { closePalette(); }
+    else if (e.key === "ArrowDown") {
+      paletteIdx = Math.min(paletteIdx + 1, paletteList.length - 1); refreshPalette(); e.preventDefault();
+    }
+    else if (e.key === "ArrowUp") {
+      paletteIdx = Math.max(paletteIdx - 1, 0); refreshPalette(); e.preventDefault();
+    }
+    else if (e.key === "Enter") {
+      const id = paletteList[paletteIdx];
+      if (id) { closePalette(); openFile(id); }
+    }
+  });
+
+  paletteResults.addEventListener("click", e => {
+    const item = e.target.closest(".res-item[data-file]");
+    if (item) { closePalette(); openFile(item.dataset.file); }
+  });
+  paletteResults.addEventListener("mousemove", e => {
+    const item = e.target.closest(".res-item[data-file]");
+    if (!item) return;
+    const idx = [...paletteResults.children].indexOf(item);
+    if (idx >= 0 && idx !== paletteIdx) { paletteIdx = idx; refreshPalette(); }
+  });
+
+  paletteOverlay.addEventListener("click", e => {
+    if (e.target === paletteOverlay) closePalette();
+  });
+
+  $("#paletteBtn").addEventListener("click", openPalette);
+
+  window.addEventListener("keydown", e => {
+    const cmdOrCtrl = e.metaKey || e.ctrlKey;
+    if (cmdOrCtrl && (e.key === "k" || e.key === "p" || e.key === "K" || e.key === "P")) {
+      e.preventDefault();
+      if (paletteOverlay.classList.contains("open")) closePalette();
+      else openPalette();
+    } else if (e.key === "Escape" && paletteOverlay.classList.contains("open")) {
+      closePalette();
+    }
+  });
+
+  // ---------- TWEAKS ----------
+  // The defaults block is in portfolio.html as inline JSON so the host can persist edits.
+  const defaults = window.TWEAK_DEFAULTS || { accent: "#2ee5b4", density: "cozy" };
+  let tweaks = { ...defaults };
+
+  const ACCENT_OPTIONS = [
+    { c: "#2ee5b4", ink: "#04211a", name: "mint" },
+    { c: "#f97070", ink: "#2a0606", name: "coral" },
+    { c: "#7a9cff", ink: "#08122b", name: "periwinkle" },
+    { c: "#f2c14e", ink: "#2a1d00", name: "amber" },
+    { c: "#c084fc", ink: "#1c0a30", name: "violet" },
+  ];
+
+  const DENSITY_MAP = {
+    compact:  { fs: "12px",   lh: 1.55, padY: "12px", padX: "20px", side: "2px",  gut: "12px" },
+    cozy:     { fs: "14px",   lh: 1.85, padY: "22px", padX: "28px", side: "5px",  gut: "22px" },
+    spacious: { fs: "15.5px", lh: 2.1,  padY: "32px", padX: "40px", side: "8px",  gut: "32px" },
+  };
+
+  function applyTweaks() {
+    const opt = ACCENT_OPTIONS.find(o => o.c.toLowerCase() === tweaks.accent.toLowerCase()) || ACCENT_OPTIONS[0];
+    const r = document.documentElement.style;
+    r.setProperty("--accent", opt.c);
+    r.setProperty("--accent-ink", opt.ink);
+    const d = DENSITY_MAP[tweaks.density] || DENSITY_MAP.cozy;
+    r.setProperty("--doc-fs",        d.fs);
+    r.setProperty("--doc-lh",        d.lh);
+    r.setProperty("--doc-pad-y",     d.padY);
+    r.setProperty("--doc-pad-x",     d.padX);
+    r.setProperty("--side-item-pad", d.side);
+    r.setProperty("--gutter-pad-y",  d.gut);
+    // labels
+    const accentCur = document.getElementById("accentCur");
+    const densityCur = document.getElementById("densityCur");
+    if (accentCur) accentCur.textContent = opt.name;
+    if (densityCur) densityCur.textContent = tweaks.density;
+    renderTweaks();
+  }
+
+  function setTweak(k, v) {
+    tweaks[k] = v;
+    applyTweaks();
+    window.parent.postMessage({ type: "__edit_mode_set_keys", edits: { [k]: v } }, "*");
+  }
+
+  function renderTweaks() {
+    const swEl = $("#swatches");
+    swEl.innerHTML = ACCENT_OPTIONS.map(o => `
+      <div class="sw${o.c.toLowerCase() === tweaks.accent.toLowerCase() ? " active" : ""}"
+           style="--c:${o.c}" data-c="${o.c}"></div>
+    `).join("");
+    swEl.querySelectorAll(".sw").forEach(s =>
+      s.onclick = () => setTweak("accent", s.dataset.c));
+    document.querySelectorAll("#density button").forEach(b => {
+      b.classList.toggle("active", b.dataset.v === tweaks.density);
+      b.onclick = () => setTweak("density", b.dataset.v);
+    });
+  }
+
+  // edit-mode protocol
+  const tweaksEl = $("#tweaks");
+  window.addEventListener("message", e => {
+    if (!e.data || !e.data.type) return;
+    if (e.data.type === "__activate_edit_mode") tweaksEl.classList.add("open");
+    if (e.data.type === "__deactivate_edit_mode") tweaksEl.classList.remove("open");
+  });
+  $("#tweaksClose").addEventListener("click", () => {
+    tweaksEl.classList.remove("open");
+    window.parent.postMessage({ type: "__edit_mode_dismissed" }, "*");
+  });
+  window.parent.postMessage({ type: "__edit_mode_available" }, "*");
+
+  // initial render
+  applyTweaks();
+  render();
+})();
+
+</script>
+</body>
+</html>
