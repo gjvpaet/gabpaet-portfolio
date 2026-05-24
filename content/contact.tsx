@@ -7,7 +7,7 @@ export default function ContactBody() {
       <div className="sub">say hi · i actually read these</div>
 
       <p>
-        <span className="com">&gt;</span> Plain email works best. LinkedIn for formal stuff. Not
+        <span className="com">&gt; </span>Plain email works best. LinkedIn for formal stuff. Not
         actively looking but always happy to chat about interesting problems.
       </p>
 

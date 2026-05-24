@@ -6,7 +6,7 @@ export default function WritingBody() {
       </div>
       <div className="sub">coming soon</div>
       <p>
-        <span className="com">&gt;</span> Not publishing yet — placeholder until i have something
+        <span className="com">&gt; </span>Not publishing yet — placeholder until i have something
         worth posting.
       </p>
       <div className="quote">

@@ -20,7 +20,7 @@ export default function AboutBody() {
       </div>
 
       <p>
-        <span className="com">&gt;</span> Always view problems as an opportunity.
+        <span className="com">&gt; </span>Always view problems as an opportunity.
       </p>
 
       <div className="h2">

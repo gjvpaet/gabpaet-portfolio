@@ -7,7 +7,7 @@ export default function ProjectsReadmeBody() {
       <div className="sub">this portfolio · v1 · 2026</div>
 
       <p>
-        <span className="com">&gt;</span> What you&apos;re looking at right now.
+        <span className="com">&gt; </span>What you&apos;re looking at right now.
       </p>
 
       <div className="h2">
