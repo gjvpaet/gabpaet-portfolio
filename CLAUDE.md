@@ -74,6 +74,28 @@ The chrome components carry semantic class names (`.titlebar`, `.sidebar`, `.mai
 
 The doc body uses a set of scoped CSS classes (`.doc .h1`, `.doc .h2`, `.doc .grid`, `.doc .quote`, `.doc .row-table`, `.doc .qa`, `.doc .stack-chip`, `.doc .cb`, `.tk-*` for syntax tokens, etc.) rather than MDX or a markdown processor. Content files in `content/` are plain React components that compose with these classes. The README still mentions an `.mdx` plan — it was the original proposal; the actual codebase uses `.tsx` content files.
 
+## SEO & analytics
+
+App Router file conventions in `app/` cover the entire SEO surface — no manual `<link>` tags needed:
+
+- **`app/sitemap.ts`** — emits `/sitemap.xml`, driven by `FILE_ORDER` so any non-hidden FileEntry shows up automatically. Adding a new file via the three-step rule above also adds it to the sitemap on next build.
+- **`app/robots.ts`** — emits `/robots.txt` (allow-all + sitemap pointer).
+- **`app/opengraph-image.tsx`** — renders a static 1200×630 PNG at build time via `next/og`'s `ImageResponse`. Mimics the IDE chrome (traffic-light dots, breadcrumb, mint accent footer) so social-shared links look on-brand. It's prerendered as a real PNG asset (no edge runtime, no cold start), so the route shows as `○ (Static)` in `next build`.
+- **`app/favicon.ico`** — picked up automatically.
+- **`app/layout.tsx`** — owns the rest:
+  - Per-page `metadata` gets composed via the `title.template` and inherits everything else.
+  - Two JSON-LD blocks (`Person` + `WebSite`, schema.org) live in `<head>` so Google can build a knowledge-panel-style result. Update these when work/role/links change.
+  - `Viewport.themeColor` is a two-entry array so the address-bar tint matches dark/light mode.
+  - `robots`, `formatDetection`, `alternates.canonical`, `authors`, `creator`, `keywords` are all set here.
+
+Analytics is **Vercel Web Analytics** + **Speed Insights**:
+
+- `@vercel/analytics/react` → `<Analytics />` in `<body>` (cookieless page-view tracking).
+- `@vercel/speed-insights/next` → `<SpeedInsights />` in `<body>` (Core Web Vitals).
+- Both are no-ops outside Vercel — they require **enabling Web Analytics** and **enabling Speed Insights** in the project's Vercel dashboard for data to actually start flowing. There's no env var to set; the components detect the deploy environment automatically.
+
+If you change accent or theme tokens, also revisit `app/opengraph-image.tsx` — it uses literal hex values (`#0d1b2a`, `#2ee5b4`, etc.) since `ImageResponse` doesn't read CSS variables, so it can drift from `globals.css` if you're not careful.
+
 ## Reference files (read once, don't ship)
 
 - `portfolio.html` — original single-file HTML/CSS/JS prototype. It's the **design source of truth** (copy text and visuals from it verbatim), but it's not built or deployed. Don't link to it from the app.

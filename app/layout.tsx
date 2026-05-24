@@ -1,7 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
+
+const SITE_URL = "https://gabpaet.dev";
+const SITE_TITLE = "Gabriel Joshua Paet — Senior Programmer";
+const SITE_DESCRIPTION = "9 years shipping. AI · automation · DevOps · web.";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -11,23 +17,117 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gabpaet.dev"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Gabriel Joshua Paet — Senior Programmer",
+    default: SITE_TITLE,
     template: "%s — Gabriel Joshua Paet",
   },
-  description: "9 years shipping. AI · automation · DevOps · web.",
+  description: SITE_DESCRIPTION,
+  applicationName: "gabpaet.dev",
+  authors: [{ name: "Gabriel Joshua Paet", url: SITE_URL }],
+  creator: "Gabriel Joshua Paet",
+  publisher: "Gabriel Joshua Paet",
+  keywords: [
+    "Gabriel Joshua Paet",
+    "gabpaet",
+    "senior programmer",
+    "full-stack developer",
+    "Next.js",
+    "React",
+    "Node.js",
+    "TypeScript",
+    "AI engineer",
+    "Philippines",
+    "Lumora Capital",
+  ],
+  // App Router auto-includes /sitemap.xml + /robots.txt + /opengraph-image
+  // via the file conventions, so no need to list them here.
   openGraph: {
     type: "website",
+    url: SITE_URL,
     siteName: "gabpaet.dev",
-    title: "Gabriel Joshua Paet — Senior Programmer",
-    description: "9 years shipping. AI · automation · DevOps · web.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    locale: "en_US",
   },
   twitter: {
-    card: "summary",
-    title: "Gabriel Joshua Paet — Senior Programmer",
-    description: "9 years shipping. AI · automation · DevOps · web.",
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "/",
+  },
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0d1b2a" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f6f1" },
+  ],
+  colorScheme: "dark light",
+  width: "device-width",
+  initialScale: 1,
+};
+
+// schema.org/Person — gives Google enough structured data to build a
+// knowledge-panel-style result with name, role, location, and sameAs links.
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Gabriel Joshua Paet",
+  alternateName: "gabpaet",
+  url: SITE_URL,
+  jobTitle: "Senior Programmer",
+  worksFor: {
+    "@type": "Organization",
+    name: "Lumora Capital",
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Pasay City",
+    addressRegion: "NCR",
+    addressCountry: "PH",
+  },
+  sameAs: ["https://github.com/gjvpaet"],
+  knowsAbout: [
+    "Node.js",
+    "Next.js",
+    "React",
+    "React Native",
+    "TypeScript",
+    "PostgreSQL",
+    "LangChain",
+    "OpenAI API",
+    "AWS Bedrock Agents",
+    "Google Vertex AI",
+    "DevOps",
+    "Workflow automation",
+  ],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "gabpaet.dev",
+  url: SITE_URL,
+  author: { "@type": "Person", name: "Gabriel Joshua Paet" },
+  inLanguage: "en",
 };
 
 // Read saved tweaks from localStorage and write CSS variables BEFORE the body
@@ -81,11 +181,23 @@ const FOUC_SCRIPT = `
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
+      </head>
       <body>
         <Script id="tweaks-fouc" strategy="beforeInteractive">
           {FOUC_SCRIPT}
         </Script>
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
