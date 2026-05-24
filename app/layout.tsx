@@ -6,8 +6,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 const SITE_URL = "https://gabpaet.dev";
-const SITE_TITLE = "Gabriel Joshua Paet — Senior Programmer";
-const SITE_DESCRIPTION = "9 years shipping. AI · automation · DevOps · web.";
+const SITE_TITLE = "Gabriel Joshua Paet — Senior Programmer · AI, DevOps, Web";
+const SITE_DESCRIPTION =
+  "Senior programmer with 9 years of experience. AI agents, workflow automation, DevOps, and full-stack web. Based in Pasay City, currently at Lumora Capital.";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
