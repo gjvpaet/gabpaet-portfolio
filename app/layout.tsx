@@ -31,29 +31,42 @@ export const metadata: Metadata = {
 };
 
 // Read saved tweaks from localStorage and write CSS variables BEFORE the body
-// renders, so a non-default accent/density doesn't flash on first paint.
+// renders, so a non-default accent / density / theme doesn't flash on first
+// paint. Mirrors lib/tweaks.ts + context/tweaks-provider.tsx — see CLAUDE.md
+// for the sync rules (accent companions, density tuples, storage key).
 const FOUC_SCRIPT = `
 (function(){
   try {
     var raw = localStorage.getItem('portfolio.tweaks.v1');
-    if (!raw) return;
+    if (!raw) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      return;
+    }
     var t = JSON.parse(raw);
+    // accent → { ink (dark mode), lightC, lightInk }
     var ACCENTS = {
-      '#2ee5b4':'#04211a','#f97070':'#2a0606','#7a9cff':'#08122b',
-      '#f2c14e':'#2a1d00','#c084fc':'#1c0a30'
+      '#2ee5b4': { ink: '#04211a', lightC: '#0f9d77', lightInk: '#ffffff' },
+      '#f97070': { ink: '#2a0606', lightC: '#dc2626', lightInk: '#ffffff' },
+      '#7a9cff': { ink: '#08122b', lightC: '#3b5bdb', lightInk: '#ffffff' },
+      '#f2c14e': { ink: '#2a1d00', lightC: '#b45309', lightInk: '#ffffff' },
+      '#c084fc': { ink: '#1c0a30', lightC: '#8b5cf6', lightInk: '#ffffff' }
     };
     var DENSITY = {
       compact:  ['12px','1.55','12px','20px','2px','12px'],
       cozy:     ['14px','1.85','22px','28px','5px','22px'],
       spacious: ['15.5px','2.1','32px','40px','8px','32px']
     };
-    var r = document.documentElement.style;
-    if (t.accent && ACCENTS[t.accent.toLowerCase()]) {
-      r.setProperty('--accent', t.accent);
-      r.setProperty('--accent-ink', ACCENTS[t.accent.toLowerCase()]);
+    var html = document.documentElement;
+    var isLight = t.theme === 'light';
+    html.setAttribute('data-theme', isLight ? 'light' : 'dark');
+    var a = t.accent && ACCENTS[t.accent.toLowerCase()];
+    if (a) {
+      html.style.setProperty('--accent',     isLight ? a.lightC   : t.accent);
+      html.style.setProperty('--accent-ink', isLight ? a.lightInk : a.ink);
     }
     var d = DENSITY[t.density];
     if (d) {
+      var r = html.style;
       r.setProperty('--doc-fs', d[0]);
       r.setProperty('--doc-lh', d[1]);
       r.setProperty('--doc-pad-y', d[2]);

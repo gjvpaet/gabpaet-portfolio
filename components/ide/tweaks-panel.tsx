@@ -1,9 +1,10 @@
 "use client";
 
 import { useTweaks } from "@/context/tweaks-provider";
-import { ACCENT_OPTIONS, type Density, findAccent } from "@/lib/tweaks";
+import { ACCENT_OPTIONS, type Density, type Theme, findAccent } from "@/lib/tweaks";
 
 const DENSITY_VALUES: Density[] = ["compact", "cozy", "spacious"];
+const THEME_VALUES: Theme[] = ["dark", "light"];
 
 export function TweaksPanel() {
   const t = useTweaks();
@@ -26,7 +27,7 @@ export function TweaksPanel() {
 
       {t.isPanelOpen && (
         <div
-          className="fixed bottom-[38px] right-3.5 z-50 w-72 overflow-hidden rounded-lg border border-[var(--border-2)] bg-[var(--panel)] text-[11.5px] text-[var(--fg)]"
+          className="tweaks-panel fixed bottom-[38px] right-3.5 z-50 w-72 overflow-hidden rounded-lg border border-[var(--border-2)] bg-[var(--panel)] text-[11.5px] text-[var(--fg)]"
           style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}
         >
           <div className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--side)] px-3.5 py-2.5">
@@ -43,6 +44,38 @@ export function TweaksPanel() {
             </button>
           </div>
           <div className="p-3.5">
+            <div className="mb-3.5">
+              <div className="mb-1.5 flex items-center text-[10px] uppercase tracking-[1.5px] text-[var(--fg-dim)]">
+                Theme
+                <span className="ml-auto text-[10.5px] capitalize tracking-[.5px] text-[var(--accent)]">
+                  {t.theme}
+                </span>
+              </div>
+              <div className="flex rounded-[4px] border border-[var(--border)] bg-[var(--side)] p-0.5">
+                {THEME_VALUES.map((v) => {
+                  const active = v === t.theme;
+                  return (
+                    <button
+                      key={v}
+                      type="button"
+                      onClick={() => t.setTheme(v)}
+                      className={[
+                        "flex-1 rounded-[3px] border-0 py-1 text-[11px] transition-colors",
+                        active
+                          ? "bg-[var(--accent)] text-[var(--accent-ink)]"
+                          : "bg-transparent text-[var(--fg-dim)]",
+                      ].join(" ")}
+                    >
+                      {v}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-2 text-[10.5px] italic leading-[1.5] text-[var(--fg-dim-2)]">
+                flip the editor between night and paper.
+              </div>
+            </div>
+
             <div className="mb-3.5">
               <div className="mb-1.5 flex items-center text-[10px] uppercase tracking-[1.5px] text-[var(--fg-dim)]">
                 Accent
@@ -63,7 +96,7 @@ export function TweaksPanel() {
                         "h-[26px] w-[26px] cursor-pointer rounded-[5px] border-[1.5px] transition-transform",
                         active ? "scale-110 border-[var(--fg-bright)]" : "border-[var(--border-2)]",
                       ].join(" ")}
-                      style={{ background: o.c }}
+                      style={{ background: t.theme === "light" ? o.lightC : o.c }}
                     />
                   );
                 })}

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import { FILES, FILE_ORDER, type FileId } from "@/content/files";
+import { useSidebar } from "@/context/sidebar-provider";
 import { FileIcon } from "./file-icon";
 
 const PORTFOLIO_IDS: FileId[] = ["about.md", "work.md", "contact.md"];
@@ -17,12 +18,17 @@ const PROJECT_IDS: FileId[] = [
 export function Sidebar() {
   const pathname = usePathname();
   const [projectsOpen, setProjectsOpen] = useState(true);
+  const { isOpen } = useSidebar();
 
   const visiblePortfolio = PORTFOLIO_IDS.filter((id) => FILE_ORDER.includes(id) && !FILES[id].hidden);
   const visibleRoot = ROOT_IDS.filter((id) => !FILES[id].hidden);
 
   return (
-    <aside className="row-start-2 flex flex-col overflow-y-auto border-r border-[var(--border)] bg-[var(--side)] py-3.5 pb-5.5">
+    <aside
+      className={`sidebar row-start-2 flex flex-col overflow-y-auto border-r border-[var(--border)] bg-[var(--side)] py-3.5 pb-5.5 ${
+        isOpen ? "open" : ""
+      }`}
+    >
       <div className="mb-4">
         <div className="flex select-none items-center gap-1.5 px-3.5 pb-1.5 text-[10.5px] uppercase tracking-[1.5px] text-[var(--fg-dim)]">
           <span className="inline-block">▾</span> Explorer

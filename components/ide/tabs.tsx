@@ -11,7 +11,7 @@ export function Tabs() {
   const { openTabs, activeId, closeTab } = useTabs();
 
   return (
-    <div className="flex flex-shrink-0 overflow-x-auto border-b border-[var(--border)] bg-[var(--side)] [&::-webkit-scrollbar]:h-0">
+    <div className="tabs flex flex-shrink-0 overflow-x-auto border-b border-[var(--border)] bg-[var(--side)] [&::-webkit-scrollbar]:h-0">
       {openTabs.map((id) => {
         const file = FILES[id];
         if (!file) return null;
@@ -28,7 +28,7 @@ export function Tabs() {
             key={id}
             href={file.route}
             className={[
-              "group relative flex flex-shrink-0 select-none items-center gap-2 border-r border-[var(--border)] px-3.5 py-2.5 text-[12.5px] transition-colors",
+              "tab group relative flex flex-shrink-0 select-none items-center gap-2 border-r border-[var(--border)] px-3.5 py-2.5 text-[12.5px] transition-colors",
               isActive
                 ? "bg-[var(--bg)] text-[var(--fg-bright)]"
                 : "text-[var(--fg-dim)] hover:text-[var(--fg)]",

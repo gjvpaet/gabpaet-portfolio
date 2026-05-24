@@ -11,7 +11,7 @@ export function Gutter() {
 
   return (
     <div
-      className="overflow-hidden border-r border-[var(--border)] bg-[var(--bg)] text-right text-[12px] leading-[1.85] text-[var(--fg-dim-2)] select-none"
+      className="gutter overflow-hidden border-r border-[var(--border)] bg-[var(--bg)] text-right text-[12px] leading-[1.85] text-[var(--fg-dim-2)] select-none"
       style={{ padding: "var(--gutter-pad-y) 0" }}
     >
       {Array.from({ length: Math.max(lines, 1) }, (_, i) => {

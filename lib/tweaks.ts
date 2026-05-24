@@ -2,14 +2,17 @@ export interface AccentOption {
   c: string;
   ink: string;
   name: string;
+  /** Darker companion used when the user is in light theme — keeps contrast on paper bg. */
+  lightC: string;
+  lightInk: string;
 }
 
 export const ACCENT_OPTIONS: AccentOption[] = [
-  { c: "#2ee5b4", ink: "#04211a", name: "mint" },
-  { c: "#f97070", ink: "#2a0606", name: "coral" },
-  { c: "#7a9cff", ink: "#08122b", name: "periwinkle" },
-  { c: "#f2c14e", ink: "#2a1d00", name: "amber" },
-  { c: "#c084fc", ink: "#1c0a30", name: "violet" },
+  { c: "#2ee5b4", ink: "#04211a", name: "mint",       lightC: "#0f9d77", lightInk: "#ffffff" },
+  { c: "#f97070", ink: "#2a0606", name: "coral",      lightC: "#dc2626", lightInk: "#ffffff" },
+  { c: "#7a9cff", ink: "#08122b", name: "periwinkle", lightC: "#3b5bdb", lightInk: "#ffffff" },
+  { c: "#f2c14e", ink: "#2a1d00", name: "amber",      lightC: "#b45309", lightInk: "#ffffff" },
+  { c: "#c084fc", ink: "#1c0a30", name: "violet",     lightC: "#8b5cf6", lightInk: "#ffffff" },
 ];
 
 export type Density = "compact" | "cozy" | "spacious";
@@ -29,16 +32,20 @@ export const DENSITY_MAP: Record<Density, DensitySpec> = {
   spacious: { fs: "15.5px", lh: "2.1", padY: "32px", padX: "40px", side: "8px", gut: "32px" },
 };
 
+export type Theme = "dark" | "light";
+
 export const TWEAKS_STORAGE_KEY = "portfolio.tweaks.v1";
 
 export interface Tweaks {
   accent: string;
   density: Density;
+  theme: Theme;
 }
 
 export const DEFAULT_TWEAKS: Tweaks = {
   accent: "#2ee5b4",
   density: "cozy",
+  theme: "dark",
 };
 
 export function findAccent(c: string): AccentOption {

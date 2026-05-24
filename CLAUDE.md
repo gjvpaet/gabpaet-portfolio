@@ -34,29 +34,43 @@ The whole IDE relies on `getFileByRoute(pathname)` (`lib/files.ts`) to map back 
 
 `app/(ide)/layout.tsx` is a 3×2 CSS grid (title-bar / sidebar+main / status-bar) that wraps every IDE route. `app/page.tsx` just redirects `/` → `/about`. The chrome components (`components/ide/*`) are mostly client components driven by `usePathname()` — they don't take an "active file" prop, they look it up from the route. That's why all per-file metadata (`lang`, `lines`, `icon`, `path`) lives on `FileEntry` rather than in each page.
 
-### Three nested client providers wrap every IDE page
+### Four nested client providers wrap every IDE page
 
-`context/providers.tsx`: `TweaksProvider` → `PaletteProvider` → `TabsProvider`.
+`context/providers.tsx`: `TweaksProvider` → `PaletteProvider` → `SidebarProvider` → `TabsProvider`.
 
-- **TweaksProvider** — accent color + density. Persists to `localStorage["portfolio.tweaks.v1"]`. Writes CSS custom properties on `document.documentElement` (`--accent`, `--accent-ink`, `--doc-fs`, `--doc-lh`, `--doc-pad-y`, `--doc-pad-x`, `--side-item-pad`, `--gutter-pad-y`).
+- **TweaksProvider** — accent color + density + theme. Persists to `localStorage["portfolio.tweaks.v1"]`. Writes CSS custom properties on `document.documentElement` (`--accent`, `--accent-ink`, `--doc-fs`, `--doc-lh`, `--doc-pad-y`, `--doc-pad-x`, `--side-item-pad`, `--gutter-pad-y`) **and** sets `data-theme="dark|light"` on `<html>`, which switches the `:root[data-theme="light"]` token block in `globals.css`. When theme is light, the accent shifts to its darker `lightC` companion (and `accent-ink` to `lightInk`) for legibility on paper.
 - **PaletteProvider** — ⌘K / ⌘P / Ctrl+K / Ctrl+P / Esc global key handler + open/close state for the command palette modal.
+- **SidebarProvider** — drawer open/close for the mobile sidebar (≤900px). Hamburger in the title bar calls `toggle()`, backdrop calls `close()`, and a `useEffect([pathname])` auto-closes the drawer on any navigation. No-op on desktop — the sidebar is laid out by the IDE grid above 900px.
 - **TabsProvider** — open-tabs list. Persists to `localStorage["portfolio.tabs.v1"]`. The active tab is derived from the route, not stored; when the route changes to a file not already in `openTabs`, it appends; when the active tab is closed, it `router.push`es to the neighboring tab (or falls back to `about.md`).
 
 ### FOUC-prevention script — keep in sync
 
-`app/layout.tsx` contains an inline `<Script strategy="beforeInteractive">` (`FOUC_SCRIPT`) that reads `portfolio.tweaks.v1` from localStorage and sets the accent/density CSS variables **before** React hydrates, to avoid a flash on first paint.
+`app/layout.tsx` contains an inline `<Script strategy="beforeInteractive">` (`FOUC_SCRIPT`) that reads `portfolio.tweaks.v1` from localStorage, sets `data-theme` on `<html>`, and writes the accent/density CSS variables **before** React hydrates, to avoid a flash on first paint.
 
-This script duplicates three pieces of data that also live in `lib/tweaks.ts`:
+This script duplicates four pieces of data that also live in `lib/tweaks.ts`:
 
-- The five accent → accent-ink color pairs (`ACCENT_OPTIONS`)
-- The density → `[fs, lh, padY, padX, side, gut]` tuple (`DENSITY_MAP`)
-- The storage key (`TWEAKS_STORAGE_KEY = "portfolio.tweaks.v1"`)
+- The five accent records — each `{ ink, lightC, lightInk }` keyed by the dark-mode swatch hex (mirrors `ACCENT_OPTIONS`).
+- The density → `[fs, lh, padY, padX, side, gut]` tuple (`DENSITY_MAP`).
+- The storage key (`TWEAKS_STORAGE_KEY = "portfolio.tweaks.v1"`).
+- The theme branch logic — `data-theme="light|dark"` selection and the `isLight ? lightC : c` / `isLight ? lightInk : ink` accent flip.
 
-If you change accent colors, density values, or the storage key, update **both** `lib/tweaks.ts` and `FOUC_SCRIPT` in `app/layout.tsx`, otherwise the pre-hydration paint will diverge from the React state.
+If you change accent colors (dark **or** light companions), density values, theme behavior, or the storage key, update **both** `lib/tweaks.ts` and `FOUC_SCRIPT` in `app/layout.tsx`, otherwise the pre-hydration paint will diverge from the React state.
 
 ### Design tokens & "markdown-like" doc styles
 
-`app/globals.css` defines all design tokens as CSS custom properties on `:root`, then re-exposes them as Tailwind colors via `@theme inline` (so utilities like `bg-side`, `text-fg-dim`, `border-border-2` work). Density-driven tokens (`--doc-fs`, `--doc-lh`, etc.) are rewritten at runtime by the tweaks provider.
+`app/globals.css` defines all design tokens as CSS custom properties on `:root`, with a sibling `:root[data-theme="light"]` block that re-points the same tokens to their light-mode values. The tokens are re-exposed as Tailwind colors via `@theme inline` (so utilities like `bg-side`, `text-fg-dim`, `border-border-2` work). Density-driven tokens (`--doc-fs`, `--doc-lh`, etc.) and the accent pair (`--accent`, `--accent-ink`) are rewritten at runtime by the tweaks provider.
+
+Syntax-highlight tokens (`--tk-kw`, `--tk-fn`, `--tk-str`, `--tk-num`, etc.) are themed the same way — `.tk-*` classes read from CSS variables, and the light-mode block re-points them to darker hues. Do **not** hardcode token colors in `.tk-*` rules.
+
+### Responsive layout
+
+`globals.css` ports three media-query breakpoints from `portfolio.html`:
+
+- `≤900px` — sidebar becomes a left-edge drawer (transformed off-screen, slides in when `.open` is added), hamburger appears in the title bar, chrome tightens.
+- `≤640px` — phone layout: tabs/breadcrumb/gutter shrink, work-rows / proj-rows / contact-grid / key-value grid collapse to one column, status bar hides extra segments, tweaks panel becomes a bottom sheet.
+- `≤420px` — gutter hidden entirely, breadcrumb shows only the last crumb.
+
+The chrome components carry semantic class names (`.titlebar`, `.sidebar`, `.main`, `.tabs`, `.tab`, `.breadcrumb`, `.gutter`, `.content`, `.statusbar`, `.menu-toggle`, `.sidebar-backdrop`, `.tweaks-panel`, `.palette-trigger`, `.top-right`) so the media-query overrides in `globals.css` can target them. The overrides use `!important` to beat the per-element Tailwind utilities — that's intentional, not a sign of a bug.
 
 The doc body uses a set of scoped CSS classes (`.doc .h1`, `.doc .h2`, `.doc .grid`, `.doc .quote`, `.doc .row-table`, `.doc .qa`, `.doc .stack-chip`, `.doc .cb`, `.tk-*` for syntax tokens, etc.) rather than MDX or a markdown processor. Content files in `content/` are plain React components that compose with these classes. The README still mentions an `.mdx` plan — it was the original proposal; the actual codebase uses `.tsx` content files.
 

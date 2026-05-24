@@ -12,8 +12,8 @@ export function StatusBar() {
     file?.icon === "json" || file?.icon === "rs" || file?.icon === "go" ? 4 : 2;
 
   return (
-    <div className="col-span-2 row-start-3 flex items-center gap-4 bg-[var(--accent)] px-3.5 text-[11px] font-medium text-[var(--accent-ink)]">
-      <span className="flex items-center gap-1.5">
+    <div className="statusbar col-span-2 row-start-3 flex items-center gap-4 bg-[var(--accent)] px-3.5 text-[11px] font-medium text-[var(--accent-ink)]">
+      <span className="statusbar-seg flex items-center gap-1.5">
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -29,10 +29,10 @@ export function StatusBar() {
         </svg>
         main
       </span>
-      <span>↑ 0 ↓ 0</span>
-      <span>✓ no errors</span>
-      <span>⚠ 0</span>
-      <span className="ml-auto flex gap-4">
+      <span className="statusbar-seg">↑ 0 ↓ 0</span>
+      <span className="statusbar-seg">✓ no errors</span>
+      <span className="statusbar-seg">⚠ 0</span>
+      <span className="statusbar-right ml-auto flex gap-4">
         <span>Ln 1, Col 1</span>
         <span>Spaces: {spaces}</span>
         <span>UTF-8</span>

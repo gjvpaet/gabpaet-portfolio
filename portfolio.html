@@ -25,6 +25,18 @@
     --blue:      #6db4e0;
     --pink:      #ec9bb3;
 
+    /* syntax-highlight tokens (also overridable per-theme) */
+    --tk-kw:  #ff7eb6;
+    --tk-fn:  var(--yellow);
+    --tk-str: var(--orange);
+    --tk-num: #b5e853;
+    --tk-cmt: var(--fg-dim);
+    --tk-typ: var(--blue);
+    --tk-cls: var(--blue);
+    --tk-pun: var(--fg-dim);
+    --tk-var: var(--fg);
+    --tk-tag: var(--accent);
+
     /* density vars — overwritten by Tweaks panel */
     --doc-fs:        14px;
     --doc-lh:        1.85;
@@ -32,6 +44,39 @@
     --doc-pad-x:     28px;
     --side-item-pad: 5px;
     --gutter-pad-y:  22px;
+  }
+
+  /* ============ LIGHT THEME ============ */
+  :root[data-theme="light"] {
+    --bg:        #f7f6f1;
+    --side:      #ecebe4;
+    --panel:    #ffffff;
+    --hover:     rgba(0,0,0,0.045);
+    --border:    rgba(0,0,0,0.08);
+    --border-2:  rgba(0,0,0,0.16);
+    --fg:        #1f2937;
+    --fg-bright: #0a0e1a;
+    --fg-dim:    #5b6a83;
+    --fg-dim-2:  #9aa6b8;
+
+    /* slightly deeper accent palette companions; the --accent itself is still
+       the user-chosen value, but applyTweaks() darkens it for light mode below */
+
+    --yellow:    #b45309;
+    --orange:    #c2410c;
+    --blue:      #0369a1;
+    --pink:      #be185d;
+
+    --tk-kw:  #be185d;
+    --tk-fn:  #b45309;
+    --tk-str: #b91c1c;
+    --tk-num: #166534;
+    --tk-cmt: #6b7280;
+    --tk-typ: #0369a1;
+    --tk-cls: #0369a1;
+    --tk-pun: #64748b;
+    --tk-var: var(--fg);
+    --tk-tag: var(--accent);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,6 +99,31 @@
     grid-template-columns: 260px 1fr;
     grid-template-rows: 38px 1fr 26px;
   }
+
+  /* Hamburger — hidden on desktop, shown on tablet/mobile */
+  .menu-toggle {
+    display: none;
+    background: transparent;
+    border: 0;
+    color: var(--fg-dim);
+    width: 28px; height: 28px;
+    align-items: center; justify-content: center;
+    border-radius: 4px;
+    padding: 0;
+    margin-right: 2px;
+    flex-shrink: 0;
+  }
+  .menu-toggle:hover { background: rgba(255,255,255,0.06); color: var(--fg-bright); }
+  .menu-toggle svg { width: 16px; height: 16px; }
+
+  /* Backdrop for mobile sidebar drawer */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(7, 13, 21, 0.55);
+    z-index: 40;
+  }
+  .sidebar-backdrop.open { display: block; }
 
   /* ============ TITLE BAR ============ */
   .titlebar {
@@ -113,6 +183,26 @@
   }
   .top-right .item { display: flex; align-items: center; gap: 5px; }
   .top-right .dot { color: var(--accent); }
+
+  .theme-toggle {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    color: var(--fg-dim);
+    width: 26px; height: 24px;
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all .12s;
+    flex-shrink: 0;
+  }
+  :root[data-theme="light"] .theme-toggle { background: rgba(0,0,0,0.03); }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--fg-bright); }
+  .theme-toggle svg { width: 13px; height: 13px; }
+  .theme-toggle .ic-sun { display: none; }
+  :root[data-theme="light"] .theme-toggle .ic-moon { display: none; }
+  :root[data-theme="light"] .theme-toggle .ic-sun  { display: inline; }
 
   /* ============ SIDEBAR ============ */
   .sidebar {
@@ -201,6 +291,12 @@
   .icn.json { background: var(--yellow); color: #1a1100; }
   .icn.sh   { background: #6cc04a;       color: #061a00; }
   .icn.lock { background: var(--fg-dim); color: var(--side); }
+
+  /* in light mode the swatch colors darken — keep icon glyphs readable */
+  :root[data-theme="light"] .icn.md,
+  :root[data-theme="light"] .icn.rs,
+  :root[data-theme="light"] .icn.json { color: #fff; }
+  :root[data-theme="light"] .icn.lock { color: var(--bg); }
 
   .sidebar .footer-block {
     margin-top: auto;
@@ -534,16 +630,16 @@
     white-space: pre;
     color: var(--fg);
   }
-  .tk-kw  { color: #ff7eb6; }     /* keyword */
-  .tk-fn  { color: var(--yellow); } /* function name */
-  .tk-str { color: var(--orange); }
-  .tk-num { color: #b5e853; }
-  .tk-cmt { color: var(--fg-dim); font-style: italic; }
-  .tk-typ { color: var(--blue); }
-  .tk-cls { color: var(--blue); }
-  .tk-pun { color: var(--fg-dim); }
-  .tk-var { color: var(--fg); }
-  .tk-tag { color: var(--accent); }
+  .tk-kw  { color: var(--tk-kw); }     /* keyword */
+  .tk-fn  { color: var(--tk-fn); }     /* function name */
+  .tk-str { color: var(--tk-str); }
+  .tk-num { color: var(--tk-num); }
+  .tk-cmt { color: var(--tk-cmt); font-style: italic; }
+  .tk-typ { color: var(--tk-typ); }
+  .tk-cls { color: var(--tk-cls); }
+  .tk-pun { color: var(--tk-pun); }
+  .tk-var { color: var(--tk-var); }
+  .tk-tag { color: var(--tk-tag); }
 
   /* caret */
   .caret-blink {
@@ -735,6 +831,158 @@
     background: var(--accent);
     color: var(--accent-ink);
   }
+
+  /* ============ RESPONSIVE ============ */
+
+  /* Tablet — sidebar becomes a drawer, chrome tightens */
+  @media (max-width: 900px) {
+    .ide {
+      grid-template-columns: 1fr;
+      grid-template-rows: 38px 1fr 26px;
+    }
+    .menu-toggle { display: inline-flex; }
+    .titlebar { padding: 0 10px; gap: 8px; }
+    .titlebar .path { margin-left: 4px; font-size: 11.5px; }
+    .palette-trigger { min-width: 0; flex: 0 1 220px; }
+    .top-right .item:not(:first-child) { display: none; }
+
+    .sidebar {
+      grid-column: 1;
+      grid-row: 2;
+      position: fixed;
+      top: 38px;
+      left: 0;
+      bottom: 26px;
+      width: 280px;
+      max-width: 86vw;
+      z-index: 45;
+      transform: translateX(-100%);
+      transition: transform .22s ease;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    .main {
+      grid-column: 1;
+      grid-row: 2;
+    }
+  }
+
+  /* Phone — denser still, hide line gutter, simplify status bar */
+  @media (max-width: 640px) {
+    .titlebar { padding: 0 8px; gap: 6px; font-size: 11px; }
+    .titlebar .dots { display: none; }
+    .titlebar .path { font-size: 11px; }
+    .palette-trigger {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 3px 8px;
+    }
+    .palette-trigger .lbl {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 10.5px;
+    }
+    .palette-trigger kbd { display: none; }
+    .top-right { gap: 6px; }
+    .top-right .item { display: none; }
+    /* keep the theme toggle reachable */
+
+    .breadcrumb {
+      padding: 5px 12px;
+      font-size: 10.5px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .breadcrumb::-webkit-scrollbar { height: 0; }
+    .breadcrumb .meta-r { display: none; }
+
+    .tab { padding: 8px 10px; font-size: 12px; }
+
+    .content {
+      grid-template-columns: 32px 1fr;
+    }
+    .gutter { font-size: 10.5px; }
+    .gutter span { padding-right: 8px; }
+
+    .doc {
+      padding: 16px 16px 28px;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .doc .h1 { font-size: 22px; }
+    .doc .sub { font-size: 12px; margin-bottom: 14px; }
+
+    /* Stack key/value blocks */
+    .doc .grid {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .doc .grid .k {
+      margin-top: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .doc .grid .v { word-break: break-word; }
+
+    /* Work rows — stack year above body */
+    .doc .row-table .row {
+      grid-template-columns: 1fr !important;
+      gap: 4px;
+      padding: 14px 0;
+    }
+    .doc .row-table .year { font-size: 11.5px; }
+
+    /* Project rows — wrap nicely */
+    .doc .proj-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .doc .proj-row .meta-r { font-size: 11px; }
+
+    /* Contact grid — single column */
+    .doc .contact-grid { grid-template-columns: 1fr; }
+
+    .doc pre.src {
+      font-size: 11.5px;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    /* Quick-action buttons full width-ish */
+    .doc .qa-row { gap: 8px; }
+    .qa { padding: 8px 12px; font-size: 12px; flex: 1 1 auto; justify-content: center; }
+
+    /* Statusbar — only show position + lang */
+    .statusbar { padding: 0 10px; gap: 10px; font-size: 10.5px; }
+    .statusbar > .seg:nth-child(2),
+    .statusbar > .seg:nth-child(3),
+    .statusbar > .seg:nth-child(4) { display: none; }
+    .statusbar .right { gap: 10px; }
+    .statusbar .right > span:nth-child(2),
+    .statusbar .right > span:nth-child(3),
+    .statusbar .right > span:nth-child(5) { display: none; }
+
+    /* Tweaks panel — bottom sheet on mobile */
+    .tweaks {
+      right: 10px;
+      left: 10px;
+      bottom: 36px;
+      width: auto;
+    }
+  }
+
+  /* Very narrow — hide gutter entirely */
+  @media (max-width: 420px) {
+    .content { grid-template-columns: 1fr; }
+    .gutter { display: none; }
+    .doc { padding: 14px 14px 24px; }
+    .doc .h1 { font-size: 20px; }
+    .breadcrumb .crumb:not(:last-child) { display: none; }
+    .breadcrumb .sep { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -742,6 +990,9 @@
 
   <!-- TITLE BAR -->
   <div class="titlebar">
+    <button class="menu-toggle" id="menuToggle" aria-label="toggle sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
     <div class="dots"><span></span><span></span><span></span></div>
     <div class="path"><span class="accent">~</span>/portfolio · <span id="tb-file" class="accent">about.md</span></div>
     <button class="palette-trigger" id="paletteBtn">
@@ -753,8 +1004,15 @@
       <div class="item"><span class="dot">●</span> main</div>
       <div class="item">UTF-8</div>
       <div class="item">LF</div>
+      <button class="theme-toggle" id="themeToggle" aria-label="toggle theme" title="toggle theme">
+        <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="ic-sun"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
     </div>
   </div>
+
+  <!-- SIDEBAR BACKDROP (mobile drawer) -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
@@ -854,6 +1112,14 @@
   </div>
   <div class="body">
     <div class="group">
+      <div class="lbl">Theme <span class="cur" id="themeCur">dark</span></div>
+      <div class="seg" id="themeSeg">
+        <button data-v="dark">dark</button>
+        <button data-v="light">light</button>
+      </div>
+      <div class="desc">flip the editor between night and paper.</div>
+    </div>
+    <div class="group">
       <div class="lbl">Accent <span class="cur" id="accentCur">mint</span></div>
       <div class="swatches" id="swatches"></div>
       <div class="desc">recolors the active tab, status bar, sidebar selection &amp; links.</div>
@@ -874,7 +1140,8 @@
 // Tweakable defaults — host rewrites this JSON on persisted tweak changes.
 window.TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accent": "#2ee5b4",
-  "density": "cozy"
+  "density": "cozy",
+  "theme": "dark"
 }/*EDITMODE-END*/;
 </script>
 <script>
@@ -1439,11 +1706,25 @@ window.FILE_ORDER = [
   // ---------- event wiring ----------
   sidebar.addEventListener("click", e => {
     const item = e.target.closest(".side-item[data-file]");
-    if (item) openFile(item.dataset.file);
+    if (item) {
+      openFile(item.dataset.file);
+      closeSidebarMobile();
+    }
     // folder collapse toggle (visual only — children are always visible since the tree is small)
     const folder = e.target.closest(".side-item.folder");
     if (folder) folder.classList.toggle("collapsed");
   });
+
+  // ---------- MOBILE SIDEBAR DRAWER ----------
+  const menuToggle      = $("#menuToggle");
+  const sidebarBackdrop = $("#sidebarBackdrop");
+  function openSidebarMobile()  { sidebar.classList.add("open"); sidebarBackdrop.classList.add("open"); }
+  function closeSidebarMobile() { sidebar.classList.remove("open"); sidebarBackdrop.classList.remove("open"); }
+  menuToggle.addEventListener("click", () => {
+    if (sidebar.classList.contains("open")) closeSidebarMobile();
+    else openSidebarMobile();
+  });
+  sidebarBackdrop.addEventListener("click", closeSidebarMobile);
 
   tabsEl.addEventListener("click", e => {
     const closeBtn = e.target.closest("[data-close]");
@@ -1541,15 +1822,15 @@ window.FILE_ORDER = [
 
   // ---------- TWEAKS ----------
   // The defaults block is in portfolio.html as inline JSON so the host can persist edits.
-  const defaults = window.TWEAK_DEFAULTS || { accent: "#2ee5b4", density: "cozy" };
-  let tweaks = { ...defaults };
+  const defaults = window.TWEAK_DEFAULTS || { accent: "#2ee5b4", density: "cozy", theme: "dark" };
+  let tweaks = { theme: "dark", ...defaults };
 
   const ACCENT_OPTIONS = [
-    { c: "#2ee5b4", ink: "#04211a", name: "mint" },
-    { c: "#f97070", ink: "#2a0606", name: "coral" },
-    { c: "#7a9cff", ink: "#08122b", name: "periwinkle" },
-    { c: "#f2c14e", ink: "#2a1d00", name: "amber" },
-    { c: "#c084fc", ink: "#1c0a30", name: "violet" },
+    { c: "#2ee5b4", ink: "#04211a", name: "mint",       lightC: "#0f9d77", lightInk: "#ffffff" },
+    { c: "#f97070", ink: "#2a0606", name: "coral",      lightC: "#dc2626", lightInk: "#ffffff" },
+    { c: "#7a9cff", ink: "#08122b", name: "periwinkle", lightC: "#3b5bdb", lightInk: "#ffffff" },
+    { c: "#f2c14e", ink: "#2a1d00", name: "amber",      lightC: "#b45309", lightInk: "#ffffff" },
+    { c: "#c084fc", ink: "#1c0a30", name: "violet",     lightC: "#8b5cf6", lightInk: "#ffffff" },
   ];
 
   const DENSITY_MAP = {
@@ -1560,9 +1841,11 @@ window.FILE_ORDER = [
 
   function applyTweaks() {
     const opt = ACCENT_OPTIONS.find(o => o.c.toLowerCase() === tweaks.accent.toLowerCase()) || ACCENT_OPTIONS[0];
+    const isLight = tweaks.theme === "light";
+    document.documentElement.setAttribute("data-theme", isLight ? "light" : "dark");
     const r = document.documentElement.style;
-    r.setProperty("--accent", opt.c);
-    r.setProperty("--accent-ink", opt.ink);
+    r.setProperty("--accent",     isLight ? opt.lightC   : opt.c);
+    r.setProperty("--accent-ink", isLight ? opt.lightInk : opt.ink);
     const d = DENSITY_MAP[tweaks.density] || DENSITY_MAP.cozy;
     r.setProperty("--doc-fs",        d.fs);
     r.setProperty("--doc-lh",        d.lh);
@@ -1573,8 +1856,10 @@ window.FILE_ORDER = [
     // labels
     const accentCur = document.getElementById("accentCur");
     const densityCur = document.getElementById("densityCur");
-    if (accentCur) accentCur.textContent = opt.name;
+    const themeCur   = document.getElementById("themeCur");
+    if (accentCur)  accentCur.textContent  = opt.name;
     if (densityCur) densityCur.textContent = tweaks.density;
+    if (themeCur)   themeCur.textContent   = tweaks.theme;
     renderTweaks();
   }
 
@@ -1596,7 +1881,16 @@ window.FILE_ORDER = [
       b.classList.toggle("active", b.dataset.v === tweaks.density);
       b.onclick = () => setTweak("density", b.dataset.v);
     });
+    document.querySelectorAll("#themeSeg button").forEach(b => {
+      b.classList.toggle("active", b.dataset.v === tweaks.theme);
+      b.onclick = () => setTweak("theme", b.dataset.v);
+    });
   }
+
+  // titlebar quick toggle
+  $("#themeToggle").addEventListener("click", () => {
+    setTweak("theme", tweaks.theme === "light" ? "dark" : "light");
+  });
 
   // edit-mode protocol
   const tweaksEl = $("#tweaks");

@@ -21,6 +21,18 @@
   --blue:      #6db4e0;
   --pink:      #ec9bb3;
 
+  /* syntax-highlight tokens (also overridable per-theme) */
+  --tk-kw:  #ff7eb6;
+  --tk-fn:  var(--yellow);
+  --tk-str: var(--orange);
+  --tk-num: #b5e853;
+  --tk-cmt: var(--fg-dim);
+  --tk-typ: var(--blue);
+  --tk-cls: var(--blue);
+  --tk-pun: var(--fg-dim);
+  --tk-var: var(--fg);
+  --tk-tag: var(--accent);
+
   /* density vars — overwritten by Tweaks panel via JS */
   --doc-fs:        14px;
   --doc-lh:        1.85;
@@ -28,6 +40,40 @@
   --doc-pad-x:     28px;
   --side-item-pad: 5px;
   --gutter-pad-y:  22px;
+}
+
+/* ============ LIGHT THEME ============
+   Driven by `data-theme="light"` on <html> (set by TweaksProvider + FOUC).
+   --accent / --accent-ink are still chosen by JS using the AccentOption.lightC /
+   lightInk companions, since the swatch the user picked changes shade in light
+   mode for legibility on paper. */
+:root[data-theme="light"] {
+  --bg:        #f7f6f1;
+  --side:      #ecebe4;
+  --panel:     #ffffff;
+  --hover:     rgba(0,0,0,0.045);
+  --border:    rgba(0,0,0,0.08);
+  --border-2:  rgba(0,0,0,0.16);
+  --fg:        #1f2937;
+  --fg-bright: #0a0e1a;
+  --fg-dim:    #5b6a83;
+  --fg-dim-2:  #9aa6b8;
+
+  --yellow:    #b45309;
+  --orange:    #c2410c;
+  --blue:      #0369a1;
+  --pink:      #be185d;
+
+  --tk-kw:  #be185d;
+  --tk-fn:  #b45309;
+  --tk-str: #b91c1c;
+  --tk-num: #166534;
+  --tk-cmt: #6b7280;
+  --tk-typ: #0369a1;
+  --tk-cls: #0369a1;
+  --tk-pun: #64748b;
+  --tk-var: var(--fg);
+  --tk-tag: var(--accent);
 }
 
 /* Expose tokens as Tailwind utilities (text-fg, bg-side, border-border-2, etc.) */
@@ -270,16 +316,16 @@ button { font: inherit; cursor: pointer; }
   white-space: pre;
   color: var(--fg);
 }
-.tk-kw  { color: #ff7eb6; }
-.tk-fn  { color: var(--yellow); }
-.tk-str { color: var(--orange); }
-.tk-num { color: #b5e853; }
-.tk-cmt { color: var(--fg-dim); font-style: italic; }
-.tk-typ { color: var(--blue); }
-.tk-cls { color: var(--blue); }
-.tk-pun { color: var(--fg-dim); }
-.tk-var { color: var(--fg); }
-.tk-tag { color: var(--accent); }
+.tk-kw  { color: var(--tk-kw); }
+.tk-fn  { color: var(--tk-fn); }
+.tk-str { color: var(--tk-str); }
+.tk-num { color: var(--tk-num); }
+.tk-cmt { color: var(--tk-cmt); font-style: italic; }
+.tk-typ { color: var(--tk-typ); }
+.tk-cls { color: var(--tk-cls); }
+.tk-pun { color: var(--tk-pun); }
+.tk-var { color: var(--tk-var); }
+.tk-tag { color: var(--tk-tag); }
 
 /* caret */
 .caret-blink {
@@ -293,3 +339,237 @@ button { font: inherit; cursor: pointer; }
 
 @keyframes blink { 50% { opacity: 0; } }
 @keyframes pulse { 50% { opacity: 0.3; } }
+
+/* =========================================================
+   ICON LEGIBILITY — file icons in the sidebar / palette use
+   shape-fill colors that are tuned for the dark surface;
+   in light mode the same swatches darken (the --yellow/--blue/
+   --orange tokens shift above), so the glyph color flips to
+   white where contrast would otherwise collapse.
+   ========================================================= */
+:root[data-theme="light"] .file-icon-md,
+:root[data-theme="light"] .file-icon-rs,
+:root[data-theme="light"] .file-icon-json {
+  color: #fff;
+}
+:root[data-theme="light"] .file-icon-lock {
+  color: var(--bg);
+}
+
+/* =========================================================
+   RESPONSIVE — ported verbatim from portfolio.html.
+   The IDE chrome (shell grid, sidebar drawer, hamburger,
+   titlebar/breadcrumb/tabs/statusbar) collapses progressively:
+     ≤900px  — sidebar becomes a left-edge drawer, chrome tightens
+     ≤640px  — phone layout: stack key/value blocks, smaller gutter
+     ≤420px  — very narrow: hide gutter entirely
+   ========================================================= */
+
+/* Hamburger and backdrop default to hidden — the @media block below
+   reveals them, and the drawer animation kicks in at ≤900px. */
+.menu-toggle { display: none; }
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 13, 21, 0.55);
+  z-index: 40;
+}
+.sidebar-backdrop.open { display: block; }
+:root[data-theme="light"] .sidebar-backdrop { background: rgba(15, 23, 42, 0.35); }
+
+/* Tablet — sidebar becomes a drawer, chrome tightens */
+@media (max-width: 900px) {
+  .ide-shell {
+    grid-template-columns: 1fr !important;
+  }
+  .menu-toggle {
+    display: inline-flex !important;
+    background: transparent;
+    border: 0;
+    color: var(--fg-dim);
+    width: 28px;
+    height: 28px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    padding: 0;
+    margin-right: 2px;
+    flex-shrink: 0;
+  }
+  .menu-toggle:hover {
+    background: var(--hover);
+    color: var(--fg-bright);
+  }
+  .menu-toggle svg { width: 16px; height: 16px; }
+
+  .titlebar {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    gap: 8px !important;
+  }
+  .titlebar .path-label {
+    margin-left: 4px !important;
+    font-size: 11.5px !important;
+  }
+  .palette-trigger {
+    min-width: 0 !important;
+    flex: 0 1 220px;
+  }
+  .top-right .item:not(:first-child) { display: none !important; }
+
+  .sidebar {
+    position: fixed !important;
+    top: 38px;
+    left: 0;
+    bottom: 26px;
+    width: 280px;
+    max-width: 86vw;
+    z-index: 45;
+    transform: translateX(-100%);
+    transition: transform .22s ease;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.4);
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .main {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+  }
+}
+
+/* Phone — denser still, hide line gutter, simplify status bar */
+@media (max-width: 640px) {
+  .titlebar {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    gap: 6px !important;
+    font-size: 11px !important;
+  }
+  .titlebar .dots { display: none !important; }
+  .titlebar .path-label { font-size: 11px !important; }
+
+  .palette-trigger {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    padding: 3px 8px !important;
+  }
+  .palette-trigger .palette-trigger-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 10.5px;
+  }
+  .palette-trigger kbd { display: none !important; }
+  .top-right { gap: 6px !important; }
+  .top-right .item { display: none !important; }
+  /* keep the theme toggle reachable */
+
+  .breadcrumb {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    font-size: 10.5px !important;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .breadcrumb::-webkit-scrollbar { height: 0; }
+  .breadcrumb .breadcrumb-meta { display: none !important; }
+
+  .tab {
+    padding: 8px 10px !important;
+    font-size: 12px !important;
+  }
+
+  .content {
+    grid-template-columns: 32px 1fr !important;
+  }
+  .gutter { font-size: 10.5px !important; }
+  .gutter span { padding-right: 8px !important; }
+
+  .doc {
+    padding: 16px 16px 28px !important;
+    font-size: 13px !important;
+    line-height: 1.7 !important;
+  }
+  .doc .h1 { font-size: 22px; }
+  .doc .sub { font-size: 12px; margin-bottom: 14px; }
+
+  /* Stack key/value blocks */
+  .doc .grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .doc .grid .k {
+    margin-top: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .doc .grid .v { word-break: break-word; }
+
+  /* Work rows — stack year above body */
+  .doc .row-table .row {
+    grid-template-columns: 1fr !important;
+    gap: 4px;
+    padding: 14px 0;
+  }
+  .doc .row-table .year { font-size: 11.5px; }
+
+  /* Project rows — wrap nicely */
+  .doc .proj-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .doc .proj-row .meta-r { font-size: 11px; }
+
+  /* Contact grid — single column */
+  .doc .contact-grid { grid-template-columns: 1fr; }
+
+  .doc pre.src {
+    font-size: 11.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+
+  /* Quick-action buttons full width-ish */
+  .doc .qa-row { gap: 8px; }
+  .qa {
+    padding: 8px 12px;
+    font-size: 12px;
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  /* Statusbar — only show position + lang */
+  .statusbar {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    gap: 10px !important;
+    font-size: 10.5px !important;
+  }
+  .statusbar > .statusbar-seg:nth-child(2),
+  .statusbar > .statusbar-seg:nth-child(3),
+  .statusbar > .statusbar-seg:nth-child(4) { display: none !important; }
+  .statusbar .statusbar-right { gap: 10px !important; }
+  .statusbar .statusbar-right > span:nth-child(2),
+  .statusbar .statusbar-right > span:nth-child(3),
+  .statusbar .statusbar-right > span:nth-child(5) { display: none !important; }
+
+  /* Tweaks panel — bottom sheet on mobile */
+  .tweaks-panel {
+    right: 10px !important;
+    left: 10px !important;
+    bottom: 36px !important;
+    width: auto !important;
+  }
+}
+
+/* Very narrow — hide gutter entirely */
+@media (max-width: 420px) {
+  .content { grid-template-columns: 1fr !important; }
+  .gutter { display: none !important; }
+  .doc { padding: 14px 14px 24px !important; }
+  .doc .h1 { font-size: 20px; }
+  .breadcrumb .breadcrumb-crumb:not(:last-child) { display: none !important; }
+  .breadcrumb .breadcrumb-sep { display: none !important; }
+}

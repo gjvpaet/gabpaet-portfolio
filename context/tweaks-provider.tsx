@@ -7,6 +7,7 @@ import {
   DENSITY_MAP,
   TWEAKS_STORAGE_KEY,
   type Density,
+  type Theme,
   type Tweaks,
   findAccent,
 } from "@/lib/tweaks";
@@ -14,6 +15,8 @@ import {
 interface TweaksState extends Tweaks {
   setAccent: (c: string) => void;
   setDensity: (d: Density) => void;
+  setTheme: (t: Theme) => void;
+  toggleTheme: () => void;
   isPanelOpen: boolean;
   openPanel: () => void;
   closePanel: () => void;
@@ -24,17 +27,25 @@ const TweaksContext = createContext<TweaksState | null>(null);
 
 function applyToDocument(t: Tweaks) {
   if (typeof document === "undefined") return;
-  const root = document.documentElement.style;
+  const root = document.documentElement;
+  const styleR = root.style;
   const accent = findAccent(t.accent);
-  root.setProperty("--accent", accent.c);
-  root.setProperty("--accent-ink", accent.ink);
+  const isLight = t.theme === "light";
+
+  // data-theme drives the :root[data-theme="light"] token block in globals.css.
+  root.setAttribute("data-theme", isLight ? "light" : "dark");
+
+  // Accent shifts to its darker light-mode companion so it still reads on paper.
+  styleR.setProperty("--accent", isLight ? accent.lightC : accent.c);
+  styleR.setProperty("--accent-ink", isLight ? accent.lightInk : accent.ink);
+
   const d = DENSITY_MAP[t.density];
-  root.setProperty("--doc-fs", d.fs);
-  root.setProperty("--doc-lh", d.lh);
-  root.setProperty("--doc-pad-y", d.padY);
-  root.setProperty("--doc-pad-x", d.padX);
-  root.setProperty("--side-item-pad", d.side);
-  root.setProperty("--gutter-pad-y", d.gut);
+  styleR.setProperty("--doc-fs", d.fs);
+  styleR.setProperty("--doc-lh", d.lh);
+  styleR.setProperty("--doc-pad-y", d.padY);
+  styleR.setProperty("--doc-pad-x", d.padX);
+  styleR.setProperty("--side-item-pad", d.side);
+  styleR.setProperty("--gutter-pad-y", d.gut);
 }
 
 export function TweaksProvider({ children }: { children: React.ReactNode }) {
@@ -53,6 +64,7 @@ export function TweaksProvider({ children }: { children: React.ReactNode }) {
             parsed.density === "compact" || parsed.density === "cozy" || parsed.density === "spacious"
               ? parsed.density
               : DEFAULT_TWEAKS.density,
+          theme: parsed.theme === "light" ? "light" : "dark",
         };
         setTweaks(next);
         applyToDocument(next);
@@ -80,6 +92,9 @@ export function TweaksProvider({ children }: { children: React.ReactNode }) {
         ...tweaks,
         setAccent: (c) => persist({ ...tweaks, accent: c }),
         setDensity: (d) => persist({ ...tweaks, density: d }),
+        setTheme: (t) => persist({ ...tweaks, theme: t }),
+        toggleTheme: () =>
+          persist({ ...tweaks, theme: tweaks.theme === "light" ? "dark" : "light" }),
         isPanelOpen,
         openPanel: () => setIsPanelOpen(true),
         closePanel: () => setIsPanelOpen(false),
