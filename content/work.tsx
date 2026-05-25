@@ -239,8 +239,7 @@ export default function WorkBody() {
           <b>Owned Azure CI/CD</b>, migrated production from on-prem to Microsoft Azure
         </li>
         <li>
-          <b>Production AI</b> — LangChain / LangGraph, OpenAI + Bedrock Agents + Vertex in real
-          workflows
+          <b>AI</b> — LangChain / LangGraph, OpenAI + Bedrock Agents + Vertex in real workflows
         </li>
       </ul>
     </>
