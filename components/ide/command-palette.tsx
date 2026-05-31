@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { usePalette } from "@/context/palette-provider";
-import { getVisibleFiles, ICON_TEXT } from "@/lib/files";
+import { getVisibleFiles } from "@/lib/files";
 import { FileIcon } from "./file-icon";
 
 export function CommandPalette() {
@@ -213,6 +213,3 @@ function Kbd({ children }: { children: React.ReactNode }) {
     </kbd>
   );
 }
-
-// Avoid "unused" warning while we wire incremental palette features.
-void ICON_TEXT;
