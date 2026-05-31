@@ -49,13 +49,13 @@ export function TitleBar() {
       <button
         type="button"
         onClick={open}
-        className="palette-trigger ml-auto flex min-w-[240px] items-center gap-2.5 rounded-[5px] border border-[var(--border)] bg-white/[.03] px-2.5 py-[3px] font-mono text-[11px] text-[var(--fg-dim)] transition-colors hover:border-[var(--accent)] hover:text-[var(--fg)]"
+        className="palette-trigger ml-auto flex min-w-[240px] items-center gap-2.5 rounded-[5px] border border-[var(--border)] bg-[var(--hover)] px-2.5 py-[3px] font-mono text-[11px] text-[var(--fg-dim)] transition-colors hover:border-[var(--accent)] hover:text-[var(--fg)]"
       >
         <span className="opacity-60">⌕</span>
         <span className="palette-trigger-label flex-1 text-left">
           Search files… (type to filter)
         </span>
-        <kbd className="rounded-[3px] border border-[var(--border)] bg-white/[.06] px-1.5 py-[1px] text-[10px] text-[var(--fg-dim)]">
+        <kbd className="rounded-[3px] border border-[var(--border)] bg-[var(--hover)] px-1.5 py-[1px] text-[10px] text-[var(--fg-dim)]">
           ⌘K
         </kbd>
       </button>
@@ -72,7 +72,7 @@ export function TitleBar() {
           aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
           aria-pressed={theme === "light"}
           title="toggle theme"
-          className="theme-toggle inline-flex h-6 w-[26px] flex-shrink-0 items-center justify-center rounded-[5px] border border-[var(--border)] bg-white/[.03] text-[var(--fg-dim)] transition-colors hover:border-[var(--accent)] hover:text-[var(--fg-bright)]"
+          className="theme-toggle inline-flex h-6 w-[26px] flex-shrink-0 items-center justify-center rounded-[5px] border border-[var(--border)] bg-[var(--hover)] text-[var(--fg-dim)] transition-colors hover:border-[var(--accent)] hover:text-[var(--fg-bright)]"
         >
           {theme === "light" ? (
             // sun

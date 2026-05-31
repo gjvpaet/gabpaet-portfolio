@@ -32,7 +32,7 @@ export function TweaksPanel() {
         aria-label="Tweaks"
         aria-pressed={t.isPanelOpen}
         className="tweaks-trigger fixed bottom-9 right-3.5 z-30 flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border-2)] bg-[var(--panel)] text-[var(--fg-dim)] transition-colors hover:text-[var(--accent)]"
-        style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}
+        style={{ boxShadow: "var(--shadow-md)" }}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
           <circle cx="12" cy="12" r="3" />
@@ -43,7 +43,7 @@ export function TweaksPanel() {
       {t.isPanelOpen && (
         <div
           className="tweaks-panel fixed bottom-[38px] right-3.5 z-50 w-72 overflow-hidden rounded-lg border border-[var(--border-2)] bg-[var(--panel)] text-[11.5px] text-[var(--fg)]"
-          style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}
+          style={{ boxShadow: "var(--shadow-md)" }}
         >
           <div className="flex items-center justify-between border-b border-[var(--border)] bg-[var(--side)] px-3.5 py-2.5">
             <b className="text-[11px] font-semibold uppercase tracking-[2px] text-[var(--accent)]">
@@ -53,7 +53,7 @@ export function TweaksPanel() {
               type="button"
               onClick={t.closePanel}
               aria-label="close"
-              className="tweaks-close flex h-[18px] w-[18px] items-center justify-center rounded-[3px] text-[var(--fg-dim)] hover:bg-white/[.06] hover:text-[var(--fg-bright)]"
+              className="tweaks-close flex h-[18px] w-[18px] items-center justify-center rounded-[3px] text-[var(--fg-dim)] hover:bg-[var(--hover)] hover:text-[var(--fg-bright)]"
             >
               ×
             </button>

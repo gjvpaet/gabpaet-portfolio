@@ -77,7 +77,7 @@ export function CommandPalette() {
   return (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-25 [backdrop-filter:blur(2px)]"
-      style={{ background: "rgba(7,13,21,0.55)" }}
+      style={{ background: "var(--scrim)" }}
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
@@ -89,73 +89,107 @@ export function CommandPalette() {
         aria-label="Go to file"
         onKeyDown={trapTab}
         className="palette-dialog w-[560px] max-w-[90vw] overflow-hidden rounded-lg border border-[var(--border-2)] bg-[var(--panel)]"
-        style={{ boxShadow: "0 24px 70px rgba(0,0,0,0.5)" }}
+        style={{ boxShadow: "var(--shadow-lg)" }}
       >
-        <input
-          ref={inputRef}
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setIndex(0);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              setIndex((i) => Math.min(i + 1, results.length - 1));
-            } else if (e.key === "ArrowUp") {
-              e.preventDefault();
-              setIndex((i) => Math.max(i - 1, 0));
-            } else if (e.key === "Enter") {
-              e.preventDefault();
-              openResult(index);
-            } else if (e.key === "Escape") {
-              e.preventDefault();
-              close();
+        <div className="flex items-center border-b border-[var(--border)] pr-2">
+          <input
+            ref={inputRef}
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setIndex(0);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setIndex((i) => Math.min(i + 1, results.length - 1));
+              } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setIndex((i) => Math.max(i - 1, 0));
+              } else if (e.key === "Enter") {
+                e.preventDefault();
+                openResult(index);
+              } else if (e.key === "Escape") {
+                e.preventDefault();
+                close();
+              }
+            }}
+            role="combobox"
+            aria-expanded
+            aria-controls="palette-results"
+            aria-autocomplete="list"
+            aria-activedescendant={
+              results.length > 0 ? `palette-opt-${index}` : undefined
             }
-          }}
-          placeholder="Go to file… (type to filter)"
-          className="block w-full border-b border-[var(--border)] bg-transparent px-4.5 py-4 font-mono text-[14px] text-[var(--fg-bright)] outline-none placeholder:text-[var(--fg-dim)]"
-        />
-        <div className="max-h-[360px] overflow-y-auto py-1.5">
+            placeholder="Go to file… (type to filter)"
+            className="block flex-1 bg-transparent px-4.5 py-4 font-mono text-[14px] text-[var(--fg-bright)] outline-none placeholder:text-[var(--fg-dim)]"
+          />
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Close palette"
+            className="palette-close mr-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[4px] text-[18px] leading-none text-[var(--fg-dim)] transition-colors hover:bg-[var(--hover)] hover:text-[var(--fg-bright)]"
+          >
+            ×
+          </button>
+        </div>
+        <ul
+          id="palette-results"
+          role="listbox"
+          aria-label="File results"
+          className="m-0 max-h-[360px] list-none overflow-y-auto p-0 py-1.5"
+        >
           {results.length === 0 ? (
-            <div className="px-4.5 py-1.5 text-[13px] text-[var(--fg-dim)]">no results</div>
+            <li
+              role="option"
+              aria-selected="false"
+              aria-disabled="true"
+              className="px-4.5 py-1.5 text-[13px] text-[var(--fg-dim)]"
+            >
+              no results
+            </li>
           ) : (
             results.map((f, i) => {
               const isActive = i === index;
               const segs = f.id.split("/");
               const folder = segs.length > 1 ? segs.slice(0, -1).join("/") + "/" : "";
               return (
-                <button
-                  key={f.id}
-                  type="button"
-                  onMouseMove={() => {
-                    if (i !== index) setIndex(i);
-                  }}
-                  onClick={() => openResult(i)}
-                  className={[
-                    "palette-result flex w-full items-center gap-2.5 px-4.5 py-[7px] text-left text-[13px]",
-                    isActive
-                      ? "bg-[var(--accent)] text-[var(--accent-ink)]"
-                      : "text-[var(--fg)]",
-                  ].join(" ")}
-                >
-                  <FileIcon icon={f.icon} />
-                  <span>{f.name}</span>
-                  <span
+                <li key={f.id} role="presentation">
+                  <button
+                    id={`palette-opt-${i}`}
+                    role="option"
+                    aria-selected={isActive}
+                    tabIndex={-1}
+                    type="button"
+                    onMouseMove={() => {
+                      if (i !== index) setIndex(i);
+                    }}
+                    onClick={() => openResult(i)}
                     className={[
-                      "ml-auto text-[11.5px]",
+                      "palette-result flex w-full items-center gap-2.5 px-4.5 py-[7px] text-left text-[13px]",
                       isActive
-                        ? "text-[var(--accent-ink)] opacity-80"
-                        : "text-[var(--fg-dim)]",
+                        ? "bg-[var(--accent)] text-[var(--accent-ink)]"
+                        : "text-[var(--fg)]",
                     ].join(" ")}
                   >
-                    {folder || f.path}
-                  </span>
-                </button>
+                    <FileIcon icon={f.icon} />
+                    <span>{f.name}</span>
+                    <span
+                      className={[
+                        "ml-auto text-[11.5px]",
+                        isActive
+                          ? "text-[var(--accent-ink)] opacity-80"
+                          : "text-[var(--fg-dim)]",
+                      ].join(" ")}
+                    >
+                      {folder || f.path}
+                    </span>
+                  </button>
+                </li>
               );
             })
           )}
-        </div>
+        </ul>
         <div className="flex gap-4 border-t border-[var(--border)] px-4.5 py-2 text-[10.5px] text-[var(--fg-dim)]">
           <span>
             <Kbd>↑↓</Kbd> navigate
@@ -174,7 +208,7 @@ export function CommandPalette() {
 
 function Kbd({ children }: { children: React.ReactNode }) {
   return (
-    <kbd className="rounded-[3px] border border-[var(--border)] bg-white/[.06] px-1.5 py-px font-mono text-[10px] text-[var(--fg)]">
+    <kbd className="rounded-[3px] border border-[var(--border)] bg-[var(--hover)] px-1.5 py-px font-mono text-[10px] text-[var(--fg)]">
       {children}
     </kbd>
   );

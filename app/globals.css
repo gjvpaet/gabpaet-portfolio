@@ -16,10 +16,16 @@
      actually recolors the sidebar active row + gutter current line. */
   --accent-bg:      color-mix(in oklab, var(--accent) 8%, transparent);
   --accent-bg-soft: color-mix(in oklab, var(--accent) 6%, transparent);
+  /* Modal scrim + elevation. Tokenised so light theme can re-point them
+     without the JS layer touching anything. Used by command palette, the
+     mobile sidebar backdrop, and the tweaks panel / FAB. */
+  --scrim:      rgba(7, 13, 21, 0.55);
+  --shadow-md:  0 12px 40px rgba(0, 0, 0, 0.4);
+  --shadow-lg:  0 24px 70px rgba(0, 0, 0, 0.5);
   --fg:        #dbe4f0;
   --fg-bright: #ffffff;
-  --fg-dim:    #7b8aa3;
-  --fg-dim-2:  #4d5e7a;
+  --fg-dim:    #8595b3;
+  --fg-dim-2:  #7e8ea8;
   --yellow:    #f2c14e;
   --orange:    #ef8a5b;
   --blue:      #6db4e0;
@@ -60,8 +66,8 @@
   --border-2:  rgba(0,0,0,0.16);
   --fg:        #1f2937;
   --fg-bright: #0a0e1a;
-  --fg-dim:    #5b6a83;
-  --fg-dim-2:  #9aa6b8;
+  --fg-dim:    #525e78;
+  --fg-dim-2:  #5d6679;
 
   --yellow:    #b45309;
   --orange:    #c2410c;
@@ -78,6 +84,12 @@
   --tk-pun: #64748b;
   --tk-var: var(--fg);
   --tk-tag: var(--accent);
+
+  /* Lighter, less inky shadow stack on paper — keeps the modal/FAB
+     feeling lifted without darkening the page. */
+  --scrim:      rgba(15, 23, 42, 0.35);
+  --shadow-md:  0 8px 24px rgba(15, 23, 42, 0.10);
+  --shadow-lg:  0 16px 48px rgba(15, 23, 42, 0.16);
 }
 
 /* Expose tokens as Tailwind utilities (text-fg, bg-side, border-border-2, etc.) */
@@ -416,11 +428,10 @@ button { font: inherit; cursor: pointer; }
   display: none;
   position: fixed;
   inset: 0;
-  background: rgba(7, 13, 21, 0.55);
+  background: var(--scrim);
   z-index: 40;
 }
 .sidebar-backdrop.open { display: block; }
-:root[data-theme="light"] .sidebar-backdrop { background: rgba(15, 23, 42, 0.35); }
 
 /* Tablet — sidebar becomes a drawer, chrome tightens */
 @media (max-width: 900px) {
