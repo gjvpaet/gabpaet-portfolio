@@ -12,7 +12,11 @@ export function StatusBar() {
     file?.icon === "json" || file?.icon === "rs" || file?.icon === "go" ? 4 : 2;
 
   return (
-    <div className="statusbar col-span-2 row-start-3 flex items-center gap-4 bg-[var(--accent)] px-3.5 text-[11px] font-medium text-[var(--accent-ink)]">
+    <div
+      role="contentinfo"
+      aria-label="Editor status"
+      className="statusbar col-span-2 row-start-3 flex items-center gap-4 bg-[var(--accent)] px-3.5 text-[11px] font-medium text-[var(--accent-ink)]"
+    >
       <span className="statusbar-seg flex items-center gap-1.5">
         <svg
           viewBox="0 0 24 24"

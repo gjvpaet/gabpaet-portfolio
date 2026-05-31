@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { FILES, FILE_ORDER, type FileId } from "@/content/files";
 import { useSidebar } from "@/context/sidebar-provider";
@@ -15,18 +15,64 @@ const PROJECT_IDS: FileId[] = [
   "projects/gabpaet-dev/README.md",
 ];
 
+const FOCUSABLE_SELECTOR =
+  'a, button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export function Sidebar() {
   const pathname = usePathname();
   const [projectsOpen, setProjectsOpen] = useState(true);
-  const { isOpen } = useSidebar();
+  const { isOpen, close } = useSidebar();
+  const sidebarRef = useRef<HTMLElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
+
+  // Focus the first item on drawer open and restore focus on close. On
+  // desktop the drawer never opens (the hamburger is hidden via CSS), so
+  // this is a no-op there.
+  useEffect(() => {
+    if (!isOpen) return;
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    const first =
+      sidebarRef.current?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR);
+    const id = setTimeout(() => first?.focus(), 10);
+    return () => {
+      clearTimeout(id);
+      previouslyFocused.current?.focus?.();
+    };
+  }, [isOpen]);
+
+  function onDrawerKey(e: React.KeyboardEvent<HTMLElement>) {
+    if (!isOpen) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      close();
+      return;
+    }
+    if (e.key !== "Tab") return;
+    const root = sidebarRef.current;
+    if (!root) return;
+    const focusables = root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
 
   const visiblePortfolio = PORTFOLIO_IDS.filter((id) => FILE_ORDER.includes(id) && !FILES[id].hidden);
   const visibleRoot = ROOT_IDS.filter((id) => !FILES[id].hidden);
 
   return (
     <aside
+      ref={sidebarRef}
       id="ide-sidebar"
       aria-label="File explorer"
+      onKeyDown={onDrawerKey}
       className={`sidebar row-start-2 flex flex-col overflow-y-auto border-r border-[var(--border)] bg-[var(--side)] py-3.5 pb-5.5 ${
         isOpen ? "open" : ""
       }`}

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useTweaks } from "@/context/tweaks-provider";
 import { ACCENT_OPTIONS, type Density, type Theme, findAccent } from "@/lib/tweaks";
 
@@ -10,13 +12,26 @@ export function TweaksPanel() {
   const t = useTweaks();
   const activeAccent = findAccent(t.accent);
 
+  useEffect(() => {
+    if (!t.isPanelOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        t.closePanel();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [t.isPanelOpen, t.closePanel, t]);
+
   return (
     <>
       <button
         type="button"
         onClick={t.togglePanel}
         aria-label="Tweaks"
-        className="tweaks-trigger fixed bottom-9 right-3.5 z-40 flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border-2)] bg-[var(--panel)] text-[var(--fg-dim)] transition-colors hover:text-[var(--accent)]"
+        aria-pressed={t.isPanelOpen}
+        className="tweaks-trigger fixed bottom-9 right-3.5 z-30 flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border-2)] bg-[var(--panel)] text-[var(--fg-dim)] transition-colors hover:text-[var(--accent)]"
         style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
@@ -59,6 +74,8 @@ export function TweaksPanel() {
                       key={v}
                       type="button"
                       onClick={() => t.setTheme(v)}
+                      aria-pressed={active}
+                      aria-label={`Theme: ${v}`}
                       className={[
                         "segmented-btn flex-1 rounded-[3px] border-0 py-1 text-[11px] transition-colors",
                         active
@@ -91,7 +108,8 @@ export function TweaksPanel() {
                       key={o.c}
                       type="button"
                       onClick={() => t.setAccent(o.c)}
-                      aria-label={o.name}
+                      aria-label={`Accent: ${o.name}`}
+                      aria-pressed={active}
                       className={[
                         "accent-swatch h-[26px] w-[26px] cursor-pointer rounded-[5px] border-[1.5px] transition-transform",
                         active ? "scale-110 border-[var(--fg-bright)]" : "border-[var(--border-2)]",
@@ -121,6 +139,8 @@ export function TweaksPanel() {
                       key={v}
                       type="button"
                       onClick={() => t.setDensity(v)}
+                      aria-pressed={active}
+                      aria-label={`Density: ${v}`}
                       className={[
                         "segmented-btn flex-1 rounded-[3px] border-0 py-1 text-[11px] transition-colors",
                         active

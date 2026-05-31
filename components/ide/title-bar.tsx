@@ -69,7 +69,8 @@ export function TitleBar() {
         <button
           type="button"
           onClick={toggleTheme}
-          aria-label="toggle theme"
+          aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+          aria-pressed={theme === "light"}
           title="toggle theme"
           className="theme-toggle inline-flex h-6 w-[26px] flex-shrink-0 items-center justify-center rounded-[5px] border border-[var(--border)] bg-white/[.03] text-[var(--fg-dim)] transition-colors hover:border-[var(--accent)] hover:text-[var(--fg-bright)]"
         >

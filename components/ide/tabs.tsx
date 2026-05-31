@@ -9,10 +9,25 @@ import { FileIcon } from "./file-icon";
 export function Tabs() {
   const { openTabs, activeId, closeTab } = useTabs();
 
+  function onArrow(e: React.KeyboardEvent<HTMLElement>) {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    const links = Array.from(
+      e.currentTarget.querySelectorAll<HTMLAnchorElement>('a[data-tab="true"]'),
+    );
+    const i = links.indexOf(document.activeElement as HTMLAnchorElement);
+    if (i === -1) return;
+    e.preventDefault();
+    const next =
+      e.key === "ArrowRight"
+        ? links[(i + 1) % links.length]
+        : links[(i - 1 + links.length) % links.length];
+    next?.focus();
+  }
+
   return (
-    <div
-      role="tablist"
+    <nav
       aria-label="Open files"
+      onKeyDown={onArrow}
       className="tabs flex flex-shrink-0 overflow-x-auto border-b border-[var(--border)] bg-[var(--side)] [&::-webkit-scrollbar]:h-0"
     >
       {openTabs.map((id) => {
@@ -38,6 +53,7 @@ export function Tabs() {
             )}
             <Link
               href={file.route}
+              data-tab="true"
               aria-current={isActive ? "page" : undefined}
               className="flex items-center gap-2 py-2.5 pl-3.5"
             >
@@ -70,6 +86,6 @@ export function Tabs() {
           </div>
         );
       })}
-    </div>
+    </nav>
   );
 }
