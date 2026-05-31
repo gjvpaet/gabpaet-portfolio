@@ -20,8 +20,11 @@ colors:
   accent-violet-ink: "#1c0a30"
   fg: "#dbe4f0"
   fg-bright: "#ffffff"
-  fg-dim: "#7b8aa3"
-  fg-dim-2: "#4d5e7a"
+  fg-dim: "#8595b3"
+  fg-dim-2: "#7e8ea8"
+  accent-bg: "color-mix(in oklab, var(--accent) 8%, transparent)"
+  accent-bg-soft: "color-mix(in oklab, var(--accent) 6%, transparent)"
+  scrim: "rgba(7, 13, 21, 0.55)"
   filament-amber: "#f2c14e"
   lumora-ember: "#ef8a5b"
   daylight-cyan: "#6db4e0"
@@ -32,7 +35,8 @@ colors:
   paper-panel: "#ffffff"
   paper-fg: "#1f2937"
   paper-fg-bright: "#0a0e1a"
-  paper-fg-dim: "#5b6a83"
+  paper-fg-dim: "#525e78"
+  paper-fg-dim-2: "#5d6679"
 typography:
   display:
     fontFamily: "JetBrains Mono, ui-monospace, 'SF Mono', Menlo, monospace"
@@ -179,8 +183,8 @@ The dark scene is three navy planes stacked. Read them as ground floor, basement
 - **Code-Block Glow Navy** (`#11243a`): `--panel`. Code blocks and the tweaks panel. Sits *above* the editor body — slightly bluer, slightly lit.
 - **Editor Body** (`#dbe4f0`): `--fg`. The primary reading color on dark. Tuned for 1.85 line-height; do not darken without raising line-height.
 - **Headline White** (`#ffffff`): `--fg-bright`. Reserved for `H1`, active sidebar item, work-row titles. Sparingly.
-- **Comment Cool** (`#7b8aa3`): `--fg-dim`. Secondary text, breadcrumb, sub-headings, annotations. The `// the basics` voice.
-- **Gutter Slate** (`#4d5e7a`): `--fg-dim-2`. Tertiary. Inactive line numbers in the gutter. The lowest legible step.
+- **Comment Cool** (`#8595b3`): `--fg-dim`. Secondary text, breadcrumb, sub-headings, annotations. The `// the basics` voice. Bumped from the original `#7b8aa3` to clear WCAG AA on `--panel` and `--side` after the contrast audit; the same role, slightly brighter.
+- **Gutter Slate** (`#7e8ea8`): `--fg-dim-2`. Tertiary. Inactive line numbers in the gutter, the metadata count in section labels. Bumped from `#4d5e7a` for the same AA reason.
 - **Hairline** (`rgba(255,255,255,0.07)`): `--border`. Dashed dividers between work rows; 1px lines under contact rows.
 - **Stronger Hairline** (`rgba(255,255,255,0.12)`): `--border-2`. Chip outlines, tweaks-panel border, ghost-button border.
 - **Hover Veil** (`rgba(255,255,255,0.04)`): `--hover`. The barely-there sidebar row hover.
@@ -235,9 +239,12 @@ This is a quietly layered system, not a flat one. Depth is carried tonally by th
 
 ### Shadow Vocabulary
 
-- **Overlay Modal** (`box-shadow: 0 24px 70px rgba(0,0,0,0.5)`): the ⌘K command palette. Tells the eye the surface is floating above the editor scene; pairs with a blurred `rgba(7,13,21,0.55)` backdrop.
-- **Drawer Slide** (`box-shadow: 4px 0 24px rgba(0,0,0,0.4)`): the mobile sidebar drawer at ≤900px. Casts onto the editor body when slid open.
-- **Phosphor Glow** (`box-shadow: 0 0 6px var(--accent)`): the pulsing status-pill dot and the `currently @ lumora` sidebar pulse. Not a depth shadow — a *light source*. Always paired with the `pulse` keyframe and the accent ink it glows from.
+The modal / floating stack lives behind two tokenized slots (`--shadow-md`, `--shadow-lg`) plus a paired `--scrim` for the modal backdrop. Each token carries a darker dark-theme value and a lighter paper-theme value; the JS layer doesn't touch them, the `:root[data-theme="light"]` block does.
+
+- **Overlay Modal** (`var(--shadow-lg)`, dark `0 24px 70px rgba(0,0,0,0.5)` / paper `0 16px 48px rgba(15,23,42,0.16)`): the ⌘K command palette. Tells the eye the surface is floating above the editor scene. Pairs with a `var(--scrim)` backdrop (dark `rgba(7,13,21,0.55)` / paper `rgba(15,23,42,0.35)`) under a 2px backdrop-filter blur.
+- **Floating Panel** (`var(--shadow-md)`, dark `0 12px 40px rgba(0,0,0,0.4)` / paper `0 8px 24px rgba(15,23,42,0.10)`): the tweaks panel + its trigger FAB. A softer lift than the modal, since the panel sits anchored to a corner rather than over the editor body.
+- **Drawer Slide** (`box-shadow: 4px 0 24px rgba(0,0,0,0.4)`, hard-coded): the mobile sidebar drawer at ≤900px. Casts onto the editor body when slid open. Not yet tokenized; only one consumer.
+- **Phosphor Glow** (`box-shadow: 0 0 6px var(--accent)`): the pulsing status-pill dot and the `currently @ lumora` sidebar pulse. Not a depth shadow, a *light source*. Always paired with the `pulse` keyframe and the accent ink it glows from.
 
 ### Named Rules
 
@@ -256,7 +263,7 @@ The portfolio uses one button shape with two variants. Both live in the `.qa-row
 - **Shape:** Gently sharp (`border-radius: 5px`). 1px border in `--border-2` for the ghost variant; mint fill for primary. Inline SVG icon (13×13) sits left of the label with `gap: 7px`. Padding `7px 14px`. Font: label (11.5px monospace).
 - **Primary** (`.qa.primary`): mint background (`--accent`), deep-phosphor-ink label (`--accent-ink`). One per row. Used for the dominant action ("say hello").
 - **Hover:** primary flips to `--fg-bright` background with the same ink. Ghost flips to mint border + mint label. Transition: `all .15s`. No transform, no shadow.
-- **Focus:** must be a 2px mint outline at 1px offset (currently relies on default outline; tighten in next polish pass).
+- **Focus:** 2px mint outline at 2px offset, applied globally via the `:focus-visible` block in `globals.css`. No per-button override needed; the same ring covers every interactive in the chrome.
 
 ### Stack Chips (`.stack-chip`)
 
@@ -310,8 +317,9 @@ The active-state of a sidebar item is the brand's most concentrated statement.
 
 ### Command Palette (`⌘K` modal)
 
-- **Style:** 560px wide, 100px from top, centered. Backdrop `rgba(7,13,21,0.55)` with `backdrop-filter: blur(2px)`. Box: `--side` background, `--border-2` hairline, `border-radius: 8px`, `box-shadow: 0 24px 70px rgba(0,0,0,0.5)`. Input at top, file list below.
-- **Active row:** accent background, `--accent-ink` text. Arrow-up/down navigates, Enter opens, Escape closes. Clicking the backdrop closes.
+- **Style:** 560px wide, 100px from top, centered. Backdrop `var(--scrim)` with `backdrop-filter: blur(2px)`. Box: `--panel` background, `--border-2` hairline, `border-radius: 8px`, `box-shadow: var(--shadow-lg)`. Input + close `×` sit in a flex row at top, separated from the result list by a 1px `--border` divider; results scroll inside a `<ul>`.
+- **ARIA (signature):** input is a `combobox` with `aria-activedescendant` pointing at the currently-active result. The `<ul>` is a `listbox`. Each result button is an `option` with `aria-selected` toggled and `tabindex=-1`. Focus stays on the input; arrow keys move the activedescendant. This is the WAI-ARIA APG combobox / listbox pattern; do not redesign as a list of links or as a `role="menu"`.
+- **Active row:** accent background, `--accent-ink` text. Arrow-up / arrow-down navigates, Enter opens, Escape closes. Clicking the backdrop or the `×` button also closes. Tab cycles only between input and close button.
 
 ### Named Rules
 
@@ -332,7 +340,7 @@ The active-state of a sidebar item is the brand's most concentrated statement.
 - **Do** keep border-radius ≤8px (chips 3, buttons 5, palette/tweaks 8, status pill 999 for the pill only). Marketing-page rounding is off-brand.
 - **Do** test every color change in *both* themes. The paper-mode `lightC` companions and the light-theme syntax token block exist for a reason; AA contrast must hold in both.
 - **Do** keep `.qa` action rows to ≤3 buttons and exactly 1 primary.
-- **Do** carry `prefers-reduced-motion` alternatives for the pulse dots and the caret blink — both currently animate unconditionally.
+- **Do** preserve the global `prefers-reduced-motion` block in `globals.css`. It collapses transitions to 0.01ms, neutralizes both pulse keyframes and the caret blink, and keeps the dots / caret as static shapes so the status indication still reads. Adding a new animation without an entry in this block is a regression.
 - **Do** render the markdown `> quote` as the 2px-accent left-stripe `.doc .quote`. It is the convention being invoked.
 - **Do** rely on hairlines (`--border`, `--border-2`) and dashed dividers for separation before reaching for boxes.
 
