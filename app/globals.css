@@ -617,3 +617,81 @@ button { font: inherit; cursor: pointer; }
   .breadcrumb .breadcrumb-crumb:not(:last-child) { display: none !important; }
   .breadcrumb .breadcrumb-sep { display: none !important; }
 }
+
+/* =========================================================
+   TOUCH ERGONOMICS
+   Detect input method, not just screen size: a tablet with a
+   Magic Keyboard reports `pointer: fine` and keeps the dense
+   desktop chrome; an iPad without one reports `pointer: coarse`
+   and gets thumb-friendly hit zones. The visual size of glyphs
+   stays close to the original — most fixes grow padding / min-
+   height to extend the tap area, not the icon.
+   ========================================================= */
+@media (pointer: coarse) {
+  /* Title-bar buttons */
+  .menu-toggle {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .menu-toggle svg { width: 18px; height: 18px; }
+  .theme-toggle {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .palette-trigger {
+    min-height: 36px;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  /* Tabs — bump row height, expand close hit zone, and show
+     the × by default since there's no hover on touch. */
+  .tab { min-height: 44px; }
+  .tab-close {
+    min-width: 32px;
+    min-height: 32px;
+    margin-right: 6px !important;
+  }
+  .tab-close-dot { display: none !important; }
+  .tab-close-x   { display: inline !important; }
+
+  /* Sidebar rows + disclosure */
+  .sidebar a,
+  .sidebar > div > button {
+    min-height: 40px;
+  }
+
+  /* Tweaks panel */
+  .tweaks-trigger {
+    width: 44px !important;
+    height: 44px !important;
+    bottom: max(36px, calc(env(safe-area-inset-bottom, 0px) + 8px)) !important;
+  }
+  .tweaks-close {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  .accent-swatch {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .segmented-btn { min-height: 36px; }
+
+  /* Command palette results */
+  .palette-result { min-height: 44px; }
+}
+
+/* =========================================================
+   SAFE-AREA INSETS
+   Relies on viewport-fit=cover (set in app/layout.tsx). The
+   status bar visually fills the home-indicator strip with the
+   accent so it reads as intentional chrome, and its text
+   content pads up to clear the indicator. Harmless on desktop:
+   the env() values resolve to 0.
+   ========================================================= */
+.statusbar {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.ide-shell {
+  grid-template-rows: 38px 1fr calc(26px + env(safe-area-inset-bottom, 0px)) !important;
+}

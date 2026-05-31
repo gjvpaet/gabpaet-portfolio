@@ -71,7 +71,7 @@ export function TitleBar() {
           onClick={toggleTheme}
           aria-label="toggle theme"
           title="toggle theme"
-          className="inline-flex h-6 w-[26px] flex-shrink-0 items-center justify-center rounded-[5px] border border-[var(--border)] bg-white/[.03] text-[var(--fg-dim)] transition-colors hover:border-[var(--accent)] hover:text-[var(--fg-bright)]"
+          className="theme-toggle inline-flex h-6 w-[26px] flex-shrink-0 items-center justify-center rounded-[5px] border border-[var(--border)] bg-white/[.03] text-[var(--fg-dim)] transition-colors hover:border-[var(--accent)] hover:text-[var(--fg-bright)]"
         >
           {theme === "light" ? (
             // sun

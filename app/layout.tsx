@@ -84,6 +84,7 @@ export const viewport: Viewport = {
   colorScheme: "dark light",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 // schema.org/Person — gives Google enough structured data to build a

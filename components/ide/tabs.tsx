@@ -48,17 +48,17 @@ export function Tabs() {
               type="button"
               onClick={() => closeTab(id)}
               aria-label={`Close ${file.name}`}
-              className="ml-1.5 mr-3.5 inline-flex h-4 w-4 items-center justify-center rounded-[3px] text-[14px] leading-none text-[var(--fg-dim)] transition-colors hover:bg-white/10 hover:text-[var(--fg-bright)]"
+              className="tab-close ml-1.5 mr-3.5 inline-flex h-4 w-4 items-center justify-center rounded-[3px] text-[14px] leading-none text-[var(--fg-dim)] transition-colors hover:bg-white/10 hover:text-[var(--fg-bright)]"
             >
               {isActive ? (
                 <>
                   <span
                     aria-hidden="true"
-                    className="inline-block h-[7px] w-[7px] rounded-full bg-[var(--accent)] group-hover:hidden group-focus-within:hidden"
+                    className="tab-close-dot inline-block h-[7px] w-[7px] rounded-full bg-[var(--accent)] group-hover:hidden group-focus-within:hidden"
                   />
                   <span
                     aria-hidden="true"
-                    className="hidden group-hover:inline group-focus-within:inline"
+                    className="tab-close-x hidden group-hover:inline group-focus-within:inline"
                   >
                     ×
                   </span>

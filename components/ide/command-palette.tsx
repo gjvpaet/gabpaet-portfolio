@@ -133,7 +133,7 @@ export function CommandPalette() {
                   }}
                   onClick={() => openResult(i)}
                   className={[
-                    "flex w-full items-center gap-2.5 px-4.5 py-[7px] text-left text-[13px]",
+                    "palette-result flex w-full items-center gap-2.5 px-4.5 py-[7px] text-left text-[13px]",
                     isActive
                       ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                       : "text-[var(--fg)]",

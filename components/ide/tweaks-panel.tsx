@@ -16,7 +16,7 @@ export function TweaksPanel() {
         type="button"
         onClick={t.togglePanel}
         aria-label="Tweaks"
-        className="fixed bottom-9 right-3.5 z-40 flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border-2)] bg-[var(--panel)] text-[var(--fg-dim)] transition-colors hover:text-[var(--accent)]"
+        className="tweaks-trigger fixed bottom-9 right-3.5 z-40 flex h-8 w-8 items-center justify-center rounded-md border border-[var(--border-2)] bg-[var(--panel)] text-[var(--fg-dim)] transition-colors hover:text-[var(--accent)]"
         style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
@@ -38,7 +38,7 @@ export function TweaksPanel() {
               type="button"
               onClick={t.closePanel}
               aria-label="close"
-              className="flex h-[18px] w-[18px] items-center justify-center rounded-[3px] text-[var(--fg-dim)] hover:bg-white/[.06] hover:text-[var(--fg-bright)]"
+              className="tweaks-close flex h-[18px] w-[18px] items-center justify-center rounded-[3px] text-[var(--fg-dim)] hover:bg-white/[.06] hover:text-[var(--fg-bright)]"
             >
               ×
             </button>
@@ -60,7 +60,7 @@ export function TweaksPanel() {
                       type="button"
                       onClick={() => t.setTheme(v)}
                       className={[
-                        "flex-1 rounded-[3px] border-0 py-1 text-[11px] transition-colors",
+                        "segmented-btn flex-1 rounded-[3px] border-0 py-1 text-[11px] transition-colors",
                         active
                           ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                           : "bg-transparent text-[var(--fg-dim)]",
@@ -93,7 +93,7 @@ export function TweaksPanel() {
                       onClick={() => t.setAccent(o.c)}
                       aria-label={o.name}
                       className={[
-                        "h-[26px] w-[26px] cursor-pointer rounded-[5px] border-[1.5px] transition-transform",
+                        "accent-swatch h-[26px] w-[26px] cursor-pointer rounded-[5px] border-[1.5px] transition-transform",
                         active ? "scale-110 border-[var(--fg-bright)]" : "border-[var(--border-2)]",
                       ].join(" ")}
                       style={{ background: t.theme === "light" ? o.lightC : o.c }}
@@ -122,7 +122,7 @@ export function TweaksPanel() {
                       type="button"
                       onClick={() => t.setDensity(v)}
                       className={[
-                        "flex-1 rounded-[3px] border-0 py-1 text-[11px] transition-colors",
+                        "segmented-btn flex-1 rounded-[3px] border-0 py-1 text-[11px] transition-colors",
                         active
                           ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                           : "bg-transparent text-[var(--fg-dim)]",
