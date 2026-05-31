@@ -11,6 +11,8 @@ export function CommandPalette() {
   const router = useRouter();
   const { isOpen, close } = usePalette();
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
   const [query, setQuery] = useState("");
   const [index, setIndex] = useState(0);
 
@@ -28,11 +30,15 @@ export function CommandPalette() {
   }, [files, query]);
 
   useEffect(() => {
-    if (isOpen) {
-      setQuery("");
-      setIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 10);
-    }
+    if (!isOpen) return;
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    setQuery("");
+    setIndex(0);
+    const id = setTimeout(() => inputRef.current?.focus(), 10);
+    return () => {
+      clearTimeout(id);
+      previouslyFocused.current?.focus?.();
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -48,6 +54,26 @@ export function CommandPalette() {
     router.push(f.route);
   }
 
+  function trapTab(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key !== "Tab") return;
+    const root = dialogRef.current;
+    if (!root) return;
+    const focusables = root.querySelectorAll<HTMLElement>(
+      'input, button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+    if (e.shiftKey && active === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-25 [backdrop-filter:blur(2px)]"
@@ -57,7 +83,12 @@ export function CommandPalette() {
       }}
     >
       <div
-        className="w-[560px] max-w-[90vw] overflow-hidden rounded-lg border border-[var(--border-2)] bg-[var(--panel)]"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Go to file"
+        onKeyDown={trapTab}
+        className="palette-dialog w-[560px] max-w-[90vw] overflow-hidden rounded-lg border border-[var(--border-2)] bg-[var(--panel)]"
         style={{ boxShadow: "0 24px 70px rgba(0,0,0,0.5)" }}
       >
         <input

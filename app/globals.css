@@ -12,6 +12,10 @@
   --border-2:  rgba(255,255,255,0.12);
   --accent:    #2ee5b4;
   --accent-ink:#04211a;
+  /* Tinted selection fills derived from --accent so the accent picker
+     actually recolors the sidebar active row + gutter current line. */
+  --accent-bg:      color-mix(in oklab, var(--accent) 8%, transparent);
+  --accent-bg-soft: color-mix(in oklab, var(--accent) 6%, transparent);
   --fg:        #dbe4f0;
   --fg-bright: #ffffff;
   --fg-dim:    #7b8aa3;
@@ -110,6 +114,18 @@ html, body {
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 button { font: inherit; cursor: pointer; }
+
+/* Keyboard focus — accent ring on every interactive chrome element.
+   Mouse focus stays invisible (browser default for non-:focus-visible). */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+/* The command-palette input owns its own focus affordance (the thick
+   bottom border), so suppress the global ring there. */
+.palette-dialog input:focus-visible { outline: none; }
 
 /* =========================================================
    DOC BODY — verbatim from portfolio.html
@@ -339,6 +355,34 @@ button { font: inherit; cursor: pointer; }
 
 @keyframes blink { 50% { opacity: 0; } }
 @keyframes pulse { 50% { opacity: 0.3; } }
+
+/* Sidebar footer "currently @ lumora" indicator. Class-based so the
+   reduced-motion block below can target it; the colour stays on var(--orange). */
+.sidebar-pulse-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 6px var(--orange);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Honour the OS-level motion preference. Pulses and the caret blink go
+   still; transitions collapse to instant. The dots / caret are preserved
+   as static shapes so the status indication remains visible. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .doc .status-pill .pulse,
+  .sidebar-pulse-dot,
+  .caret-blink {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
 
 /* =========================================================
    ICON LEGIBILITY — file icons in the sidebar / palette use

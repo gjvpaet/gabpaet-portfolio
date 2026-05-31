@@ -25,41 +25,46 @@ export function Sidebar() {
 
   return (
     <aside
+      id="ide-sidebar"
+      aria-label="File explorer"
       className={`sidebar row-start-2 flex flex-col overflow-y-auto border-r border-[var(--border)] bg-[var(--side)] py-3.5 pb-5.5 ${
         isOpen ? "open" : ""
       }`}
     >
       <div className="mb-4">
-        <div className="flex select-none items-center gap-1.5 px-3.5 pb-1.5 text-[10.5px] uppercase tracking-[1.5px] text-[var(--fg-dim)]">
-          <span className="inline-block">▾</span> Explorer
-        </div>
+        <h2 className="flex select-none items-center gap-1.5 px-3.5 pb-1.5 text-[10.5px] font-normal uppercase tracking-[1.5px] text-[var(--fg-dim)]">
+          <span aria-hidden="true" className="inline-block">▾</span> Explorer
+        </h2>
       </div>
 
       <div className="mb-4">
-        <div className="flex select-none items-center gap-1.5 px-3.5 pb-1.5 text-[10.5px] uppercase tracking-[1.5px] text-[var(--fg-dim)]">
-          <span className="inline-block">▾</span> portfolio
-          <span className="ml-auto text-[10px] text-[var(--fg-dim-2)]">
+        <h2 className="flex select-none items-center gap-1.5 px-3.5 pb-1.5 text-[10.5px] font-normal uppercase tracking-[1.5px] text-[var(--fg-dim)]">
+          <span aria-hidden="true" className="inline-block">▾</span> portfolio
+          <span aria-hidden="true" className="ml-auto text-[10px] text-[var(--fg-dim-2)]">
             {visiblePortfolio.length}
           </span>
-        </div>
+        </h2>
         {visiblePortfolio.map((id) => (
           <SidebarItem key={id} id={id} active={pathname === FILES[id].route} />
         ))}
       </div>
 
       <div className="mb-4">
-        <div className="flex select-none items-center gap-1.5 px-3.5 pb-1.5 text-[10.5px] uppercase tracking-[1.5px] text-[var(--fg-dim)]">
-          <span className="inline-block">▾</span> projects/
-          <span className="ml-auto text-[10px] text-[var(--fg-dim-2)]">
+        <h2 className="flex select-none items-center gap-1.5 px-3.5 pb-1.5 text-[10.5px] font-normal uppercase tracking-[1.5px] text-[var(--fg-dim)]">
+          <span aria-hidden="true" className="inline-block">▾</span> projects/
+          <span aria-hidden="true" className="ml-auto text-[10px] text-[var(--fg-dim-2)]">
             {PROJECT_IDS.length}
           </span>
-        </div>
+        </h2>
         <button
           type="button"
           onClick={() => setProjectsOpen((v) => !v)}
+          aria-expanded={projectsOpen}
+          aria-controls="sidebar-project-children"
           className="flex w-full select-none items-center gap-2.5 border-l-2 border-transparent py-[var(--side-item-pad)] pl-6 pr-3.5 text-left text-[13px] leading-[1.4] text-[var(--fg)] transition-colors hover:bg-[var(--hover)]"
         >
           <span
+            aria-hidden="true"
             className="inline-block w-3 text-center text-[var(--fg-dim)] transition-transform"
             style={{ transform: projectsOpen ? "rotate(0deg)" : "rotate(-90deg)" }}
           >
@@ -70,15 +75,17 @@ export function Sidebar() {
             gabpaet.dev
           </span>
         </button>
-        {projectsOpen &&
-          PROJECT_IDS.map((id) => (
-            <SidebarItem
-              key={id}
-              id={id}
-              active={pathname === FILES[id].route}
-              indent={2}
-            />
-          ))}
+        <div id="sidebar-project-children">
+          {projectsOpen &&
+            PROJECT_IDS.map((id) => (
+              <SidebarItem
+                key={id}
+                id={id}
+                active={pathname === FILES[id].route}
+                indent={2}
+              />
+            ))}
+        </div>
       </div>
 
       <div className="mb-4">
@@ -89,14 +96,7 @@ export function Sidebar() {
 
       <div className="mt-auto border-t border-[var(--border)] px-3.5 pt-3.5 text-[11px] leading-[1.7] text-[var(--fg-dim)]">
         <div className="flex items-center gap-1.5">
-          <span
-            className="h-1.5 w-1.5 rounded-full"
-            style={{
-              background: "var(--orange)",
-              boxShadow: "0 0 6px var(--orange)",
-              animation: "pulse 2s ease-in-out infinite",
-            }}
-          />
+          <span aria-hidden="true" className="sidebar-pulse-dot" />
           <span className="text-[var(--orange)]">currently @ lumora</span>
         </div>
         <div className="mt-1.5">v 1.0.0 · pasay · utc+8</div>
@@ -119,10 +119,11 @@ function SidebarItem({
   return (
     <Link
       href={file.route}
+      aria-current={active ? "page" : undefined}
       className={[
         "flex select-none items-center gap-2.5 border-l-2 py-[var(--side-item-pad)] pr-3.5 text-[13px] leading-[1.4] transition-colors",
         active
-          ? "border-[var(--accent)] bg-[rgba(46,229,180,0.08)] text-[var(--fg-bright)]"
+          ? "border-[var(--accent)] bg-[var(--accent-bg)] text-[var(--fg-bright)]"
           : "border-transparent text-[var(--fg)] hover:bg-[var(--hover)]",
       ].join(" ")}
       style={{ paddingLeft }}

@@ -13,21 +13,35 @@ export function Breadcrumb() {
   const parts = [...file.path.split(" › "), file.name];
 
   return (
-    <div className="breadcrumb flex flex-shrink-0 items-center gap-1.5 border-b border-[var(--border)] bg-[var(--bg)] px-4.5 py-[5px] text-[11px] text-[var(--fg-dim)]">
-      {parts.map((p, i) => {
-        const isLast = i === parts.length - 1;
-        const isHome = p === "~";
-        const accent = isLast || isHome;
-        return (
-          <Fragment key={`${p}-${i}`}>
-            <span className="breadcrumb-crumb inline-flex items-center gap-1.5">
-              <span className={accent ? "text-[var(--accent)]" : ""}>{p}</span>
-            </span>
-            {!isLast && <span className="breadcrumb-sep text-[var(--fg-dim-2)]">›</span>}
-          </Fragment>
-        );
-      })}
+    <nav
+      aria-label="Breadcrumb"
+      className="breadcrumb flex flex-shrink-0 items-center border-b border-[var(--border)] bg-[var(--bg)] px-4.5 py-[5px] text-[11px] text-[var(--fg-dim)]"
+    >
+      <ol className="flex items-center gap-1.5">
+        {parts.map((p, i) => {
+          const isLast = i === parts.length - 1;
+          const isHome = p === "~";
+          const accent = isLast || isHome;
+          return (
+            <Fragment key={`${p}-${i}`}>
+              <li className="breadcrumb-crumb inline-flex items-center gap-1.5">
+                <span
+                  className={accent ? "text-[var(--accent)]" : ""}
+                  aria-current={isLast ? "page" : undefined}
+                >
+                  {p}
+                </span>
+              </li>
+              {!isLast && (
+                <li aria-hidden="true" className="breadcrumb-sep text-[var(--fg-dim-2)]">
+                  ›
+                </li>
+              )}
+            </Fragment>
+          );
+        })}
+      </ol>
       <span className="breadcrumb-meta ml-auto">· {file.lines} lines</span>
-    </div>
+    </nav>
   );
 }

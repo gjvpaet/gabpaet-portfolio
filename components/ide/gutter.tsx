@@ -11,6 +11,7 @@ export function Gutter() {
 
   return (
     <div
+      aria-hidden="true"
       className="gutter overflow-hidden border-r border-[var(--border)] bg-[var(--bg)] text-right text-[12px] leading-[1.85] text-[var(--fg-dim-2)] select-none"
       style={{ padding: "var(--gutter-pad-y) 0" }}
     >
@@ -22,7 +23,7 @@ export function Gutter() {
             key={n}
             className={[
               "block pr-3.5",
-              isCur ? "text-[var(--accent)] bg-[rgba(46,229,180,0.06)]" : "",
+              isCur ? "text-[var(--accent)] bg-[var(--accent-bg-soft)]" : "",
             ].join(" ")}
           >
             {n}
