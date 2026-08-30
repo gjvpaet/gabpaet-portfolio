@@ -6,7 +6,7 @@ const HTML = `<pre class="src">{
   <span class="tk-str">"homepage"</span>: <span class="tk-str">"https://gabpaet.dev"</span>,
   <span class="tk-str">"author"</span>: {
     <span class="tk-str">"name"</span>:  <span class="tk-str">"Gabriel Joshua Paet"</span>,
-    <span class="tk-str">"email"</span>: <span class="tk-str">"gjvpaet@gmail.com"</span>,
+    <span class="tk-str">"email"</span>: <span class="tk-str">"hello@gabpaet.dev"</span>,
     <span class="tk-str">"url"</span>:   <span class="tk-str">"https://gabpaet.dev"</span>
   },
   <span class="tk-str">"keywords"</span>: [
@@ -14,7 +14,7 @@ const HTML = `<pre class="src">{
     <span class="tk-str">"postgres"</span>, <span class="tk-str">"aws"</span>, <span class="tk-str">"ai"</span>, <span class="tk-str">"automation"</span>, <span class="tk-str">"devops"</span>
   ],
   <span class="tk-str">"scripts"</span>: {
-    <span class="tk-str">"hire"</span>:     <span class="tk-str">"mailto:gjvpaet@gmail.com"</span>,
+    <span class="tk-str">"hire"</span>:     <span class="tk-str">"mailto:hello@gabpaet.dev"</span>,
     <span class="tk-str">"linkedin"</span>: <span class="tk-str">"open https://www.linkedin.com/in/gjvpaet/"</span>,
     <span class="tk-str">"github"</span>:   <span class="tk-str">"open https://github.com/gjvpaet"</span>,
     <span class="tk-str">"portfolio"</span>:<span class="tk-str">"open https://gabpaet.dev"</span>

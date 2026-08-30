@@ -19,8 +19,8 @@ export default function ContactBody() {
       <div className="contact-grid">
         <div className="row">
           <span className="k">email</span>
-          <a className="v" href="mailto:gjvpaet@gmail.com">
-            gjvpaet@gmail.com
+          <a className="v" href="mailto:hello@gabpaet.dev">
+            hello@gabpaet.dev
           </a>
         </div>
         <div className="row">
@@ -84,7 +84,7 @@ export default function ContactBody() {
       </div>
 
       <div className="qa-row">
-        <a className="qa primary" href="mailto:gjvpaet@gmail.com">
+        <a className="qa primary" href="mailto:hello@gabpaet.dev">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
             <rect x="3" y="5" width="18" height="14" rx="2" />
             <path d="m3 7 9 6 9-6" />
