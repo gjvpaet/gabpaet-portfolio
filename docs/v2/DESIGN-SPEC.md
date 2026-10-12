@@ -480,7 +480,7 @@ Order matters; each step should leave the site buildable.
 1. [x] On `v2`: remove v1 IDE code (`app/(ide)`, `components/ide/*`, `context/*`, `lib/tweaks.ts`, `lib/files.ts`, `content/*.tsx`, v1 tokens in `globals.css`). Move v1 reference docs out of the way (`portfolio.html`, `HANDOFF.md`, `DESIGN.md`, `PRODUCT.md` are preserved on the `v1` tag; delete or replace them on `v2`).
 2. [x] Install `motion`, `@phosphor-icons/react`, `simple-icons`. Wire Archivo (wdth axis) + JetBrains Mono via `next/font`.
 3. [x] Tokens: `globals.css` (light + dark), `lib/tokens.ts`, `lib/z.ts`, `lib/theme.ts`, pre-hydration theme script.
-4. [ ] `content/profile.ts` and `content/projects.ts` with draft copy from sections 7 to 8.
+4. [x] `content/profile.ts` and `content/projects.ts` with draft copy from sections 7 to 8.
 5. [ ] Primitives: Button, Chip, Card, BrandIcon, ScreenshotFrame, SectionHeading, ThemeToggle, CopyEmailButton.
 6. [ ] Nav + Footer + skip link + `not-found`.
 7. [ ] Home sections in order: Hero (static first), Experience, Projects, About, Contact.
