@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## v2 rebuild (branch `v2`): read this first
+
+The site is being rebuilt as a neo-brutalist single-scroll portfolio. **`docs/v2/DESIGN-SPEC.md` is the design source of truth on this branch.** It overrides `portfolio.html`, `HANDOFF.md`, `DESIGN.md` and `PRODUCT.md`, which describe v1 and are slated for removal (they stay preserved on the `v1` tag; v1 stays live at `v1.gabpaet.dev`).
+
+Everything under "Architecture" below describes the **v1 IDE codebase** (file registry, tabs, palette, tweaks). It is being deleted on this branch (spec section 15, step 1). Do not extend it; build v2 per the spec, and rewrite this file once the v1 code is gone.
+
+Key v2 rules worth having in your head while coding:
+
+- `content/profile.ts` is the single source of facts (roles, dates, skills, contact) for the home page, `/resume`, JSON-LD, metadata and OG images. Never copy those values elsewhere.
+- Color hex values live in `app/globals.css` **and** `lib/tokens.ts` (for `next/og`). Change both together.
+- The theme storage key lives in `lib/theme.ts` and is imported by both the toggle and the pre-hydration script.
+- Mint (`#2EE5B4`) is a fill, never text on the light background; use `--mint-text`.
+- No em dashes in visible copy. Experience and About copy marked VERIFY in the spec must not ship until the owner confirms it.
+
 ## Commands
 
 Package manager is **pnpm** (see `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.npmrc`).
