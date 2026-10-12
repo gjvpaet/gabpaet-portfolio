@@ -2,6 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Footer } from "@/components/footer";
+import { Nav } from "@/components/nav";
+import { SkipLink } from "@/components/skip-link";
+import { profile } from "@/content/profile";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { tokens } from "@/lib/tokens";
 import "./globals.css";
@@ -159,7 +163,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <SkipLink />
+        <Nav shortName={profile.shortName} />
         {children}
+        <Footer />
         <Analytics />
         <SpeedInsights />
       </body>

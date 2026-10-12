@@ -8,7 +8,6 @@ import { Card } from "@/components/card";
 import { ChipList, StatusChip } from "@/components/chip";
 import { CopyEmailButton } from "@/components/copy-email-button";
 import { SectionHeading } from "@/components/section-heading";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { HOME_CHIP_COUNT, HOME_HIGHLIGHT_COUNT, profile } from "@/content/profile";
 
 export const metadata: Metadata = {
@@ -22,11 +21,8 @@ export default function HomePage() {
 
   return (
     <main id="main" className="mx-auto grid max-w-[1200px] gap-16 px-4 py-16 md:px-8 md:py-24">
-      <section className="grid gap-8" aria-label="Hero preview">
-        <div className="flex items-center justify-between gap-4">
-          <StatusChip>{profile.status}</StatusChip>
-          <ThemeToggle />
-        </div>
+      <section id="hero" className="grid gap-8" aria-label="Hero preview">
+        <StatusChip>{profile.status}</StatusChip>
         <h1 className="type-display">
           {profile.name.split(" ").map((word) => (
             <span key={word} className="block">

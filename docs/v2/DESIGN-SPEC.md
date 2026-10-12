@@ -205,8 +205,8 @@ Folder: `components/` (flat, one component per file). Server components by defau
 
 - Sticky, height 64px (`md: 72px`), `--bg` fill. Gains a 3px bottom border once the hero is out of view (IntersectionObserver on the hero, not a scroll listener).
 - Left: `GP` monogram tile (40px, mint, 3px border, `--shadow-sm`) + "Gabriel Paet" (Archivo `wdth 110` 700).
-- Right (desktop): links **Experience / Projects / About**, `ThemeToggle`, `ButtonLink secondary` **"Get in touch"** → `/#contact`. Links get a 3px mint underline on hover and when their section is in view.
-- Mobile (< `md`): monogram + toggle + menu button (Phosphor `List`). The menu opens as a full-width sheet under the nav with 32px links and the "Get in touch" button; focus is trapped, Esc closes, it closes on navigation.
+- Right (≥ `lg`, 1024px): links **Experience / Projects / About**, `ThemeToggle`, `ButtonLink secondary` **"Get in touch"** → `/#contact`. Links get a 3px mint underline on hover and when their section is in view.
+- Below `lg`: monogram + toggle + menu button (Phosphor `List`; `X` when open). The full row does not fit on one line at 768px, so the menu covers tablets too. The menu opens as a full-width sheet under the nav with 32px links and the "Get in touch" button; focus is trapped, Esc closes, it closes on navigation.
 - One line at all widths ≥ `lg`.
 
 ### 6.6 `ThemeToggle` (client)
@@ -467,7 +467,7 @@ export const profile = {
 
 - **404** (`app/not-found.tsx`): H1 "Page not found", one line "That page moved or never existed.", `primary` button "Back home". A single tilted `>_` sticker.
 - **Copy email failure:** see 6.11.
-- **No JS:** page fully readable; theme follows the system setting; stickers static; mobile menu falls back to the anchor links in the footer.
+- **No JS:** page fully readable; theme follows the system setting; stickers static. The mobile menu button does nothing without JS, which is acceptable because the home page is a single scroll and every section is reachable by scrolling; the footer links cover Resume, GitHub, LinkedIn and v1.
 - **Images:** fixed aspect-ratio frames, `next/image` with `sizes`; hero has no images, so LCP is the H1 text.
 - **Long names in chips:** chips wrap as whole units, never mid-word.
 
@@ -482,7 +482,7 @@ Order matters; each step should leave the site buildable.
 3. [x] Tokens: `globals.css` (light + dark), `lib/tokens.ts`, `lib/z.ts`, `lib/theme.ts`, pre-hydration theme script.
 4. [x] `content/profile.ts` and `content/projects.ts` with draft copy from sections 7 to 8.
 5. [x] Primitives: Button, Chip, Card, BrandIcon, ScreenshotFrame, SectionHeading, ThemeToggle, CopyEmailButton.
-6. [ ] Nav + Footer + skip link + `not-found`.
+6. [x] Nav + Footer + skip link + `not-found`.
 7. [ ] Home sections in order: Hero (static first), Experience, Projects, About, Contact.
 8. [ ] Motion layer: press, reveals, hero entrance, draggable stickers. Verify reduced motion.
 9. [ ] Capture screenshots (Tong Masters now; v1 after step 13) as WebP into `public/projects/<slug>/`.

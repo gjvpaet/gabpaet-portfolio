@@ -92,6 +92,17 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* In-page targets land below the sticky nav (72px) with some air. */
+[id] {
+  scroll-margin-top: 5.5rem;
+}
+
 body {
   background: var(--bg);
   color: var(--ink);

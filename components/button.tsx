@@ -5,11 +5,27 @@ import { cn } from "@/lib/cn";
 
 export type ButtonVariant = "primary" | "secondary";
 
-// Spec 6.1: 48px tall, 3px outline, 12px radius, one-line label, press physics.
-export function buttonClasses(variant: ButtonVariant = "secondary", className?: string): string {
+// Height and padding live here, never in className: Tailwind resolves two
+// conflicting utilities by stylesheet order, not class order, so a passed-in
+// `px-0` would silently lose to the base `px-5`.
+export type ButtonSize = "md" | "sm" | "icon";
+
+const SIZES: Record<ButtonSize, string> = {
+  md: "h-12 px-5", // spec 6.1 default, 48px
+  sm: "h-11 px-4", // nav bar
+  icon: "size-11", // square icon-only button (menu)
+};
+
+// Spec 6.1: 3px outline, 12px radius, one-line label, press physics.
+export function buttonClasses(
+  variant: ButtonVariant = "secondary",
+  className?: string,
+  size: ButtonSize = "md",
+): string {
   return cn(
-    "press type-button inline-flex h-12 shrink-0 items-center justify-center gap-2.5 whitespace-nowrap",
-    "rounded-control border-3 border-ink px-5 no-underline select-none",
+    "press type-button inline-flex shrink-0 items-center justify-center gap-2.5 whitespace-nowrap",
+    "rounded-control border-3 border-ink no-underline select-none",
+    SIZES[size],
     variant === "primary" ? "bg-mint text-on-accent" : "bg-surface text-ink",
     className,
   );
