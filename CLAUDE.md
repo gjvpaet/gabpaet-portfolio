@@ -14,7 +14,7 @@ Package manager is **pnpm**. It is not on PATH on this machine; use `corepack pn
 
 - `corepack pnpm dev` (or the `portfolio` preview config, port 3200)
 - `corepack pnpm build`
-- `corepack pnpm typecheck` (`tsc --noEmit`; there is no lint or test setup). If it reports missing `app/(ide)` modules, `.next/dev/types` is stale from an old v1 dev run: delete `.next/dev`.
+- `corepack pnpm typecheck` (`tsc --noEmit`; there is no lint or test setup). If it reports missing `app/(ide)` modules, `.next/dev/types` is stale from an old v1 dev run: delete `.next/dev`. The Turbopack dev cache in `.next/dev` can also keep serving old CSS after `globals.css` changes (a production build is correct); stop the dev server, delete `.next/dev`, restart.
 
 Global git config on this machine has a broken `gpg.format`; commit with `GIT_CONFIG_GLOBAL=/dev/null git -c user.name="Gabriel Joshua Paet" -c user.email="gjvpaet@gmail.com" commit ...`. Never add Co-Authored-By trailers.
 
@@ -27,9 +27,11 @@ Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss
 - **Tokens:** `app/globals.css` defines every color, radius, outline, shadow and z-index as CSS variables. Light values sit on `:root`; dark values are repeated in `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and `:root[data-theme="dark"]`. `@theme inline` exposes them to Tailwind (`bg-surface`, `text-ink-muted`, `border-ink`, `rounded-card`, `shadow-brut-md`, ...). Type roles are `@utility` classes (`type-display`, `type-h2`, `type-h3`, `type-body-sm`, `type-button`, `type-meta`, `type-chip`).
 - **Hex mirror:** `lib/tokens.ts` repeats the hex values for `next/og` images and the viewport `themeColor`. Change it together with `globals.css`.
 - **Theme:** no stored value means "follow the OS" (pure CSS). The toggle stores `"light" | "dark"` under `THEME_STORAGE_KEY` in `lib/theme.ts`; `THEME_INIT_SCRIPT` (same file, injected in `app/layout.tsx` `<head>`) applies it before first paint. Both read the key from that one constant.
+- **Components:** `components/` holds the spec section 6 primitives (`Button`/`ButtonLink`, `Chip`/`ChipList`/`StatusChip`, `Card`, `BrandIcon`, `SectionHeading`, `ScreenshotFrame`, `ThemeToggle`, `CopyEmailButton`). Server components import Phosphor from `@phosphor-icons/react/ssr`; client components (`"use client"`) from `@phosphor-icons/react`.
+- **Utilities in `globals.css`:** `press` / `press-lg` (hover lift, press into shadow) and `tone-accent` (put on a mint/yellow element: it keeps the page outline and shadow, while its text and children switch to dark ink on light surfaces).
 - **z-index:** only the values in `lib/z.ts` (mirrored as `--z-*` in `globals.css`).
 - **Fonts:** `app/layout.tsx` loads Archivo (variable, with the `wdth` axis; width is set with `font-stretch: 110%` / `125%`) as `--font-archivo` and JetBrains Mono as `--font-jetbrains-mono`.
-- **Content:** `content/profile.ts` and `content/projects.ts` (spec section 10, not built yet) will be the single source of facts for the home page, `/resume`, JSON-LD, metadata and OG images. Never hardcode those facts elsewhere.
+- **Content:** `content/profile.ts` and `content/projects.ts` (spec section 10) are the single source of facts for the home page, `/resume`, JSON-LD, metadata and OG images. Never hardcode those facts elsewhere. Draft strings carry a `// VERIFY` comment until Gabriel confirms them.
 - **Canonical URLs:** set per page via `metadata.alternates.canonical`, never in the root layout.
 
 ## Rules that are easy to break

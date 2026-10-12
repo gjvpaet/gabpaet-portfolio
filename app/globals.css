@@ -173,6 +173,73 @@ h3 {
 }
 
 /* =========================================================
+   Press physics (spec 5): the element lifts on hover and sinks into its
+   shadow when pressed. Hover only on devices that really hover, so touch
+   screens don't keep a stuck lifted state.
+   ========================================================= */
+@utility press {
+  box-shadow: var(--shadow-md);
+  transition-property: transform, box-shadow;
+  transition-duration: 120ms;
+  transition-timing-function: var(--ease-out);
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 7px 7px 0 0 var(--ink);
+    }
+  }
+  &:active {
+    transform: translate(5px, 5px);
+    box-shadow: 0 0 0 0 var(--ink);
+  }
+  &:disabled,
+  &[aria-disabled="true"] {
+    opacity: 0.5;
+    box-shadow: none;
+    transform: none;
+    cursor: not-allowed;
+  }
+}
+
+/* Same physics for the large-shadow elements (featured tile, stickers). */
+@utility press-lg {
+  box-shadow: var(--shadow-lg);
+  transition-property: transform, box-shadow;
+  transition-duration: 120ms;
+  transition-timing-function: var(--ease-out);
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 10px 10px 0 0 var(--ink);
+    }
+  }
+  &:active {
+    transform: translate(8px, 8px);
+    box-shadow: 0 0 0 0 var(--ink);
+  }
+}
+
+/* Put on an element with a mint or yellow fill. Its own outline and shadow
+   keep the page ink (off-white in dark mode, per spec 11); only its text and
+   its children switch to the dark on-accent ink, with light surfaces. The
+   shadow tokens are redeclared because custom properties resolve where they
+   are declared, so the :root versions would still carry the page ink. */
+@utility tone-accent {
+  color: var(--on-accent);
+
+  & > * {
+    --ink: var(--on-accent);
+    --ink-muted: var(--on-accent);
+    --surface: #fdfdfb;
+    --shadow-sm: 3px 3px 0 0 var(--on-accent);
+    --shadow-md: 5px 5px 0 0 var(--on-accent);
+    --shadow-lg: 8px 8px 0 0 var(--on-accent);
+  }
+}
+
+/* =========================================================
    Motion: everything collapses under reduced motion (spec 5).
    ========================================================= */
 @media (prefers-reduced-motion: reduce) {
