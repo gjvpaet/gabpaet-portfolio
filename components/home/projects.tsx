@@ -2,6 +2,7 @@ import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
 
 import { ChipList } from "@/components/chip";
+import { Reveal } from "@/components/reveal";
 import { ScreenshotFrame } from "@/components/screenshot-frame";
 import { SectionHeading } from "@/components/section-heading";
 import { projects, type Project } from "@/content/projects";
@@ -30,10 +31,10 @@ function ProjectTile({ project }: { project: Project }) {
       href={`/projects/${project.slug}`}
       aria-label={`${project.name} case study`}
       className={cn(
-        "grid overflow-hidden rounded-card border-3 border-ink bg-surface no-underline",
+        "grid h-full overflow-hidden rounded-card border-3 border-ink bg-surface no-underline",
         // Both tiles share a row height. The featured tile is the taller one; the
         // small tile gives its spare height to the media area, not the text.
-        project.featured ? "press-lg grid-rows-[auto_1fr] md:col-span-8" : "press grid-rows-[1fr_auto] md:col-span-4",
+        project.featured ? "press-lg grid-rows-[auto_1fr]" : "press grid-rows-[1fr_auto]",
       )}
     >
       <div
@@ -71,10 +72,14 @@ function ProjectTile({ project }: { project: Project }) {
 export function Projects() {
   return (
     <section id="projects" aria-labelledby="projects-h" className="py-16 md:py-24">
-      <SectionHeading id="projects-h">Projects</SectionHeading>
+      <Reveal>
+        <SectionHeading id="projects-h">Projects</SectionHeading>
+      </Reveal>
       <div className="mt-10 grid gap-6 md:mt-12 md:grid-cols-12">
-        {projects.map((project) => (
-          <ProjectTile key={project.slug} project={project} />
+        {projects.map((project, i) => (
+          <Reveal key={project.slug} index={i} className={project.featured ? "md:col-span-8" : "md:col-span-4"}>
+            <ProjectTile project={project} />
+          </Reveal>
         ))}
       </div>
     </section>

@@ -2,6 +2,7 @@ import { ArrowRight } from "@phosphor-icons/react/ssr";
 
 import { Card } from "@/components/card";
 import { ChipList } from "@/components/chip";
+import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { HOME_CHIP_COUNT, HOME_HIGHLIGHT_COUNT, profile, type Role } from "@/content/profile";
 import { cn } from "@/lib/cn";
@@ -70,7 +71,9 @@ function RoleCard({ role }: { role: Role }) {
 export function Experience() {
   return (
     <section id="experience" aria-labelledby="experience-h" className="py-16 md:py-24">
-      <SectionHeading id="experience-h">Experience</SectionHeading>
+      <Reveal>
+        <SectionHeading id="experience-h">Experience</SectionHeading>
+      </Reveal>
       <ol className="relative mt-10 grid gap-7 md:mt-12 md:pl-12 md:before:absolute md:before:top-2 md:before:bottom-2 md:before:left-[7px] md:before:w-[3px] md:before:bg-ink">
         {profile.roles.map((role) => (
           <li key={role.company} className="relative">
@@ -81,7 +84,9 @@ export function Experience() {
                 role.current ? "bg-mint" : "bg-surface",
               )}
             />
-            <RoleCard role={role} />
+            <Reveal>
+              <RoleCard role={role} />
+            </Reveal>
           </li>
         ))}
       </ol>

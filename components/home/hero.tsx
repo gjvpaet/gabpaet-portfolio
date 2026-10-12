@@ -1,4 +1,5 @@
 import { ArrowDown, FileText } from "@phosphor-icons/react/ssr";
+import type { CSSProperties } from "react";
 
 import { ButtonLink } from "@/components/button";
 import { StatusChip } from "@/components/chip";
@@ -14,8 +15,10 @@ export function Hero() {
     <section id="hero" aria-labelledby="hero-name" className="pt-12 pb-16 md:pt-20 md:pb-24">
       <div className="grid items-center gap-10 md:grid-cols-12 md:gap-8">
         <div className="grid min-w-0 gap-6 md:col-span-7">
-          <StatusChip>{profile.status}</StatusChip>
-          <h1 id="hero-name" className="type-display">
+          <div className="rise" style={{ "--i": 0 } as CSSProperties}>
+            <StatusChip>{profile.status}</StatusChip>
+          </div>
+          <h1 id="hero-name" className="type-display rise" style={{ "--i": 1 } as CSSProperties}>
             {words.map((word, i) => (
               <span key={word} className="block">
                 {word}
@@ -23,8 +26,10 @@ export function Hero() {
               </span>
             ))}
           </h1>
-          <p className="max-w-[34ch] text-[1.1875rem] leading-normal">{profile.heroLine}</p>
-          <div className="flex flex-wrap gap-4">
+          <p className="rise max-w-[34ch] text-[1.1875rem] leading-normal" style={{ "--i": 2 } as CSSProperties}>
+            {profile.heroLine}
+          </p>
+          <div className="rise flex flex-wrap gap-4" style={{ "--i": 3 } as CSSProperties}>
             <ButtonLink href="/resume" variant="primary" icon={<FileText size={20} weight="bold" />}>
               Resume
             </ButtonLink>

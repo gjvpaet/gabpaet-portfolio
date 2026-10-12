@@ -155,8 +155,8 @@ Library: Motion (`motion/react`). Every animated component is a `"use client"` l
 | Interaction | Spec | Why |
 |---|---|---|
 | **Press** (buttons, clickable cards, chips that link) | Rest: `--shadow-md`. Hover: `translate(-2px,-2px)`, shadow 7px. Active: `translate(5px,5px)`, shadow 0. CSS transition `transform, box-shadow 120ms cubic-bezier(0.16,1,0.3,1)`. | Feedback: the element physically sinks into its shadow. |
-| **Section reveal** | `whileInView` from `{opacity:0, y:24}` to `{opacity:1, y:0}`, 0.5s, ease `[0.16,1,0.3,1]`, `viewport={{ once:true, amount:0.25 }}`. Children stagger 0.06s (timeline cards, project tiles, chip rows). | Storytelling: content arrives in reading order. |
-| **Hero entrance** | Name, subtext, buttons stagger in (0.08s). Stickers then drop in from `y:-40, rotate:0` to their resting rotation with spring `{stiffness:260, damping:18}`, staggered 0.05s. | Hierarchy: who you are first, personality second. |
+| **Section reveal** | From `opacity 0, translate 0 24px` to rest, 0.5s, ease `[0.16,1,0.3,1]`, once, when any part is 15% above the viewport bottom. Siblings stagger 0.06s (project tiles, about columns). Built as CSS transitions toggled by `components/reveal.tsx` (IntersectionObserver), hidden only under a `.js` class set before paint, so no-JS visitors see everything. Not Motion `whileInView`, whose SSR output would ship the hidden state. | Storytelling: content arrives in reading order. |
+| **Hero entrance** | Status chip, name, subtext, buttons rise in (CSS keyframes, 0.5s, 0.08s stagger) on first paint without waiting for JS. Stickers then drop in from 40px above with a small overshoot (`cubic-bezier(0.34,1.56,0.64,1)`), from 320ms, staggered 0.05s. They keep their tilt during the drop (Motion owns `rotate` for dragging). | Hierarchy: who you are first, personality second. |
 | **Draggable stickers** | `drag`, `dragConstraints={heroBoardRef}`, `dragElastic 0.2`, `dragSnapToOrigin`, snap-back spring `{stiffness:300, damping:20}`. `whileDrag`: `scale 1.06`, rotate to 0, shadow `--shadow-lg` + 4px, `z sticker-dragging`, `cursor: grabbing`. Enabled only when `(pointer: fine)` and motion is allowed; otherwise static. | Feedback and the site's one playful moment. |
 | **Copy email** | Label swaps "Copy email" to "Copied" with a 150ms crossfade, reverts after 2s. | State change. |
 | **Theme toggle** | Knob slides 200ms; no page-wide transition (avoid repaint flash). | State change. |
@@ -484,7 +484,7 @@ Order matters; each step should leave the site buildable.
 5. [x] Primitives: Button, Chip, Card, BrandIcon, ScreenshotFrame, SectionHeading, ThemeToggle, CopyEmailButton.
 6. [x] Nav + Footer + skip link + `not-found`.
 7. [x] Home sections in order: Hero (static first), Experience, Projects, About, Contact.
-8. [ ] Motion layer: press, reveals, hero entrance, draggable stickers. Verify reduced motion.
+8. [x] Motion layer: press, reveals, hero entrance, draggable stickers. Verify reduced motion.
 9. [ ] Capture screenshots (Tong Masters now; v1 after step 13) as WebP into `public/projects/<slug>/`.
 10. [ ] Case study pages + ArchitectureDiagram.
 11. [ ] `/resume` + print stylesheet; generate and commit the PDF.

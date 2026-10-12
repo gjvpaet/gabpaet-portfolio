@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
 
@@ -11,32 +11,31 @@ const FILLS: Record<StickerFill, string> = {
   ink: "bg-ink text-bg",
 };
 
-// Spec 6.4: an outlined tile with a hard shadow, tilted a few degrees.
-// Decorative; the board around it carries a text equivalent.
+// Spec 6.4: an outlined tile with a hard shadow. 64px on phones, 88px from md.
+export function stickerClasses(fill: StickerFill, className?: string): string {
+  return cn(
+    "grid size-16 place-items-center rounded-control border-3 border-ink shadow-brut-md md:size-[88px] md:shadow-brut-lg",
+    FILLS[fill],
+    className,
+  );
+}
+
+// Static sticker (404 page). The hero's draggable ones live in
+// components/home/sticker-board.tsx and share stickerClasses.
 export function Sticker({
   fill,
   rotate,
   children,
   className,
-  style,
 }: {
   fill: StickerFill;
   /** Resting tilt in degrees. */
   rotate: number;
   children: ReactNode;
   className?: string;
-  style?: CSSProperties;
 }) {
   return (
-    <span
-      aria-hidden="true"
-      style={{ ...style, rotate: `${rotate}deg` }}
-      className={cn(
-        "grid size-16 place-items-center rounded-control border-3 border-ink shadow-brut-md md:size-[88px] md:shadow-brut-lg",
-        FILLS[fill],
-        className,
-      )}
-    >
+    <span aria-hidden="true" style={{ rotate: `${rotate}deg` }} className={stickerClasses(fill, className)}>
       {children}
     </span>
   );

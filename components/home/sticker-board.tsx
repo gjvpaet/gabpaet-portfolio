@@ -1,7 +1,13 @@
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
+import { useRef, useSyncExternalStore } from "react";
 import { siClaude, siDocker, siNextdotjs, siNodedotjs, siPostgresql, type SimpleIcon } from "simple-icons";
 
 import { BrandIcon } from "@/components/brand-icon";
-import { Sticker, type StickerFill } from "@/components/sticker";
+import { stickerClasses, type StickerFill } from "@/components/sticker";
+import { cn } from "@/lib/cn";
+import { z } from "@/lib/z";
 
 type StickerSpec = {
   key: string;
@@ -21,26 +27,60 @@ const STICKERS: StickerSpec[] = [
   { key: "docker", icon: siDocker, fill: "mint", rotate: 4, at: { left: 70, top: 64 } },
 ];
 
-// Desktop (md+): a loose cluster on a bounded board. Below md: one wrapping
-// row under the buttons. Static here; build step 8 makes them draggable.
+const FINE_POINTER = "(pointer: fine)";
+
+function subscribeFinePointer(onChange: () => void) {
+  const mq = window.matchMedia(FINE_POINTER);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
+// Spec 5 + 6.4. Desktop (md+): a loose cluster on a bounded board, draggable
+// with a mouse or trackpad and springing home on release. Touch screens and
+// reduced motion get static stickers, so dragging never fights scrolling.
 export function StickerBoard({ tools }: { tools: string }) {
+  const boardRef = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  const finePointer = useSyncExternalStore(
+    subscribeFinePointer,
+    () => window.matchMedia(FINE_POINTER).matches,
+    () => false,
+  );
+  const canDrag = finePointer && !reduce;
+
   return (
-    <div className="relative flex flex-wrap gap-4 md:block md:h-[420px]">
+    <div ref={boardRef} className="relative flex flex-wrap gap-4 md:block md:h-[420px]">
       <p className="sr-only">{tools}</p>
-      {STICKERS.map((s) => (
-        <Sticker
+      {STICKERS.map((s, i) => (
+        <motion.span
           key={s.key}
-          fill={s.fill}
-          rotate={s.rotate}
-          className="md:absolute md:left-[var(--left)] md:top-[var(--top)]"
-          style={{ ["--left" as string]: `${s.at.left}%`, ["--top" as string]: `${s.at.top}%` }}
+          aria-hidden="true"
+          drag={canDrag}
+          dragConstraints={boardRef}
+          dragElastic={0.2}
+          dragSnapToOrigin
+          dragTransition={{ bounceStiffness: 300, bounceDamping: 20 }}
+          whileDrag={{ scale: 1.06, rotate: 0, zIndex: z.stickerDragging }}
+          style={{
+            rotate: s.rotate,
+            zIndex: z.sticker,
+            // Board position (md+) and entrance stagger, read by CSS.
+            ...({ "--left": `${s.at.left}%`, "--top": `${s.at.top}%`, "--i": i } as Record<string, string | number>),
+          }}
+          className={stickerClasses(
+            s.fill,
+            cn(
+              "sticker-drop select-none md:absolute md:top-[var(--top)] md:left-[var(--left)]",
+              canDrag && "sticker-grab",
+            ),
+          )}
         >
           {"icon" in s ? (
-            <BrandIcon icon={s.icon} decorative className="size-8 md:size-11" />
+            <BrandIcon icon={s.icon} decorative className="pointer-events-none size-8 md:size-11" />
           ) : (
-            <span className="font-mono text-xl font-semibold md:text-[1.75rem]">&gt;_</span>
+            <span className="pointer-events-none font-mono text-xl font-semibold md:text-[1.75rem]">&gt;_</span>
           )}
-        </Sticker>
+        </motion.span>
       ))}
     </div>
   );

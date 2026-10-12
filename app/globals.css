@@ -251,6 +251,72 @@ h3 {
 }
 
 /* =========================================================
+   Entrance and reveal motion (spec 5). Unlayered on purpose so these
+   rules beat utilities. They animate the individual `translate`
+   property, never `transform`, so they compose with Motion's drag and
+   the `press` hover/active transforms instead of fighting them.
+   ========================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero text: runs on first paint, no JS needed. --i staggers by 80ms. */
+  .rise {
+    animation: rise 0.5s var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 80ms);
+  }
+
+  /* Hero stickers drop in after the text, with a small overshoot. */
+  .sticker-drop {
+    animation: sticker-drop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: calc(320ms + var(--i, 0) * 50ms);
+  }
+
+  /* Scroll reveal. Only hidden once the pre-paint script has added .js to
+     <html>, so the page stays fully readable without JavaScript.
+     components/reveal.tsx sets data-shown when the element enters view. */
+  .js [data-reveal] {
+    opacity: 0;
+    translate: 0 24px;
+    transition:
+      opacity 0.5s var(--ease-out),
+      translate 0.5s var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 60ms);
+  }
+  .js [data-reveal][data-shown] {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+}
+
+@keyframes sticker-drop {
+  from {
+    opacity: 0;
+    translate: 0 -40px;
+  }
+}
+
+/* A sticker being held: bigger shadow, grabbing cursor. */
+.sticker-grab {
+  cursor: grab;
+}
+.sticker-grab:active {
+  cursor: grabbing;
+  box-shadow: 12px 12px 0 0 var(--ink);
+}
+
+@media print {
+  .js [data-reveal] {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+/* =========================================================
    Motion: everything collapses under reduced motion (spec 5).
    ========================================================= */
 @media (prefers-reduced-motion: reduce) {

@@ -151,8 +151,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <head>
-        {/* Applies a saved light/dark choice before first paint. */}
+        {/* Before first paint: apply a saved light/dark choice, and flag that JS
+            runs so scroll reveals may start hidden (see globals.css). */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: 'document.documentElement.classList.add("js")' }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
