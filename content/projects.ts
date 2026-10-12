@@ -65,11 +65,12 @@ export const projects: Project[] = [
     // VERIFY
     whatItIs:
       "Tong-its is a Filipino rummy game usually played around a table with three people. Tong Masters puts it in the browser: open a room and play with friends, let bots fill the empty seats, or practice solo against bots. A guided tutorial teaches the rules hand by hand.",
+    // A real request flow, left to right. The rules engine is a shared library
+    // (browser for solo, server for rooms), so it is named inside both nodes.
     architecture: [
-      { label: "Next.js web app", detail: "Vercel" },
-      { label: "Game rooms", detail: "PartyServer on Cloudflare Durable Objects" },
-      { label: "D1 database", detail: "Guest wallets, ledger, play stats" },
-      { label: "Rules engine + bot", detail: "Pure TypeScript, shared by client and server" },
+      { label: "Next.js web app", detail: "On Vercel. Runs solo games with the shared rules engine" },
+      { label: "Game rooms", detail: "PartyServer on Cloudflare Durable Objects. Same engine and bots" },
+      { label: "D1 database", detail: "Guest wallets, chip ledger, play stats" },
     ],
     hardProblems: [
       {
@@ -120,9 +121,8 @@ export const projects: Project[] = [
     whatItIs:
       "The first version of gabpaet.dev presented every page as a file in a VS Code-style editor, with a file tree, tabs, a command palette and a status bar.",
     architecture: [
-      { label: "files.ts registry", detail: "One list of every page" },
-      { label: "IDE chrome", detail: "Sidebar, tabs, palette, sitemap read the registry" },
-      { label: "CSS-variable theming", detail: "Accent, density and theme switch before first paint" },
+      { label: "content/files.ts", detail: "One registry of every page" },
+      { label: "Routes and IDE chrome", detail: "Pages, sidebar, tabs, palette and sitemap all read it" },
     ],
     hardProblems: [
       {

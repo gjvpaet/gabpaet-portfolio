@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type ElementType, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ElementType,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 
 // Fades and lifts its content in the first time it scrolls into view
 // (spec 5, "Section reveal"). The hidden state lives in globals.css behind
@@ -14,12 +22,13 @@ export function Reveal({
   index = 0,
   children,
   className,
+  ...rest
 }: {
   as?: ElementType;
   index?: number;
   children: ReactNode;
   className?: string;
-}) {
+} & Omit<HTMLAttributes<HTMLElement>, "children" | "className" | "style">) {
   const ref = useRef<HTMLElement>(null);
   const [shown, setShown] = useState(false);
 
@@ -47,6 +56,7 @@ export function Reveal({
 
   return (
     <Tag
+      {...rest}
       ref={ref}
       data-reveal=""
       data-shown={shown ? "" : undefined}
