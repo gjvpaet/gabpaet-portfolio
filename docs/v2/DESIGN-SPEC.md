@@ -29,12 +29,13 @@ Reference: Kristina Volchek, "Personal Website Redesign for a Product Designer (
 
 ## 2. Branching and v1 preservation
 
-1. Before merging v2: tag current `main` as `v1` and push a `v1` branch from that tag.
-2. Create a second Vercel project `gabpaet-portfolio-v1` that deploys only the `v1` branch.
-3. Add a CNAME `v1` → Vercel at Porkbun (same pattern as `tongmasters.gabpaet.dev`). v1 lives at **`https://v1.gabpaet.dev`** permanently.
-4. Build v2 on `v2`; Vercel preview URLs are the review surface. Merge to `main` when the launch checklist (section 15) passes.
+Done 2026-10-12, except the two items marked "pending":
 
----
+1. Annotated tag `v1` on `fbbd17f` (last v1 commit on `main`). Pending: push it (`git push origin v1`); the portfolio-v1 case study's Code link points at `github.com/gjvpaet/gabpaet-portfolio/tree/v1`.
+2. Vercel project **`gabpaet-portfolio-v1`**, deployed from a `git archive` of the `v1` tag with the CLI (`vercel deploy --prod`, with a deploy-only `vercel.json` setting `"framework": "nextjs"`). It is deliberately **not** connected to git, so v1 stays frozen. Live at `https://gabpaet-portfolio-v1.vercel.app`.
+3. Domain `v1.gabpaet.dev` is attached to that project. Pending: DNS at Porkbun, a CNAME record `v1` → `c3dfe16e6bb95f14.vercel-dns-017.com` (then `vercel domains verify v1.gabpaet.dev`).
+4. Main domain: **`gabpaet.dev` is primary**. `www.gabpaet.dev` 308-redirects to it (path kept), matching the canonical URLs, sitemap and share images. Before this, the apex 307-redirected to `www`, so every v1 canonical pointed at a redirect.
+5. Build v2 on `v2`; merge to `main` when the launch checklist (section 15) passes. The existing `gabpaet-portfolio` project then deploys v2.
 
 ## 3. Stack
 
@@ -491,7 +492,7 @@ Order matters; each step should leave the site buildable.
 10. [x] Case study pages + ArchitectureDiagram.
 11. [x] `/resume` + print stylesheet; generate and commit the PDF.
 12. [x] Metadata, canonicals, JSON-LD, sitemap, robots, redirects, OG images, icons.
-13. [ ] v1 preservation (section 2): tag, branch, Vercel project, Porkbun CNAME, verify `v1.gabpaet.dev`.
+13. [ ] v1 preservation (section 2): tag ✓, Vercel project + deploy ✓, apex primary ✓. Pending: push the tag, Porkbun CNAME, verify `v1.gabpaet.dev`.
 14. [ ] Gabriel verifies every VERIFY string.
 15. [ ] QA: `pnpm typecheck`, `pnpm build`; both themes; 375px, 768px, 1280px; keyboard-only pass; reduced motion; Lighthouse (Performance ≥ 90, Accessibility ≥ 95, SEO 100); all redirects return 308 to the right anchor; zero em dashes in visible copy.
 16. [ ] Merge `v2` → `main`.
