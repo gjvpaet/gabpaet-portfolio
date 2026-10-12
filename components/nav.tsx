@@ -116,7 +116,7 @@ export function Nav({ shortName }: { shortName: string }) {
       )}
     >
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 md:h-[72px] md:px-8">
-        <Link href="/" className="flex items-center gap-3 rounded-control no-underline">
+        <Link href="/" className="flex min-h-11 items-center gap-3 rounded-control no-underline">
           <Monogram />
           <span className="whitespace-nowrap font-bold [font-stretch:110%]">{shortName}</span>
         </Link>
@@ -130,7 +130,8 @@ export function Nav({ shortName }: { shortName: string }) {
                   href={`/#${section.id}`}
                   aria-current={activeId === section.id ? "true" : undefined}
                   className={cn(
-                    "border-b-3 py-1 font-semibold no-underline transition-[border-color] duration-150",
+                    // py-2.5 + 3px underline: a 44px tap target.
+                    "inline-block border-b-3 py-2.5 font-semibold no-underline transition-[border-color] duration-150",
                     activeId === section.id ? "border-mint" : "border-transparent hover:border-mint",
                   )}
                 >

@@ -75,9 +75,10 @@ export function Projects() {
       <Reveal>
         <SectionHeading id="projects-h">Projects</SectionHeading>
       </Reveal>
-      <div className="mt-10 grid gap-6 md:mt-12 md:grid-cols-12">
+      {/* Stacked below lg: at tablet width the 4-column tile is too narrow. */}
+      <div className="mt-10 grid gap-6 md:mt-12 lg:grid-cols-12">
         {projects.map((project, i) => (
-          <Reveal key={project.slug} index={i} className={project.featured ? "md:col-span-8" : "md:col-span-4"}>
+          <Reveal key={project.slug} index={i} className={project.featured ? "lg:col-span-8" : "lg:col-span-4"}>
             <ProjectTile project={project} />
           </Reveal>
         ))}

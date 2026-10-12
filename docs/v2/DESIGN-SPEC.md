@@ -295,13 +295,13 @@ Entries and draft copy (from v1 text; **every highlight marked VERIFY must be co
 ### 7.3 Projects (`#projects`)
 
 - H2 **"Projects"**.
-- Bento with exactly 2 cells. Desktop: `grid-cols-12`, Tong Masters `col-span-8`, v1 `col-span-4`, equal height. Mobile: stacked.
+- Bento with exactly 2 cells. From `lg`: `grid-cols-12`, Tong Masters `col-span-8`, v1 `col-span-4`, equal height. Below `lg` (phones and tablets): stacked, since a 4-column tile is too narrow at 768px.
 - **Tong Masters tile** (featured): `--shadow-lg`. Top area: yellow fill with a desktop screenshot in a `ScreenshotFrame`, tilted -2deg, overlapping the tile's bottom edge of that area by 24px. Below: H3 "Tong Masters", one line "Real-time multiplayer Tong-its in the browser, with bots and a guided tutorial.", chips `Next.js` `Cloudflare` `Durable Objects` `TypeScript`, and a row with Phosphor `ArrowUpRight` "Case study". Links to `/projects/tong-masters`.
 - **Portfolio v1 tile**: surface fill, v1 screenshot (shows the IDE look, which is visually distinct from v2 and makes a good contrast tile). H3 "Portfolio v1", one line "The previous version of this site, styled as a code editor.", chips `Next.js` `Tailwind`, "Case study". Links to `/projects/portfolio-v1`.
 
 ### 7.4 About (`#about`)
 
-- Layout: `grid-cols-12`. Left `col-span-5`: H2 **"About"** + bio. Right `col-span-7`: skills panel. Mobile: stacked.
+- Layout from `lg`: `grid-cols-12`. Left `col-span-5`: H2 **"About"** + bio. Right `col-span-7`: skills panel. Below `lg`: stacked, so the bio never runs in a narrow column.
 - **Bio draft (VERIFY voice):** personal, about why he builds. **Must not mention Lumora or his current role**; Experience covers that. "I love building things that interest me, whether it's a tool that makes a tedious job disappear or a weekend idea that turns into something real. Tong Masters started that way: I wanted an online Tong-its game so friends and family could play together, so I built one. I'd rather see a thing all the way through, from the first rough version to something people actually use. Nine years of building web and mobile apps later, that's still the part I enjoy most."
 - Pull line under the bio, H3 scale, with a yellow highlight block behind it: "Always view problems as an opportunity."
 - **Skills panel:** one `Card`, three labeled rows (label: Archivo 700 1rem; chips wrap below). Rows separated by spacing only, no rules.
@@ -494,7 +494,7 @@ Order matters; each step should leave the site buildable.
 12. [x] Metadata, canonicals, JSON-LD, sitemap, robots, redirects, OG images, icons.
 13. [x] v1 preservation (section 2): tag, Vercel project, `v1.gabpaet.dev`, apex made primary.
 14. [ ] Gabriel verifies every VERIFY string.
-15. [ ] QA: `pnpm typecheck`, `pnpm build`; both themes; 375px, 768px, 1280px; keyboard-only pass; reduced motion; Lighthouse (Performance ≥ 90, Accessibility ≥ 95, SEO 100); all redirects return 308 to the right anchor; zero em dashes in visible copy.
+15. [x] QA (2026-10-12, production build): 4 pages x 375/768/1280 x light/dark with no overflow or console errors (besides local Vercel Analytics 404s); keyboard pass with visible focus on all 19 home stops and 44px tap targets; reduced motion static; contrast floor 7.1:1 light / 6.7:1 dark; Lighthouse mobile home 90/100/96/100 (perf/a11y/best/SEO), desktop home 100/100/96/100, resume and case study 96/100/96/100; all 8 redirects 308; unknown routes 404; zero em dashes. Re-run Lighthouse after step 14 copy changes.
 16. [ ] Merge `v2` → `main`.
 
 ---

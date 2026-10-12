@@ -18,7 +18,8 @@ export function Contact() {
           <a
             id="contact-email"
             href={`mailto:${profile.email}`}
-            className="type-h3 w-fit break-all underline decoration-3 underline-offset-[6px]"
+            // -my-2 py-2: a 44px tap target with no change to the spacing around it.
+            className="type-h3 -my-2 w-fit break-all py-2 underline decoration-3 underline-offset-[6px]"
           >
             {profile.email}
           </a>
