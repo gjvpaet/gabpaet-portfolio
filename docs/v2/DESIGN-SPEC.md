@@ -48,7 +48,8 @@ pnpm add motion @phosphor-icons/react simple-icons
 
 - `motion` (import from `motion/react`): reveals, press physics, draggable stickers.
 - `@phosphor-icons/react`: all UI icons. Use `weight="bold"` everywhere to match the thick outlines. No hand-drawn SVG icons (v1's inline SVGs are removed).
-- `simple-icons`: brand marks for stickers and footer (Claude, Next.js, Node.js, PostgreSQL, Docker, GitHub, LinkedIn). Render the package's `path` data inside one `<BrandIcon>` component; never redraw paths by hand.
+- `simple-icons`: brand marks for the hero stickers (Claude, Next.js, Node.js, PostgreSQL, Docker). Render the package's `path` data inside one `<BrandIcon>` component; never redraw paths by hand.
+- GitHub and LinkedIn marks (contact buttons, footer, case-study Code button) use Phosphor `GithubLogo` / `LinkedinLogo` (bold). `simple-icons` v16 no longer ships a LinkedIn mark, so both social marks come from Phosphor to stay one family.
 
 Fonts via `next/font/google` (self-hosted at build, `display: "swap"`):
 
@@ -236,7 +237,7 @@ See section 7.3. Whole tile is one link (`<a>` wrapping), press motion, `aria-la
 
 ### 6.12 `BrandIcon`
 
-`<svg viewBox="0 0 24 24" role="img" aria-label={title}><path d={icon.path} fill="currentColor"/></svg>` from `simple-icons`. Used for stickers, contact buttons, footer.
+`<svg viewBox="0 0 24 24" role="img" aria-label={title}><path d={icon.path} fill="currentColor"/></svg>` from `simple-icons`. Used for the hero stickers only.
 
 ### 6.13 `Footer`
 
@@ -312,7 +313,7 @@ Entries and draft copy (from v1 text; **every highlight marked VERIFY must be co
 - Full-width block inside the container: mint fill, 3px border, `--r-card`, `--shadow-lg`, padding `48px` (`md: 64px`). Text `--on-accent` (dark in both themes).
 - H2 **"Get in touch"**.
 - Line: "Not actively looking, but always happy to talk about AI, automation or web work."
-- Email `hello@gabpaet.dev` at H3 scale as a `mailto:` link, then a button row: `CopyEmailButton`, `ButtonLink secondary` LinkedIn (BrandIcon), `ButtonLink secondary` GitHub (BrandIcon). Buttons on mint use `--surface` fill.
+- Email `hello@gabpaet.dev` at H3 scale as a `mailto:` link, then a button row: `CopyEmailButton`, `ButtonLink secondary` LinkedIn (Phosphor `LinkedinLogo`), `ButtonLink secondary` GitHub (Phosphor `GithubLogo`). Buttons on mint use `--surface` fill.
 - No form. No phone number.
 
 ---
@@ -324,7 +325,7 @@ Static routes generated from `content/projects.ts` (`generateStaticParams`). Tar
 Template:
 
 1. Back link "All projects" → `/#projects`.
-2. H1 (H2 scale, it is the page's only h1), one-line summary, buttons: `primary` **"Live site"** (`ArrowUpRight`) and, when public, `secondary` **"Code"** (GitHub BrandIcon).
+2. H1 (H2 scale, it is the page's only h1), one-line summary, buttons: `primary` **"Live site"** (`ArrowUpRight`) and, when public, `secondary` **"Code"** (Phosphor `GithubLogo`).
 3. Screenshots: one desktop `ScreenshotFrame` full width, plus one phone frame beside it on desktop (stacked on mobile).
 4. **What it is:** 2 to 3 sentences.
 5. **How it's built:** stack chips + `ArchitectureDiagram`.
@@ -476,9 +477,9 @@ export const profile = {
 
 Order matters; each step should leave the site buildable.
 
-1. [ ] On `v2`: remove v1 IDE code (`app/(ide)`, `components/ide/*`, `context/*`, `lib/tweaks.ts`, `lib/files.ts`, `content/*.tsx`, v1 tokens in `globals.css`). Move v1 reference docs out of the way (`portfolio.html`, `HANDOFF.md`, `DESIGN.md`, `PRODUCT.md` are preserved on the `v1` tag; delete or replace them on `v2`).
-2. [ ] Install `motion`, `@phosphor-icons/react`, `simple-icons`. Wire Archivo (wdth axis) + JetBrains Mono via `next/font`.
-3. [ ] Tokens: `globals.css` (light + dark), `lib/tokens.ts`, `lib/z.ts`, `lib/theme.ts`, pre-hydration theme script.
+1. [x] On `v2`: remove v1 IDE code (`app/(ide)`, `components/ide/*`, `context/*`, `lib/tweaks.ts`, `lib/files.ts`, `content/*.tsx`, v1 tokens in `globals.css`). Move v1 reference docs out of the way (`portfolio.html`, `HANDOFF.md`, `DESIGN.md`, `PRODUCT.md` are preserved on the `v1` tag; delete or replace them on `v2`).
+2. [x] Install `motion`, `@phosphor-icons/react`, `simple-icons`. Wire Archivo (wdth axis) + JetBrains Mono via `next/font`.
+3. [x] Tokens: `globals.css` (light + dark), `lib/tokens.ts`, `lib/z.ts`, `lib/theme.ts`, pre-hydration theme script.
 4. [ ] `content/profile.ts` and `content/projects.ts` with draft copy from sections 7 to 8.
 5. [ ] Primitives: Button, Chip, Card, BrandIcon, ScreenshotFrame, SectionHeading, ThemeToggle, CopyEmailButton.
 6. [ ] Nav + Footer + skip link + `not-found`.
