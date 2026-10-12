@@ -340,7 +340,7 @@ Template:
 - Architecture (named publicly, approved): Next.js web app on Vercel → PartyServer rooms on Cloudflare Durable Objects (server-authoritative game state) → D1 for guest wallets, ledger and play stats. Shared pure TypeScript rules engine and bot (`packages/engine`, unit tested with Vitest).
 - Hard problems (drafts, VERIFY wording): server-authoritative multiplayer with bots filling empty seats; a pure, test-driven rules engine shared by client and server; virtual chips that can never be bought or cashed out, by design.
 - Credits: "Built with contributions from Koddi Evangelista." (Add Nicolas Recto only if In Between returns to the home page.)
-- Screenshots: capture desktop (1440×900) and phone landscape from the live site.
+- Screenshots (captured 2026-10-12, headless Chrome at 2x, saved as WebP in `public/projects/tong-masters/`): desktop 1440×900 of `/solo` mid-hand, and phone 390×844 of the home screen (the table itself is landscape-only on phones, so the portrait phone frame shows the home screen).
 
 ### 8.2 `/projects/portfolio-v1`
 
@@ -349,7 +349,7 @@ Template:
 - Architecture: Next.js App Router with a single `files.ts` registry driving sidebar, tabs, command palette and sitemap; CSS-variable theming with a pre-hydration script.
 - Hard problems (drafts): one source of truth for an IDE-style navigation; theme and accent switching without a flash on first paint; making an IDE layout usable on a phone.
 - What's next: "Retired in favour of v2, kept live as a reference."
-- Screenshots: capture from `v1.gabpaet.dev` once it is live (desktop + phone).
+- Screenshots (captured 2026-10-12 from `gabpaet.dev/about`, which still served v1; identical to what `v1.gabpaet.dev` will serve): desktop 1440×900 and phone 390×844, saved as WebP in `public/projects/portfolio-v1/`.
 
 ---
 
@@ -485,7 +485,7 @@ Order matters; each step should leave the site buildable.
 6. [x] Nav + Footer + skip link + `not-found`.
 7. [x] Home sections in order: Hero (static first), Experience, Projects, About, Contact.
 8. [x] Motion layer: press, reveals, hero entrance, draggable stickers. Verify reduced motion.
-9. [ ] Capture screenshots (Tong Masters now; v1 after step 13) as WebP into `public/projects/<slug>/`.
+9. [x] Capture screenshots (both projects; v1 from gabpaet.dev while it still served v1) as WebP into `public/projects/<slug>/`.
 10. [ ] Case study pages + ArchitectureDiagram.
 11. [ ] `/resume` + print stylesheet; generate and commit the PDF.
 12. [ ] Metadata, canonicals, JSON-LD, sitemap, robots, redirects, OG images, icons.

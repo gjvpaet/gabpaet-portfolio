@@ -28,7 +28,7 @@ export type Project = {
   /** Home tile shows these; the case study shows them all. */
   stack: string[];
   featured?: boolean;
-  /** Filled in by build-checklist step 9 (captured from the live sites). */
+  /** Captured from the live sites (build-checklist step 9). */
   screenshots: Screenshot[];
   whatItIs: string;
   /** Left-to-right flow for the architecture diagram. */
@@ -46,7 +46,22 @@ export const projects: Project[] = [
     liveUrl: "https://tongmasters.gabpaet.dev",
     stack: ["Next.js", "Cloudflare", "Durable Objects", "TypeScript", "D1", "Vitest"],
     featured: true,
-    screenshots: [],
+    screenshots: [
+      {
+        src: "/projects/tong-masters/desktop.webp",
+        alt: "Tong Masters solo game on desktop: two bots and the player mid-hand, with the stock, the discard pile and the player's cards.",
+        kind: "desktop",
+        width: 1600,
+        height: 1000,
+      },
+      {
+        src: "/projects/tong-masters/phone.webp",
+        alt: "Tong Masters home screen on a phone, with buttons to play solo, play online with friends or learn to play.",
+        kind: "phone",
+        width: 780,
+        height: 1688,
+      },
+    ],
     // VERIFY
     whatItIs:
       "Tong-its is a Filipino rummy game usually played around a table with three people. Tong Masters puts it in the browser: open a room and play with friends, let bots fill the empty seats, or practice solo against bots. A guided tutorial teaches the rules hand by hand.",
@@ -85,7 +100,22 @@ export const projects: Project[] = [
     liveUrl: "https://v1.gabpaet.dev",
     codeUrl: "https://github.com/gjvpaet/gabpaet-portfolio/tree/v1",
     stack: ["Next.js", "Tailwind", "TypeScript"],
-    screenshots: [],
+    screenshots: [
+      {
+        src: "/projects/portfolio-v1/desktop.webp",
+        alt: "Portfolio v1 on desktop: the about page shown as a markdown file in a code editor, with a file tree, tabs and a status bar.",
+        kind: "desktop",
+        width: 1600,
+        height: 1000,
+      },
+      {
+        src: "/projects/portfolio-v1/phone.webp",
+        alt: "Portfolio v1 on a phone: the about page in the editor layout, with file tabs across the top.",
+        kind: "phone",
+        width: 780,
+        height: 1688,
+      },
+    ],
     // VERIFY
     whatItIs:
       "The first version of gabpaet.dev presented every page as a file in a VS Code-style editor, with a file tree, tabs, a command palette and a status bar.",
