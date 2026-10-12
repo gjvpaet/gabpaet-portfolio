@@ -358,7 +358,8 @@ Template:
 - Same content source as the home page (`content/profile.ts`), but complete: every role with all highlights and **full** chip lists, education/internship, skills groups, contact (email, LinkedIn, GitHub, site). No phone.
 - Screen view: single column `max-w-[800px]`, neo-brutalist cards like the home page, plus a `primary` button **"Download PDF"** (`DownloadSimple`) → `/gabriel-paet-resume.pdf` and a `secondary` "Print".
 - Print stylesheet (`@media print`): hide nav, footer, buttons and theme toggle; force light tokens; remove shadows; borders 1px; A4 and Letter safe margins (`@page { margin: 14mm }`); avoid breaking inside a role (`break-inside: avoid`).
-- The PDF in `public/gabriel-paet-resume.pdf` is produced by printing `/resume` to PDF from Chrome and committing it. Regenerate whenever `content/profile.ts` changes (checklist item).
+- The PDF in `public/gabriel-paet-resume.pdf` is produced by printing `/resume` from a **production** build (the dev server's overlay would print) and committing it: Chrome Print → Save as PDF, or headless Chrome `page.pdf({ preferCSSPageSize: true })`, which picks up the `@page` A4 size and 14mm margins. Regenerate whenever `content/profile.ts` or `content/projects.ts` changes (checklist item).
+- Sections: header (name, role and location, contact links shown as bare URLs so they read on paper, hero line), Experience (every role, every highlight, full chip list), Skills, Projects (name, URL, summary). No Education section until Gabriel supplies education details.
 
 ---
 
@@ -487,7 +488,7 @@ Order matters; each step should leave the site buildable.
 8. [x] Motion layer: press, reveals, hero entrance, draggable stickers. Verify reduced motion.
 9. [x] Capture screenshots (both projects; v1 from gabpaet.dev while it still served v1) as WebP into `public/projects/<slug>/`.
 10. [x] Case study pages + ArchitectureDiagram.
-11. [ ] `/resume` + print stylesheet; generate and commit the PDF.
+11. [x] `/resume` + print stylesheet; generate and commit the PDF.
 12. [ ] Metadata, canonicals, JSON-LD, sitemap, robots, redirects, OG images, icons.
 13. [ ] v1 preservation (section 2): tag, branch, Vercel project, Porkbun CNAME, verify `v1.gabpaet.dev`.
 14. [ ] Gabriel verifies every VERIFY string.

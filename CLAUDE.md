@@ -33,6 +33,7 @@ Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss
 - **Fonts:** `app/layout.tsx` loads Archivo (variable, with the `wdth` axis; width is set with `font-stretch: 110%` / `125%`) as `--font-archivo` and JetBrains Mono as `--font-jetbrains-mono`.
 - **Content:** `content/profile.ts` and `content/projects.ts` (spec section 10) are the single source of facts for the home page, `/resume`, JSON-LD, metadata and OG images. Never hardcode those facts elsewhere. Draft strings carry a `// VERIFY` comment until Gabriel confirms them.
 - **Canonical URLs:** set per page via `metadata.alternates.canonical`, never in the root layout.
+- **Resume PDF:** `public/gabriel-paet-resume.pdf` is a printout of `/resume`. After any change to `content/profile.ts` or `content/projects.ts`, regenerate it from a production build (`portfolio-prod` preview config, port 3300), never the dev server. Then rebuild before checking it locally: `next start` only serves `public/` files that existed at build time. Print styles live at the bottom of `globals.css`; components hide themselves on paper with `print:hidden`.
 
 ## Rules that are easy to break
 

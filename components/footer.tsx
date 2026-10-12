@@ -9,7 +9,7 @@ export function Footer() {
   const external = { target: "_blank", rel: "noopener noreferrer" } as const;
 
   return (
-    <footer className="mx-auto max-w-[1200px] px-4 md:px-8">
+    <footer className="mx-auto max-w-[1200px] px-4 md:px-8 print:hidden">
       <div className="flex flex-col gap-4 border-t-3 border-ink py-8 md:flex-row md:items-center md:justify-between">
         <p className="type-body-sm">
           © {new Date().getFullYear()} {profile.name}

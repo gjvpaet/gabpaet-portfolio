@@ -309,7 +309,41 @@ h3 {
   box-shadow: 12px 12px 0 0 var(--ink);
 }
 
+/* =========================================================
+   Print (spec 9): built for /resume, safe for any page. Light colors on
+   white whatever the theme, no shadows, 1px outlines, A4 margins.
+   ========================================================= */
 @media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  /* :root x3 outranks both dark-theme selectors (spec 4.1 blocks). */
+  :root:root:root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --ink: #1b1c1a;
+    --ink-muted: #55584f;
+    --mint-text: #0a7a5c;
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    color-scheme: light;
+    font-size: 12.5px;
+  }
+
+  * {
+    box-shadow: none !important;
+  }
+  .border-3,
+  .border-2 {
+    border-width: 1px !important;
+  }
+  .border-b-3 {
+    border-bottom-width: 1px !important;
+  }
+
   .js [data-reveal] {
     opacity: 1;
     translate: none;

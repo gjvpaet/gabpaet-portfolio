@@ -111,7 +111,7 @@ export function Nav({ shortName }: { shortName: string }) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-[var(--z-nav)] border-b-3 bg-bg transition-[border-color] duration-200",
+        "sticky top-0 z-[var(--z-nav)] border-b-3 bg-bg transition-[border-color] duration-200 print:hidden",
         scrolledPastHero || menuOpen ? "border-ink" : "border-transparent",
       )}
     >
