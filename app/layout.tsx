@@ -10,10 +10,7 @@ import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { tokens } from "@/lib/tokens";
 import "./globals.css";
 
-const SITE_URL = "https://gabpaet.dev";
-const SITE_TITLE = "Gabriel Joshua Paet, Senior Programmer";
-const SITE_DESCRIPTION =
-  "Senior programmer with 9 years of experience. AI agents, workflow automation, DevOps, and full-stack web. Based in Pasay City, currently at Lumora Capital.";
+const SITE_TITLE = `${profile.name}, ${profile.role}`;
 
 // Archivo is variable on weight and width; the wdth axis drives the wide
 // display type (font-stretch: 110% / 125%).
@@ -32,16 +29,16 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(profile.site),
   title: {
     default: SITE_TITLE,
-    template: "%s | Gabriel Joshua Paet",
+    template: `%s | ${profile.name}`,
   },
-  description: SITE_DESCRIPTION,
+  description: profile.metaDescription,
   applicationName: "gabpaet.dev",
-  authors: [{ name: "Gabriel Joshua Paet", url: SITE_URL }],
-  creator: "Gabriel Joshua Paet",
-  publisher: "Gabriel Joshua Paet",
+  authors: [{ name: profile.name, url: profile.site }],
+  creator: profile.name,
+  publisher: profile.name,
   keywords: [
     "Gabriel Joshua Paet",
     "gabpaet",
@@ -53,22 +50,21 @@ export const metadata: Metadata = {
     "TypeScript",
     "AI engineer",
     "Philippines",
-    "Lumora Capital",
   ],
-  // App Router auto-includes /sitemap.xml + /robots.txt + /opengraph-image
-  // via the file conventions, so no need to list them here.
+  // sitemap.xml, robots.txt, opengraph-image, icon and apple-icon come from
+  // the app/ file conventions, so they are not listed here.
   openGraph: {
     type: "website",
-    url: SITE_URL,
+    url: "/",
     siteName: "gabpaet.dev",
     title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
+    description: profile.metaDescription,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
+    description: profile.metaDescription,
   },
   robots: {
     index: true,
@@ -98,48 +94,35 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-// schema.org/Person — gives Google enough structured data to build a
-// knowledge-panel-style result with name, role, location, and sameAs links.
+// schema.org Person + WebSite (spec 13), built from content/profile.ts so the
+// structured data can never disagree with the page.
+const currentRole = profile.roles.find((r) => r.current);
+
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  name: "Gabriel Joshua Paet",
+  name: profile.name,
   alternateName: "gabpaet",
-  url: SITE_URL,
-  jobTitle: "Senior Programmer",
-  worksFor: {
-    "@type": "Organization",
-    name: "Lumora Capital",
-  },
+  url: profile.site,
+  email: `mailto:${profile.email}`,
+  jobTitle: profile.role,
+  ...(currentRole ? { worksFor: { "@type": "Organization", name: currentRole.company } } : {}),
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Pasay City",
-    addressRegion: "NCR",
-    addressCountry: "PH",
+    addressLocality: profile.address.locality,
+    addressRegion: profile.address.region,
+    addressCountry: profile.address.country,
   },
-  sameAs: ["https://github.com/gjvpaet"],
-  knowsAbout: [
-    "Node.js",
-    "Next.js",
-    "React",
-    "React Native",
-    "TypeScript",
-    "PostgreSQL",
-    "LangChain",
-    "OpenAI API",
-    "AWS Bedrock Agents",
-    "Google Vertex AI",
-    "DevOps",
-    "Workflow automation",
-  ],
+  sameAs: [profile.links.github, profile.links.linkedin],
+  knowsAbout: profile.skills.flatMap((group) => group.items),
 };
 
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "gabpaet.dev",
-  url: SITE_URL,
-  author: { "@type": "Person", name: "Gabriel Joshua Paet" },
+  url: profile.site,
+  author: { "@type": "Person", name: profile.name },
   inLanguage: "en",
 };
 

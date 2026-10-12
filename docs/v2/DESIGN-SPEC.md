@@ -459,8 +459,9 @@ export const profile = {
 | `/zshrc` | `/` |
 | `/writing` | `/` |
 
-- **OG image** (`app/opengraph-image.tsx`, 1200×630, static): `--bg` light background, 6px ink border inset 32px with 12px shadow; full name from `profile.name`, stacked one word per line like the hero ("GABRIEL" / "JOSHUA" / "PAET", about 104px, leading 0.92, left-aligned), in Archivo Expanded ExtraBold; role line in Archivo; yellow status chip; two stickers (Claude, `>_`) tilted at the right. Colors from `lib/tokens.ts`. Font: bundle static TTFs (`assets/fonts/Archivo_Expanded-ExtraBold.ttf`, `Archivo-Regular.ttf`) since Satori does not read variable axes. Per-project OG images reuse the layout with the project name.
-- **Favicon:** `app/icon.tsx` (32×32) and `app/apple-icon.tsx` (180×180): "GP" in Archivo Expanded ExtraBold, ink on mint, rounded 6px tile with a 2px ink border. Delete `app/favicon.ico`.
+- **OG image** (`app/opengraph-image.tsx`, 1200×630, static): `--bg` light background, 6px ink border inset 32px with 12px shadow; full name from `profile.name`, stacked one word per line like the hero ("GABRIEL" / "JOSHUA" / "PAET", about 104px, leading 0.92, left-aligned), in Archivo Expanded ExtraBold; role line in Archivo; yellow status chip; two stickers (Claude, `>_`) tilted at the right. Colors from `lib/tokens.ts`. Fonts: static TTF instances in `assets/fonts/` (`Archivo-Expanded-ExtraBold.ttf` = wdth 125 / wght 800, `Archivo-Medium.ttf`, `JetBrainsMono-SemiBold.ttf`, all OFL, fetched from Google Fonts' static instances) since Satori does not read variable axes. The renderer lives in `lib/og.tsx`; the title shrinks below 104px only when its longest word would not fit beside the stickers. Per-project OG images (`app/projects/[slug]/opengraph-image.tsx`) reuse it with the project name, summary and a "Case study" chip.
+- **Favicon:** `app/icon.tsx` (32×32): "GP" in Archivo Expanded ExtraBold, ink on mint, rounded 6px tile with a 2px ink border. `app/apple-icon.tsx` (180×180) is a full-bleed mint square with no outline, because iOS rounds the corners itself and would clip an outline unevenly. `app/favicon.ico` is deleted.
+- **Meta description and title** come from `profile.metaDescription` and `profile.name` / `profile.role`; JSON-LD is built from `profile` (current employer from the `current` role, `knowsAbout` from the skill groups).
 
 ---
 
@@ -489,7 +490,7 @@ Order matters; each step should leave the site buildable.
 9. [x] Capture screenshots (both projects; v1 from gabpaet.dev while it still served v1) as WebP into `public/projects/<slug>/`.
 10. [x] Case study pages + ArchitectureDiagram.
 11. [x] `/resume` + print stylesheet; generate and commit the PDF.
-12. [ ] Metadata, canonicals, JSON-LD, sitemap, robots, redirects, OG images, icons.
+12. [x] Metadata, canonicals, JSON-LD, sitemap, robots, redirects, OG images, icons.
 13. [ ] v1 preservation (section 2): tag, branch, Vercel project, Porkbun CNAME, verify `v1.gabpaet.dev`.
 14. [ ] Gabriel verifies every VERIFY string.
 15. [ ] QA: `pnpm typecheck`, `pnpm build`; both themes; 375px, 768px, 1280px; keyboard-only pass; reduced motion; Lighthouse (Performance ≥ 90, Accessibility ≥ 95, SEO 100); all redirects return 308 to the right anchor; zero em dashes in visible copy.

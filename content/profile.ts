@@ -55,6 +55,9 @@ export const profile = {
   },
   resumePdf: "/gabriel-paet-resume.pdf",
 
+  /** Search results and link previews. */
+  metaDescription: `Senior programmer with ${yearsShipping} years of experience in AI agents, workflow automation, DevOps and full-stack web. Based in Pasay City, Philippines.`,
+
   heroLine: `Senior programmer building AI agents, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping.`,
 
   // VERIFY (voice): personal, and must not mention Lumora or the current role.

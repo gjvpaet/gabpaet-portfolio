@@ -42,4 +42,5 @@ Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss
 - Radius rule: cards/panels 16px, controls 12px, chips/pills full.
 - Every animation honours `prefers-reduced-motion`; no scroll listeners, no marquee.
 - No em dashes in visible copy. Copy marked VERIFY in the spec must not ship until Gabriel confirms it.
-- `app/opengraph-image.tsx` and `app/favicon.ico` are still the v1 versions until checklist step 12 replaces them.
+- Share images and icons (`app/**/opengraph-image.tsx`, `app/icon.tsx`, `app/apple-icon.tsx`) render through `lib/og.tsx` with the static fonts in `assets/fonts/` and hex values from `lib/tokens.ts`. They cannot use CSS variables or the variable Archivo.
+- Old v1 URLs redirect (308) via `next.config.ts`; keep that list when touching routes.
