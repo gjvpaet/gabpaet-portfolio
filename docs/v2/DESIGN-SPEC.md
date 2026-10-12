@@ -483,7 +483,7 @@ Order matters; each step should leave the site buildable.
 4. [x] `content/profile.ts` and `content/projects.ts` with draft copy from sections 7 to 8.
 5. [x] Primitives: Button, Chip, Card, BrandIcon, ScreenshotFrame, SectionHeading, ThemeToggle, CopyEmailButton.
 6. [x] Nav + Footer + skip link + `not-found`.
-7. [ ] Home sections in order: Hero (static first), Experience, Projects, About, Contact.
+7. [x] Home sections in order: Hero (static first), Experience, Projects, About, Contact.
 8. [ ] Motion layer: press, reveals, hero entrance, draggable stickers. Verify reduced motion.
 9. [ ] Capture screenshots (Tong Masters now; v1 after step 13) as WebP into `public/projects/<slug>/`.
 10. [ ] Case study pages + ArchitectureDiagram.
