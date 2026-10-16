@@ -395,8 +395,9 @@ It replaces `ArchitectureDiagram`. Nodes are `InkBox`es with Bricolage 600 label
 Unchanged from the 2026-10-12 spec (now in `content/projects.ts`): live URLs, Tong Masters' private repo (no Code button), architecture, credits ("Built with contributions from Koddi Evangelista."), and screenshots. New fields:
 
 - `hardProblems[].note?: string` (VERIFY drafts).
-- `whatsNext: { text: string; done?: boolean }[]` (v1: `[{ text: "Retired in favour of v2, kept live as a reference.", done: true }]`; Tong Masters: Gabriel to supply, VERIFY).
-- `napkin: "tong-masters" | "portfolio-v1"` (which `NapkinSketch` to render).
+- `whatsNext: { text: string; done?: boolean }[]`. Tong Masters: two shipped items checked (bots that fill empty seats; the guided tutorial) and two open ones from the old "what's next" line (VERIFY). v1: `[{ text: "Retired in favour of v2, and kept live as a reference", done: true }]`.
+- `playNote?: string`: the hidden margin note on the home "Play it" link (5.2). Tong Masters: "bring two friends" (VERIFY).
+- The `NapkinSketch` is picked by `slug`; no field needed.
 - v1 napkin: a rough sketch of an editor window (sidebar, tabs, a ⌘K box) labelled "a portfolio that's a code editor?".
 
 ---
@@ -417,7 +418,8 @@ Unchanged from the 2026-10-12 spec (now in `content/projects.ts`): live URLs, To
 - `heroDraft: "Full-stack ninja"`
 - `heroLine`: "I build AI agents, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping."
 - `Role.homeLine: string` and `Role.mark: string` (the substring to highlight; it must occur in `homeLine`; dev-time assert).
-- `Role.note?: string`, or `noteKind?: "promotion" | "tenure"` for the computed notes.
+- `Role.note?: string`, 8 words or fewer. The placeholders `{promotion}` ("Programmer to Senior in 8 months") and `{tenure}` ("6 years, 8 months") are filled from `titles` by `roleNote()` in `lib/dates.ts`, which also formats the handwritten dates (`handRange`: "May 2026 → now"; `handYears`: "2015 → 2016").
+- `HOME_CHIP_COUNT` is 4, so each role's `stack` lists its home chips first.
 - Everything else is unchanged. `profile.ts` stays the single source for the home page, `/resume`, JSON-LD, metadata and share images.
 
 ### 10.2 `lib/ink.ts`
@@ -484,7 +486,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 3. [x] Tokens: rewrite `globals.css` (4.1 to 4.6, type utilities, grain, dot grid, ink filters, draw-in, boil, lift, print), `lib/tokens.ts`, `lib/z.ts`. The ink filters render from `components/ink/ink-filters.tsx` in the root layout. Old token names (`bg-surface`, `bg-mint`, `shadow-brut-md`, `press`, `tone-accent`, ...) survive as marked legacy aliases in `globals.css` so unrestyled components keep rendering; delete each alias once steps 5 to 8 stop using it. `lib/og.tsx` reads `legacyTokens` until step 13.
 4. [x] `lib/ink.ts` + pen primitives (6.1) + `MarginNote`, `PaperCard`, `Highlight`, `Tape`. `InkSvg` (`components/ink/ink-svg.tsx`) renders any named mark; the wrappers are `InkCircle`, `InkUnderline`, `InkStrike`, `InkArrow`, `InkBox`. The strike is two loose lines rather than a zigzag, so the crossed-out joke stays readable.
 5. [x] Restyle the primitives: Button, Chip, ScreenshotFrame, SectionHeading, CopyEmailButton, Footer; `LampToggle` replaces ThemeToggle. Also added `DrawnLink` (`components/drawn-link.tsx`, the pen-underlined text link that boils on hover). The lamp's light is two pen strokes (`lampRays` in `lib/ink.ts`) left of Phosphor `Lamp`'s stem. `StatusChip` is kept, restyled as a wash pill, only until the hero rebuild drops it (step 8).
-6. [ ] Content: `profile.ts` additions (10.1), `projects.ts` additions (8.2), `lib/dates.ts` for the computed notes. New drafts carry `// VERIFY`.
+6. [x] Content: `profile.ts` additions (10.1), `projects.ts` additions (8.2), `lib/dates.ts` for the computed notes. New drafts carry `// VERIFY`.
 7. [ ] Nav (pencil + lamp + Résumé), mobile menu restyle.
 8. [ ] Home sections in order: Hero (with `how-i-build` napkin and stickers), Experience, Projects (Tong Masters napkin), About, Contact.
 9. [ ] Motion: draw-in, reveal, boil, lift; reduced-motion pass.

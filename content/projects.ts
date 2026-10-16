@@ -33,8 +33,12 @@ export type Project = {
   whatItIs: string;
   /** Left-to-right flow for the architecture diagram. */
   architecture: ArchitectureNode[];
-  hardProblems: { title: string; body: string }[];
-  whatsNext: string;
+  /** `note`: an optional handwritten margin aside, 8 words or fewer. */
+  hardProblems: { title: string; body: string; note?: string }[];
+  /** The case study's to-do list (spec 8, step 8). */
+  whatsNext: { text: string; done?: boolean }[];
+  /** Hidden margin note on the home "Play it" link (spec 5.2), 8 words or fewer. */
+  playNote?: string;
   credits?: string;
 };
 
@@ -77,21 +81,31 @@ export const projects: Project[] = [
         // VERIFY
         title: "Fair multiplayer with bots in the mix",
         body: "Each room runs on a Durable Object that owns the game state, so players only ever see their own hand. Bots take empty seats through the same server rules as people.",
+        note: "nobody can peek at your hand",
       },
       {
         // VERIFY
         title: "One rules engine, tested first",
         body: "The rules and the bot live in a pure TypeScript package written test-first with Vitest. The server, solo mode and the tutorial all run the same engine.",
+        note: "the tests came before the table",
       },
       {
         // VERIFY
         title: "Chips that are only for fun",
         body: "Virtual chips can never be bought or cashed out, by design. The server keeps the balances and a ledger, so nothing about a player's chips is trusted from the browser.",
+        note: "no real money, ever",
       },
     ],
+    whatsNext: [
+      { text: "Bots that fill empty seats", done: true },
+      { text: "A guided tutorial that teaches the rules hand by hand", done: true },
+      // VERIFY
+      { text: "Open it up to more players beyond friends and family" },
+      // VERIFY
+      { text: "Add more Filipino card games once the format is right" },
+    ],
     // VERIFY
-    whatsNext:
-      "Opening it up to more players beyond friends and family, then adding more Filipino card games once the format is right.",
+    playNote: "bring two friends",
     credits: "Built with contributions from Koddi Evangelista.",
   },
   {
@@ -129,19 +143,22 @@ export const projects: Project[] = [
         // VERIFY
         title: "One source of truth for navigation",
         body: "The sidebar, tabs, command palette, breadcrumb and sitemap all read one registry of files, so adding a page meant one entry instead of five.",
+        note: "one entry instead of five",
       },
       {
         // VERIFY
         title: "Theme switching without a flash",
         body: "Accent, density and theme choices were applied by a small script before React loaded, so the first paint already matched the visitor's settings.",
+        note: "no flash on first paint",
       },
       {
         // VERIFY
         title: "An editor layout on a phone",
         body: "The file tree became a slide-in drawer and the editor chrome shrank in three steps, so the IDE idea still worked on a small screen.",
+        note: "the file tree became a drawer",
       },
     ],
-    whatsNext: "Retired in favour of v2, and kept live as a reference.",
+    whatsNext: [{ text: "Retired in favour of v2, and kept live as a reference", done: true }],
   },
 ];
 

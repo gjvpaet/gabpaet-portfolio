@@ -113,7 +113,15 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
         </Block>
 
         <Block id="whats-next" title="What's next">
-          <p className="max-w-[65ch]">{project.whatsNext}</p>
+          {/* Plain list until the notebook spread (build step 11) draws the checkboxes. */}
+          <ul className="grid max-w-[65ch] gap-2">
+            {project.whatsNext.map((item) => (
+              <li key={item.text}>
+                {item.done ? <span className="sr-only">done: </span> : null}
+                <span className={item.done ? "text-ink-soft line-through" : undefined}>{item.text}</span>
+              </li>
+            ))}
+          </ul>
         </Block>
 
         {project.credits ? <p className="type-body-sm text-ink-muted">{project.credits}</p> : null}

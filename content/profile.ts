@@ -29,12 +29,22 @@ export type Role = {
   /** The home page shows the first six; /resume shows all. */
   stack: string[];
   current?: boolean;
-  /** Rendered as a one-line card on the home page (no chips). */
+  /** Rendered as a one-line row on the home page (no chips, no note). */
   compact?: boolean;
+  /** The one sentence the home page shows for this role (spec 7.2). */
+  homeLine: string;
+  /** The phrase in `homeLine` that gets the highlighter. Must occur in it. */
+  mark?: string;
+  /**
+   * Handwritten margin note, 8 words or fewer (spec 6.2). `{promotion}` and
+   * `{tenure}` are filled from `titles` by lib/dates.ts, so they never drift.
+   */
+  note?: string;
 };
 
 export const HOME_HIGHLIGHT_COUNT = 2;
-export const HOME_CHIP_COUNT = 6;
+/** Chips per role on the home page (spec 6.9); /resume shows them all. */
+export const HOME_CHIP_COUNT = 4;
 
 const yearsShipping = 9; // first full-time role: 2017-05
 
@@ -58,7 +68,10 @@ export const profile = {
   /** Search results and link previews. */
   metaDescription: `Senior programmer with ${yearsShipping} years of experience in AI agents, workflow automation, DevOps and full-stack web. Based in Pasay City, Philippines.`,
 
-  heroLine: `Senior programmer building AI agents, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping.`,
+  /** Crossed out above the title in the hero (spec 5.2): the joke draft. */
+  heroDraft: "Full-stack ninja",
+
+  heroLine: `I build AI agents, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping.`,
 
   // VERIFY (voice): personal, and must not mention Lumora or the current role.
   bio: "I love building things that interest me, whether it's a tool that makes a tedious job disappear or a weekend idea that turns into something real. Tong Masters started that way: I wanted an online Tong-its game so friends and family could play together, so I built one. I'd rather see a thing all the way through, from the first rough version to something people actually use. Nine years of building web and mobile apps later, that's still the part I enjoy most.",
@@ -90,6 +103,12 @@ export const profile = {
       mode: "Hybrid",
       location: "Philippines",
       current: true,
+      // VERIFY (second half, from the second highlight)
+      homeLine:
+        "Building Centra, Lumora's proprietary loan origination and servicing system, and automating manual operations with n8n and agent tooling.",
+      mark: "Centra",
+      // VERIFY
+      note: "Claude Code is in my daily workflow",
       highlights: [
         "Building Centra, Lumora's proprietary loan origination and servicing system.",
         // VERIFY
@@ -108,6 +127,11 @@ export const profile = {
         { title: "Programmer", from: "2024-01", to: "2024-09" },
       ],
       mode: "Hybrid",
+      // VERIFY
+      homeLine:
+        "Shipped LLM features with LangChain, LangGraph, OpenAI, AWS Bedrock Agents and Vertex AI, across web and mobile apps.",
+      mark: "LLM features",
+      note: "{promotion}",
       highlights: [
         // VERIFY
         "Shipped LLM features with LangChain, LangGraph, OpenAI, AWS Bedrock Agents and Vertex AI.",
@@ -115,7 +139,7 @@ export const profile = {
         "Built web and mobile apps across Next.js, React Native and Flutter.",
       ],
       stack: [
-        "LangChain", "LangGraph", "AWS Bedrock Agents", "Next.js", "React Native", "Supabase",
+        "LangGraph", "AWS Bedrock Agents", "Next.js", "React Native", "LangChain", "Supabase",
         "OpenAI API", "Google Vertex AI", "Flutter", "React", "Node.js", "JavaScript", "PostgreSQL", "SQL",
         "GCP", "Vercel", "DigitalOcean", "AWS S3", "Azure File Share", "Docker", "Git",
       ],
@@ -124,13 +148,18 @@ export const profile = {
       company: "Volenday Group",
       titles: [{ title: "Programmer", from: "2017-05", to: "2024-01" }],
       mode: "Remote",
+      homeLine:
+        "Built a React Native app in Danish and Norwegian with its REST API, then led the team as scrum master on a web app we moved to Azure.",
+      mark: "led the team",
+      // VERIFY
+      note: "my first full-time job. {tenure}",
       highlights: [
         "Built a React Native app with Danish and Norwegian language support, plus its REST API.",
         "Led a team as scrum master for a web app serving offshore employees, and migrated it to Azure with MSSQL and Azure File Share for faster deploys.",
         "Ran the app's Azure CI/CD pipeline and managed sprints in Jira.",
       ],
       stack: [
-        "React Native", "Node.js", "Next.js", "Azure", "MSSQL", "MongoDB",
+        "React Native", "Azure", "MSSQL", "Node.js", "Next.js", "MongoDB",
         "React", "SQL", "NoSQL", "Azure File Share", "AWS S3", "GCP", "Docker", "Git",
       ],
     },
@@ -140,6 +169,7 @@ export const profile = {
       mode: "On-site",
       location: "Taguig City",
       compact: true,
+      homeLine: "A C# app for tracking FTE allocations.",
       highlights: ["Built a C# (MVVM) app to track employee FTE allocations and requirements across projects."],
       stack: ["C#", "OOP", "LINQ", "MVVM"],
     },
@@ -147,3 +177,11 @@ export const profile = {
 } as const;
 
 export type Profile = typeof profile;
+
+// A highlighter `mark` that is not in its `homeLine` would silently render
+// nothing; fail the dev server and the build instead.
+for (const role of profile.roles) {
+  if (role.mark && !role.homeLine.includes(role.mark)) {
+    throw new Error(`content/profile.ts: mark "${role.mark}" is not in ${role.company}'s homeLine`);
+  }
+}
