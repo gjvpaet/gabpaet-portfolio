@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { siClaude } from "simple-icons";
 
-import { tokens } from "@/lib/tokens";
+import { legacyTokens as tokens } from "@/lib/tokens";
 
 // Share images and icons are rendered by next/og (Satori), which reads static
 // TTF/OTF files only: no CSS variables, no variable-font axes. The fonts in

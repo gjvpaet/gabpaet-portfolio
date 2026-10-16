@@ -1,94 +1,138 @@
 @import "tailwindcss";
 
 /* =========================================================
-   v2 design tokens. Source: docs/v2/DESIGN-SPEC.md section 4.
+   Notebook design tokens. Source: docs/v2/DESIGN-SPEC.md section 4.
    Hex values are mirrored in lib/tokens.ts; change both together.
-   Light is the base; dark applies when the OS prefers dark and the
-   visitor has not pinned light, or when they pinned dark.
+   Light is the base; dark ("night page") applies when the OS prefers
+   dark and the visitor has not pinned light, or when they pinned dark.
    ========================================================= */
 :root {
-  --bg: #f6f7f3;
-  --surface: #fdfdfb;
-  --ink: #1b1c1a;
-  --ink-muted: #55584f;
-  --mint: #2ee5b4;
-  --yellow: #ffd23f;
-  --on-accent: #1b1c1a;
-  --mint-text: #0a7a5c;
+  --paper: #f2f2ee;
+  --sheet: #fbfbf8;
+  --ink: #1d1d1b;
+  --ink-soft: #57574f;
+  --pen: #5a2d91;
+  --btn: #4b2380;
+  --on-btn: #fbfbf8;
+  --wash: rgb(124 77 200 / 0.2);
+  --note: #e6ddf3;
+  --on-note: #1d1d1b;
+  --tape: rgb(205 207 196 / 0.72);
+  --dot: rgb(29 29 27 / 0.13);
+  --lift: rgb(29 29 27 / 0.22);
+  --grain-opacity: 0.06;
 
-  --r-card: 16px;
+  --r-paper: 3px;
   --r-control: 12px;
   --r-pill: 999px;
 
-  --bw: 3px;
-  --bw-thin: 2px;
-  --shadow-sm: 3px 3px 0 0 var(--ink);
-  --shadow-md: 5px 5px 0 0 var(--ink);
-  --shadow-lg: 8px 8px 0 0 var(--ink);
+  --line: 2px;
+  --line-thin: 1.5px;
+  --shadow-lift: 0 22px 44px -22px var(--lift), 0 2px 0 var(--lift);
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
 
   /* Mirrors lib/z.ts */
   --z-sticker: 10;
   --z-sticker-dragging: 20;
+  --z-pencil: 30;
   --z-nav: 40;
   --z-mobile-menu: 50;
   --z-toast: 60;
+  --z-grain: 65;
+  --z-splash: 70;
 
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #121412;
-    --surface: #1c1f1b;
-    --ink: #f2f3ee;
-    --ink-muted: #a3a69c;
-    --mint-text: #2ee5b4;
+    --paper: #1a1b19;
+    --sheet: #242622;
+    --ink: #ecede6;
+    --ink-soft: #a6a79c;
+    --pen: #b79cf0;
+    --btn: #b79cf0;
+    --on-btn: #1a1b19;
+    --wash: rgb(183 156 240 / 0.24);
+    --note: #3a2e52;
+    --on-note: #ecede6;
+    --tape: rgb(150 152 140 / 0.45);
+    --dot: rgb(236 237 230 / 0.1);
+    --lift: rgb(0 0 0 / 0.55);
+    --grain-opacity: 0.05;
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #121412;
-  --surface: #1c1f1b;
-  --ink: #f2f3ee;
-  --ink-muted: #a3a69c;
-  --mint-text: #2ee5b4;
+  --paper: #1a1b19;
+  --sheet: #242622;
+  --ink: #ecede6;
+  --ink-soft: #a6a79c;
+  --pen: #b79cf0;
+  --btn: #b79cf0;
+  --on-btn: #1a1b19;
+  --wash: rgb(183 156 240 / 0.24);
+  --note: #3a2e52;
+  --on-note: #ecede6;
+  --tape: rgb(150 152 140 / 0.45);
+  --dot: rgb(236 237 230 / 0.1);
+  --lift: rgb(0 0 0 / 0.55);
+  --grain-opacity: 0.05;
   color-scheme: dark;
 }
 
-/* Expose tokens as Tailwind utilities: bg-surface, text-ink-muted,
-   border-ink, rounded-card, shadow-brut-md, font-hand, etc. */
+/* Expose tokens as Tailwind utilities: bg-paper, text-pen, bg-wash,
+   rounded-paper, shadow-lift, font-hand, ease-draw, etc. */
 @theme inline {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
   --color-ink: var(--ink);
-  --color-ink-muted: var(--ink-muted);
-  --color-mint: var(--mint);
-  --color-yellow: var(--yellow);
-  --color-on-accent: var(--on-accent);
-  --color-mint-text: var(--mint-text);
+  --color-ink-soft: var(--ink-soft);
+  --color-pen: var(--pen);
+  --color-btn: var(--btn);
+  --color-on-btn: var(--on-btn);
+  --color-wash: var(--wash);
+  --color-note: var(--note);
+  --color-on-note: var(--on-note);
+  --color-tape: var(--tape);
 
   --font-sans: var(--font-bricolage), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-hand: var(--font-shantell), "Comic Neue", ui-rounded, cursive;
 
-  --radius-card: var(--r-card);
+  --radius-paper: var(--r-paper);
   --radius-control: var(--r-control);
   --radius-pill: var(--r-pill);
 
-  --shadow-brut-sm: var(--shadow-sm);
-  --shadow-brut-md: var(--shadow-md);
-  --shadow-brut-lg: var(--shadow-lg);
+  --shadow-lift: var(--shadow-lift);
 
+  --ease-out: var(--ease-out);
+  --ease-draw: var(--ease-draw);
+
+  /* ---- Legacy aliases from the neo-brutalist build. Components still
+     using these are restyled in checklist steps 5 to 8; delete each alias
+     once nothing references it. ---- */
+  --color-bg: var(--paper);
+  --color-surface: var(--sheet);
+  --color-ink-muted: var(--ink-soft);
+  --color-mint: var(--note);
+  --color-yellow: var(--note);
+  --color-on-accent: var(--on-note);
+  --color-mint-text: var(--pen);
+  --radius-card: var(--r-control);
+  --shadow-brut-sm: none;
+  --shadow-brut-md: var(--shadow-lift);
+  --shadow-brut-lg: var(--shadow-lift);
   --ease-brut: var(--ease-out);
 }
 
 /* =========================================================
-   Base
+   Base: dot-grid paper (spec 4.1)
    ========================================================= */
 html {
-  background: var(--bg);
+  background: var(--paper);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -104,22 +148,37 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 1.1px, transparent 1.4px);
+  background-size: 22px 22px;
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  font-size: 1.125rem;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Paper grain: one static noise tile on a fixed, click-through layer.
+   Never on scrolling containers, never animated, no blend mode (a blended
+   fixed layer would make every scroll repaint what is under it). */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 ::selection {
-  background: var(--yellow);
-  color: var(--on-accent);
+  background: var(--wash);
+  color: var(--ink);
 }
 
 :focus-visible {
-  outline: var(--bw) solid var(--ink);
+  outline: 3px solid var(--pen);
   outline-offset: 4px;
 }
 
@@ -131,60 +190,90 @@ h3 {
 
 /* =========================================================
    Type roles (spec 4.2). Bricolage for structure, Shantell for the pen
-   layer. Sizes are retuned with the tokens in build step 3.
+   layer. Colors are set where the roles are used.
    ========================================================= */
 @utility type-display {
   font-weight: 750;
   font-variation-settings: "opsz" 96;
-  font-size: clamp(3.25rem, 8vw, 6rem);
+  font-size: clamp(3.5rem, 7.4vw, 6.5rem);
   line-height: 0.94;
   letter-spacing: -0.035em;
+}
+
+/* "Say hi." */
+@utility type-display-xl {
+  font-weight: 800;
+  font-variation-settings: "opsz" 96;
+  font-size: clamp(4rem, 11vw, 10rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
 }
 
 @utility type-h2 {
   font-weight: 750;
   font-variation-settings: "opsz" 72;
-  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-size: clamp(2.5rem, 5vw, 4rem);
   line-height: 1;
   letter-spacing: -0.03em;
 }
 
 @utility type-h3 {
   font-weight: 700;
-  font-size: 1.375rem;
-  line-height: 1.25;
+  font-size: clamp(1.75rem, 2.6vw, 2.125rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+@utility type-lead {
+  font-weight: 400;
+  font-size: 1.3125rem;
+  line-height: 1.45;
   letter-spacing: -0.01em;
 }
 
-@utility type-body-sm {
-  font-size: 0.9375rem;
+@utility type-body {
+  font-size: 1.125rem;
   line-height: 1.55;
 }
 
-@utility type-button {
-  font-weight: 650;
+/* Legacy (brutalist cards); removed with them. */
+@utility type-body-sm {
   font-size: 1rem;
-  line-height: 1;
+  line-height: 1.55;
 }
 
 @utility type-meta {
   font-weight: 500;
-  font-size: 0.875rem;
+  font-size: 1.0625rem;
   line-height: 1.4;
+}
+
+@utility type-button {
+  font-weight: 650;
+  font-size: 1.0625rem;
+  line-height: 1;
 }
 
 @utility type-chip {
   font-weight: 500;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   line-height: 1;
 }
 
-/* Handwriting (pen layer). Never below 1.0625rem; 8 words or fewer. */
+/* Handwriting. Never below 1.0625rem; 8 words or fewer per note. */
 @utility type-hand {
   font-family: var(--font-hand);
   font-weight: 400;
   font-variation-settings: "INFM" 70, "BNCE" 30;
   font-size: 1.125rem;
+  line-height: 1.3;
+}
+
+@utility type-hand-lg {
+  font-family: var(--font-hand);
+  font-weight: 400;
+  font-variation-settings: "INFM" 70, "BNCE" 30;
+  font-size: 1.25rem;
   line-height: 1.3;
 }
 
@@ -197,77 +286,164 @@ h3 {
 }
 
 /* =========================================================
-   Press physics (spec 5): the element lifts on hover and sinks into its
-   shadow when pressed. Hover only on devices that really hover, so touch
-   screens don't keep a stuck lifted state.
+   Paper and tape (spec 4.4). The paper lift is the only shadow on the
+   site, and only taped-in paper and screenshots carry it.
    ========================================================= */
-@utility press {
-  box-shadow: var(--shadow-md);
-  transition-property: transform, box-shadow;
-  transition-duration: 120ms;
-  transition-timing-function: var(--ease-out);
+@utility paper {
+  background: var(--sheet);
+  border-radius: var(--r-paper);
+  box-shadow: var(--shadow-lift);
+}
+
+@utility tape {
+  position: absolute;
+  background: var(--tape);
+  pointer-events: none;
+}
+
+/* Highlighter swipe behind a phrase (spec 6.1 Highlight). */
+@utility highlight {
+  background: var(--wash);
+  color: inherit;
+  padding: 0 0.3em;
+  border-radius: 3px 9px 4px 8px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* =========================================================
+   Lift (spec 5.1): hover rises with a slight tilt, press sinks. Hover only
+   on devices that really hover, so touch screens keep no stuck state.
+   ========================================================= */
+@utility lift {
+  transition: transform 0.25s var(--ease-out);
 
   @media (hover: hover) {
     &:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 7px 7px 0 0 var(--ink);
+      transform: translateY(-2px) rotate(-0.6deg);
     }
   }
   &:active {
-    transform: translate(5px, 5px);
-    box-shadow: 0 0 0 0 var(--ink);
+    transform: translateY(1px) scale(0.98);
   }
   &:disabled,
   &[aria-disabled="true"] {
     opacity: 0.5;
-    box-shadow: none;
     transform: none;
     cursor: not-allowed;
   }
 }
 
-/* Same physics for the large-shadow elements (featured tile, stickers). */
-@utility press-lg {
-  box-shadow: var(--shadow-lg);
-  transition-property: transform, box-shadow;
-  transition-duration: 120ms;
-  transition-timing-function: var(--ease-out);
+/* Legacy names for lift; press-lg also carries the paper lift. */
+@utility press {
+  transition: transform 0.25s var(--ease-out);
 
   @media (hover: hover) {
     &:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 10px 10px 0 0 var(--ink);
+      transform: translateY(-2px) rotate(-0.6deg);
     }
   }
   &:active {
-    transform: translate(8px, 8px);
-    box-shadow: 0 0 0 0 var(--ink);
+    transform: translateY(1px) scale(0.98);
+  }
+  &:disabled,
+  &[aria-disabled="true"] {
+    opacity: 0.5;
+    transform: none;
+    cursor: not-allowed;
   }
 }
 
-/* Put on an element with a mint or yellow fill. Its own outline and shadow
-   keep the page ink (off-white in dark mode, per spec 11); only its text and
-   its children switch to the dark on-accent ink, with light surfaces. The
-   shadow tokens are redeclared because custom properties resolve where they
-   are declared, so the :root versions would still carry the page ink. */
+@utility press-lg {
+  box-shadow: var(--shadow-lift);
+  transition: transform 0.25s var(--ease-out);
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-2px) rotate(-0.6deg);
+    }
+  }
+  &:active {
+    transform: translateY(1px) scale(0.98);
+  }
+}
+
+/* Legacy: text on a filled (formerly mint/yellow) block. Fills now map to
+   the lavender note, so its text and children take the note ink. */
 @utility tone-accent {
-  color: var(--on-accent);
+  color: var(--on-note);
 
   & > * {
-    --ink: var(--on-accent);
-    --ink-muted: var(--on-accent);
-    --surface: #fdfdfb;
-    --shadow-sm: 3px 3px 0 0 var(--on-accent);
-    --shadow-md: 5px 5px 0 0 var(--on-accent);
-    --shadow-lg: 8px 8px 0 0 var(--on-accent);
+    --ink: var(--on-note);
+    --ink-soft: var(--on-note);
   }
 }
 
 /* =========================================================
-   Entrance and reveal motion (spec 5). Unlayered on purpose so these
+   Pen layer (spec 4.4, 5.1). Filters #ink-a/b/c are defined once by
+   components/ink/ink-filters.tsx in the root layout. They go on small pen
+   paths only, never on text or a whole section.
+   ========================================================= */
+.ink-a {
+  filter: url(#ink-a);
+}
+.ink-b {
+  filter: url(#ink-b);
+}
+.ink-c {
+  filter: url(#ink-c);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Draw-in: paths carry pathLength="1". Fully drawn without JS, under
+     reduced motion and in print, because the hidden state only exists in
+     this block. */
+  .ink-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ink-draw 0.9s var(--ease-draw) forwards;
+    animation-delay: var(--d, 0s);
+  }
+
+  /* Below the fold, wait until the section's Reveal says it is in view. */
+  .js [data-reveal]:not([data-shown]) .ink-draw {
+    animation-play-state: paused;
+  }
+
+  /* While the splash signature plays, the hero waits for the sheet to lift. */
+  html.splash .ink-draw {
+    animation-delay: calc(var(--d, 0s) + 1s);
+  }
+
+  /* Boil: interactive pen marks come alive only while hovered or focused. */
+  .ink-boil:is(:hover, :focus-visible) :is(.ink-a, .ink-b, .ink-c) {
+    animation: ink-boil 0.3s steps(1) infinite;
+  }
+}
+
+@keyframes ink-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ink-boil {
+  0% {
+    filter: url(#ink-a);
+  }
+  33% {
+    filter: url(#ink-b);
+  }
+  66% {
+    filter: url(#ink-c);
+  }
+}
+
+/* =========================================================
+   Entrance and reveal motion (spec 5.1). Unlayered on purpose so these
    rules beat utilities. They animate the individual `translate`
    property, never `transform`, so they compose with Motion's drag and
-   the `press` hover/active transforms instead of fighting them.
+   the lift hover/active transforms instead of fighting them.
    ========================================================= */
 @media (prefers-reduced-motion: no-preference) {
   /* Hero text: runs on first paint, no JS needed. --i staggers by 80ms. */
@@ -287,7 +463,7 @@ h3 {
      components/reveal.tsx sets data-shown when the element enters view. */
   .js [data-reveal] {
     opacity: 0;
-    translate: 0 24px;
+    translate: 0 16px;
     transition:
       opacity 0.5s var(--ease-out),
       translate 0.5s var(--ease-out);
@@ -296,6 +472,13 @@ h3 {
   .js [data-reveal][data-shown] {
     opacity: 1;
     translate: 0 0;
+  }
+
+  /* Theme switch (the desk lamp): paper and ink crossfade. */
+  body {
+    transition:
+      background-color 0.4s ease,
+      color 0.4s ease;
   }
 }
 
@@ -313,18 +496,19 @@ h3 {
   }
 }
 
-/* A sticker being held: bigger shadow, grabbing cursor. */
+/* A sticker being held. */
 .sticker-grab {
   cursor: grab;
 }
 .sticker-grab:active {
   cursor: grabbing;
-  box-shadow: 12px 12px 0 0 var(--ink);
+  box-shadow: 0 28px 48px -20px var(--lift), 0 2px 0 var(--lift);
 }
 
 /* =========================================================
-   Print (spec 9): built for /resume, safe for any page. Light colors on
-   white whatever the theme, no shadows, 1px outlines, A4 margins.
+   Print (spec 9): built for /resume, safe for any page. Light tokens on
+   white whatever the theme; no pen layer, grain, dot grid, shadows or
+   rotation; 1px lines; A4 margins.
    ========================================================= */
 @media print {
   @page {
@@ -332,18 +516,24 @@ h3 {
     margin: 14mm;
   }
 
-  /* :root x3 outranks both dark-theme selectors (spec 4.1 blocks). */
+  /* :root x3 outranks both dark-theme selectors. */
   :root:root:root {
-    --bg: #ffffff;
-    --surface: #ffffff;
-    --ink: #1b1c1a;
-    --ink-muted: #55584f;
-    --mint-text: #0a7a5c;
-    --shadow-sm: none;
-    --shadow-md: none;
-    --shadow-lg: none;
+    --paper: #ffffff;
+    --sheet: #ffffff;
+    --ink: #1d1d1b;
+    --ink-soft: #57574f;
+    --pen: #5a2d91;
+    --wash: transparent;
+    --lift: transparent;
     color-scheme: light;
     font-size: 12.5px;
+  }
+
+  body {
+    background-image: none;
+  }
+  body::after {
+    display: none;
   }
 
   * {

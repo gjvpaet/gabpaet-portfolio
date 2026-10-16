@@ -1,21 +1,40 @@
 // Hex mirror of the color tokens in app/globals.css, for places that cannot
 // read CSS variables (next/og images, viewport themeColor).
-// Change a value here and in globals.css together.
+// Change a value here and in globals.css together. Spec section 4.1.
 export const tokens = {
   light: {
-    bg: "#F6F7F3",
-    surface: "#FDFDFB",
-    ink: "#1B1C1A",
-    inkMuted: "#55584F",
-    mintText: "#0A7A5C",
+    paper: "#F2F2EE",
+    sheet: "#FBFBF8",
+    ink: "#1D1D1B",
+    inkSoft: "#57574F",
+    pen: "#5A2D91",
+    btn: "#4B2380",
+    onBtn: "#FBFBF8",
+    note: "#E6DDF3",
+    onNote: "#1D1D1B",
+    /** --wash (violet at 20%) pre-mixed over --paper, for images without alpha blending. */
+    washOnPaper: "#DAD1E6",
   },
   dark: {
-    bg: "#121412",
-    surface: "#1C1F1B",
-    ink: "#F2F3EE",
-    inkMuted: "#A3A69C",
-    mintText: "#2EE5B4",
+    paper: "#1A1B19",
+    sheet: "#242622",
+    ink: "#ECEDE6",
+    inkSoft: "#A6A79C",
+    pen: "#B79CF0",
+    btn: "#B79CF0",
+    onBtn: "#1A1B19",
+    note: "#3A2E52",
+    onNote: "#ECEDE6",
+    washOnPaper: "#403A4D",
   },
+} as const;
+
+/**
+ * The neo-brutalist palette, still read by lib/og.tsx until the share images
+ * are redrawn (build checklist step 13). Delete with it.
+ */
+export const legacyTokens = {
+  light: { bg: "#F6F7F3", surface: "#FDFDFB", ink: "#1B1C1A", inkMuted: "#55584F" },
   mint: "#2EE5B4",
   yellow: "#FFD23F",
   onAccent: "#1B1C1A",

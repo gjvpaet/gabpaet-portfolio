@@ -110,7 +110,7 @@ Rules:
 - Purple is a **pen**, not a highlighter. Dark purple never sits behind text; behind text use `--wash`.
 - `--pen` text is always handwriting (Shantell). Structure text is `--ink` or `--ink-soft`.
 - No gradients, glows or pure `#000`/`#FFF`. The only shadow is the paper lift (4.4).
-- Paper texture: CSS dot grid (`radial-gradient(var(--dot) 1.1px, transparent 1.4px)`, 22px) plus a static grain. The grain is a tiny `feTurbulence` SVG used as a **fixed, `pointer-events: none` pseudo-element** at 6% opacity (`multiply` light, `screen` dark). Never on scrolling containers, never animated, no paper photos.
+- Paper texture: CSS dot grid (`radial-gradient(var(--dot) 1.1px, transparent 1.4px)`, 22px) plus a static grain. The grain is a tiny `feTurbulence` SVG used as a **fixed, `pointer-events: none` pseudo-element** (`body::after`) at 6% opacity (5% dark), with no blend mode. Never on scrolling containers, never animated, no paper photos.
 
 ### 4.2 Typography
 
@@ -163,7 +163,9 @@ Highlighter swipes use an uneven radius (`3px 9px 4px 8px`) so they read as a ma
 
 ### 4.6 Z-index scale (`lib/z.ts`, mirrored as `--z-*`)
 
-`base 0` · `sticker 10` · `sticker-dragging 20` · `pencil 30` · `nav 40` · `mobile-menu 50` · `toast 60` · `splash 70`.
+`base 0` · `sticker 10` · `sticker-dragging 20` · `pencil 30` · `nav 40` · `mobile-menu 50` · `toast 60` · `grain 65` · `splash 70`.
+
+The grain sits above everything but the splash (it is click-through), so taped-in paper and the nav carry the same texture as the page. It has no blend mode: a blended fixed layer would repaint what is under it on every scroll.
 
 ---
 
@@ -479,7 +481,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 
 1. [x] Tag `v2-brutalist` on `4911a4a` (annotated tag created locally 2026-10-17; Gabriel pushes it, or creates it from a GitHub release on that commit).
 2. [x] Fonts: swap Archivo and JetBrains Mono for Bricolage Grotesque and Shantell Sans; `corepack pnpm add perfect-freehand`.
-3. [ ] Tokens: rewrite `globals.css` (4.1 to 4.6, type utilities, grain, dot grid, ink filters, draw-in, boil, lift, print), `lib/tokens.ts`, `lib/z.ts`.
+3. [x] Tokens: rewrite `globals.css` (4.1 to 4.6, type utilities, grain, dot grid, ink filters, draw-in, boil, lift, print), `lib/tokens.ts`, `lib/z.ts`. The ink filters render from `components/ink/ink-filters.tsx` in the root layout. Old token names (`bg-surface`, `bg-mint`, `shadow-brut-md`, `press`, `tone-accent`, ...) survive as marked legacy aliases in `globals.css` so unrestyled components keep rendering; delete each alias once steps 5 to 8 stop using it. `lib/og.tsx` reads `legacyTokens` until step 13.
 4. [ ] `lib/ink.ts` + pen primitives (6.1) + `MarginNote`, `PaperCard`, `Highlight`, `Tape`.
 5. [ ] Restyle the primitives: Button, Chip, ScreenshotFrame, SectionHeading, CopyEmailButton, Footer; `LampToggle` replaces ThemeToggle.
 6. [ ] Content: `profile.ts` additions (10.1), `projects.ts` additions (8.2), `lib/dates.ts` for the computed notes. New drafts carry `// VERIFY`.

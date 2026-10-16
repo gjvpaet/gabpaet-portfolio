@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, Shantell_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Footer } from "@/components/footer";
+import { InkFilters } from "@/components/ink/ink-filters";
 import { Nav } from "@/components/nav";
 import { SkipLink } from "@/components/skip-link";
 import { profile } from "@/content/profile";
@@ -87,8 +88,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: tokens.light.bg },
-    { media: "(prefers-color-scheme: dark)", color: tokens.dark.bg },
+    { media: "(prefers-color-scheme: light)", color: tokens.light.paper },
+    { media: "(prefers-color-scheme: dark)", color: tokens.dark.paper },
   ],
   colorScheme: "light dark",
   width: "device-width",
@@ -150,6 +151,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <InkFilters />
         <SkipLink />
         <Nav shortName={profile.shortName} />
         {children}
