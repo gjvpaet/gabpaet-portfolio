@@ -4,9 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Status
 
-Branch `v2` is a from-scratch rebuild of gabpaet.dev as a neo-brutalist single-scroll portfolio. **`docs/v2/DESIGN-SPEC.md` is the design source of truth**: tokens, components, sections, copy, motion, SEO and the ordered build checklist (section 15, with done items ticked). Read it before building anything.
+Branch `v2` is a from-scratch rebuild of gabpaet.dev, now being restyled into a **conceptual sketch / working-notebook** design. **`docs/v2/DESIGN-SPEC.md` is the design source of truth**: tokens, components, sections, copy, motion, easter eggs, SEO and the ordered build checklist (section 15, done items ticked). Read it before building anything. Visual references: the style sheet (https://claude.ai/artifact/EAyMLR1pzPucMff9nit5rg) and artboard A of the sketch canvas (https://claude.ai/artifact/YXFHmmRFcXkGyfeyvQ8jMK); the spec wins where they differ.
 
-v1 (the VS Code-themed site) is preserved on the git tag `v1` and is meant to stay live at `v1.gabpaet.dev`. Its code is gone from this branch; do not resurrect it here.
+The finished neo-brutalist build that preceded it is preserved on the git tag `v2-brutalist` (`4911a4a`). Most of its plumbing is reused as-is: content model, routes, redirects, SEO, resume PDF pipeline, theme logic, reveal observer, sticker drag, mobile menu, copy email. Its look (mint/yellow, Archivo, solid offset shadows, 3px outlines) is retired.
+
+v1 (the VS Code-themed site) is preserved on the git tag `v1` and stays live at `v1.gabpaet.dev`. Its code is gone from this branch; do not resurrect it here.
 
 ## Commands
 
@@ -16,31 +18,40 @@ Package manager is **pnpm**. It is not on PATH on this machine; use `corepack pn
 - `corepack pnpm build`
 - `corepack pnpm typecheck` (`tsc --noEmit`; there is no lint or test setup). If it reports missing `app/(ide)` modules, `.next/dev/types` is stale from an old v1 dev run: delete `.next/dev`. The Turbopack dev cache in `.next/dev` can also keep serving old CSS after `globals.css` changes (a production build is correct); stop the dev server, delete `.next/dev`, restart.
 
-Global git config on this machine has a broken `gpg.format`; commit with `GIT_CONFIG_GLOBAL=/dev/null git -c user.name="Gabriel Joshua Paet" -c user.email="gjvpaet@gmail.com" commit ...`. Never add Co-Authored-By trailers.
+Global git config on this machine has a broken `gpg.format`; commit with `GIT_CONFIG_GLOBAL=/dev/null git -c user.name="Gabriel Joshua Paet" -c user.email="gjvpaet@gmail.com" commit ...`. Never add Co-Authored-By trailers. Pushing needs Gabriel's credentials, so he pushes.
 
 ## Stack
 
-Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`), `motion` (import from `motion/react`), `@phosphor-icons/react` (always `weight="bold"`), `simple-icons` (hero sticker logos only), Vercel Analytics + Speed Insights.
+Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`), `motion` (import from `motion/react`), `@phosphor-icons/react` (always `weight="bold"`, UI icons only), `simple-icons` (sticker logos only), `perfect-freehand` (pencil doodles and the placeholder signature), Vercel Analytics + Speed Insights. Fonts: Bricolage Grotesque (structure) and Shantell Sans (handwriting) via `next/font`.
+
+## The two-layer rule
+
+Everything belongs to one layer (spec section 1):
+
+- **Structure:** type, grid, buttons, nav, screenshots and every fact. Bricolage, clean, never wobbles.
+- **Pen:** circles, underlines, arrows, strikes, margin notes, napkin sketches, stickers, illustrations. Shantell Sans for handwriting, `--pen` purple for marks. Commentary only: no fact may live only in the pen layer.
 
 ## Where things live
 
-- **Tokens:** `app/globals.css` defines every color, radius, outline, shadow and z-index as CSS variables. Light values sit on `:root`; dark values are repeated in `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and `:root[data-theme="dark"]`. `@theme inline` exposes them to Tailwind (`bg-surface`, `text-ink-muted`, `border-ink`, `rounded-card`, `shadow-brut-md`, ...). Type roles are `@utility` classes (`type-display`, `type-h2`, `type-h3`, `type-body-sm`, `type-button`, `type-meta`, `type-chip`).
+- **Tokens:** `app/globals.css` defines every color, radius, shadow and z-index as CSS variables. Light values sit on `:root`; dark values are repeated in `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and `:root[data-theme="dark"]`. `@theme inline` exposes them to Tailwind. Type roles are `@utility` classes.
 - **Hex mirror:** `lib/tokens.ts` repeats the hex values for `next/og` images and the viewport `themeColor`. Change it together with `globals.css`.
-- **Theme:** no stored value means "follow the OS" (pure CSS). The toggle stores `"light" | "dark"` under `THEME_STORAGE_KEY` in `lib/theme.ts`; `THEME_INIT_SCRIPT` (same file, injected in `app/layout.tsx` `<head>`) applies it before first paint. Both read the key from that one constant.
-- **Components:** `components/` holds the spec section 6 primitives (`Button`/`ButtonLink`, `Chip`/`ChipList`/`StatusChip`, `Card`, `BrandIcon`, `SectionHeading`, `ScreenshotFrame`, `ThemeToggle`, `CopyEmailButton`). Server components import Phosphor from `@phosphor-icons/react/ssr`; client components (`"use client"`) from `@phosphor-icons/react`.
-- **Utilities in `globals.css`:** `press` / `press-lg` (hover lift, press into shadow) and `tone-accent` (put on a mint/yellow element: it keeps the page outline and shadow, while its text and children switch to dark ink on light surfaces).
+- **Pen marks:** path data lives only in `lib/ink.ts`; components in `components/ink/`. The roughness filters (`#ink-a`, `#ink-b`, `#ink-c`) are rendered once in the root layout in a 0×0 `aria-hidden` SVG (not `display: none`, which breaks them in Firefox). Napkin sketches live in `components/napkins/`.
+- **Theme:** no stored value means "follow the OS" (pure CSS). The lamp toggle stores `"light" | "dark"` under `THEME_STORAGE_KEY` in `lib/theme.ts`; `THEME_INIT_SCRIPT` (same file, injected in `app/layout.tsx` `<head>`) applies it before first paint, and also decides the splash (`html.splash`).
+- **Components:** server components import Phosphor from `@phosphor-icons/react/ssr`; client components (`"use client"`) from `@phosphor-icons/react`.
 - **z-index:** only the values in `lib/z.ts` (mirrored as `--z-*` in `globals.css`).
-- **Fonts:** `app/layout.tsx` loads Archivo (variable, with the `wdth` axis; width is set with `font-stretch: 110%` / `125%`) as `--font-archivo` and JetBrains Mono as `--font-jetbrains-mono`.
-- **Content:** `content/profile.ts` and `content/projects.ts` (spec section 10) are the single source of facts for the home page, `/resume`, JSON-LD, metadata and OG images. Never hardcode those facts elsewhere. Draft strings carry a `// VERIFY` comment until Gabriel confirms them.
+- **Content:** `content/profile.ts` and `content/projects.ts` are the single source of facts for the home page, `/resume`, JSON-LD, metadata and OG images. Never hardcode those facts elsewhere. Draft strings carry a `// VERIFY` comment until Gabriel confirms them. Computed notes ("Programmer to Senior in 8 months") come from `lib/dates.ts`, never typed by hand.
+- **Illustrations:** traced SVGs in `public/illustrations/`, rendered as CSS masks so they re-ink with the theme (spec 6.14, 10.3). Layouts must work without them.
 - **Canonical URLs:** set per page via `metadata.alternates.canonical`, never in the root layout.
-- **Resume PDF:** `public/gabriel-paet-resume.pdf` is a printout of `/resume`. After any change to `content/profile.ts` or `content/projects.ts`, regenerate it from a production build (`portfolio-prod` preview config, port 3300), never the dev server. Then rebuild before checking it locally: `next start` only serves `public/` files that existed at build time. Print styles live at the bottom of `globals.css`; components hide themselves on paper with `print:hidden`.
+- **Resume PDF:** `public/gabriel-paet-resume.pdf` is a printout of `/resume`. After any change to `content/profile.ts` or `content/projects.ts`, regenerate it from a production build (`portfolio-prod` preview config, port 3300), never the dev server. Then rebuild before checking it locally: `next start` only serves `public/` files that existed at build time. Print styles live at the bottom of `globals.css`; every pen component, illustration and the grain hide on paper with `print:hidden`.
 
 ## Rules that are easy to break
 
-- Mint (`--mint`) is a fill, never text on the light background (1.5:1). Use `--mint-text` for mint-colored text.
-- Outlines are 2px or 3px `--ink`; shadows are solid `--ink`, zero blur, offset down-right. No gradients, glows or blurred shadows.
-- Radius rule: cards/panels 16px, controls 12px, chips/pills full.
-- Every animation honours `prefers-reduced-motion`; no scroll listeners, no marquee.
-- No em dashes in visible copy. Copy marked VERIFY in the spec must not ship until Gabriel confirms it.
-- Share images and icons (`app/**/opengraph-image.tsx`, `app/icon.tsx`, `app/apple-icon.tsx`) render through `lib/og.tsx` with the static fonts in `assets/fonts/` and hex values from `lib/tokens.ts`. They cannot use CSS variables or the variable Archivo.
-- Old v1 URLs redirect (308) via `next.config.ts`; keep that list when touching routes.
+- One accent: purple, used as a pen. Dark purple never sits behind text; use `--wash` behind text.
+- Handwriting is 8 words or fewer per note, and never in nav, buttons, headings or body copy.
+- Never invent a one-off SVG path inline; add it to `lib/ink.ts`. SVG filters go on small pen paths only, never on text or whole sections.
+- The only shadow is the paper lift, on taped-in paper and screenshots. Structure lines are 2px `--ink`. Radius: paper 3px, controls and frames 12px, chips full.
+- Every animation honours `prefers-reduced-motion`; draw-ins and boil are gated explicitly in CSS (Motion's `reducedMotion` does not cover them). Nothing loops on its own; no scroll listeners, no marquee.
+- The splash shows only on `/`, once per session, never with a hash, under reduced motion, without JS or in print, and lasts at most 1.2s.
+- No em dashes in visible copy. Copy marked VERIFY must not ship until Gabriel confirms it.
+- Share images and icons render through `lib/og.tsx` with static TTFs in `assets/fonts/` and hex values from `lib/tokens.ts`. Satori cannot use CSS variables, variable font axes or SVG filters.
+- Old v1 URLs redirect (308) via `next.config.ts`, and section IDs (`#experience`, `#projects`, `#about`, `#contact`) are what those redirects land on; keep both when touching routes.

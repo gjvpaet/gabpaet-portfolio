@@ -1,511 +1,514 @@
 # gabpaet.dev v2: Design Spec
 
-Status: **approved for build** (decisions settled 2026-10-12). Branch: `v2`.
-This file is the design source of truth for v2. Where it conflicts with `portfolio.html`, `DESIGN.md`, `PRODUCT.md` or `HANDOFF.md`, this file wins; those describe v1.
+Status: **approved for build** (sketch direction settled 2026-10-17). Branch: `v2`.
+This file is the design source of truth for v2. It replaces the neo-brutalist spec of 2026-10-12, which is preserved, together with its finished build, on the git tag `v2-brutalist`. Where this file conflicts with anything on the `v1` tag, this file wins.
 
-**Design read:** personal portfolio for recruiters and hiring managers (with a developer audience second), in a controlled neo-brutalist language, built on native CSS + Tailwind v4 + Motion. No component library.
+**Design read:** personal portfolio for recruiters and hiring managers (developers second), in a **conceptual sketch** language: a working engineering notebook. Clean, confident type and layout carry every fact; a hand-drawn layer (pen annotations, napkin sketches, margin notes) carries the personality. Built on native CSS + Tailwind v4 + Motion. No component library.
 
-**Dials:** `DESIGN_VARIANCE 6` · `MOTION_INTENSITY 5` · `VISUAL_DENSITY 4`.
+**Dials:** `DESIGN_VARIANCE 7` · `MOTION_INTENSITY 6` · `VISUAL_DENSITY 3`.
 
-Reference: Kristina Volchek, "Personal Website Redesign for a Product Designer (NeoBrutalism)", Dribbble shot 21066046. We take its **rules** (dark outlines, solid offset shadows with no blur, flat fills, rounded geometry, wide heavy type, sticker motifs). We do **not** take its layout, candy palette, portrait, cursor/name-tag motif or design-tool stickers.
+**Visual reference:** the "Portfolio sketch directions" canvas, artboard **A** with the purple accent (https://claude.ai/artifact/YXFHmmRFcXkGyfeyvQ8jMK), and the style sheet (https://claude.ai/artifact/EAyMLR1pzPucMff9nit5rg). Where they disagree with this file, this file wins (for example, the canvas hero's button labels predate 7.1).
+
+**Why this direction:** Koddi Evangelista's site (koddievangelista.com) already ships a neo-brutalist mixtape concept (Archivo Black, red / royal blue / yellow / lime, numbered "tracks"), and the two of them share three employers. v2 must differ in concept, type, palette and content shape, not only in color.
+
+Mood references: the "conceptual sketch" boards Gabriel shared (Cool Cat Jazz Club, House Party, Dia dos Namorados, Notion's "Software should be beautiful"), Notion's homepage, Basecamp's Shape Up, Excalidraw+, Ellipsus (dark mode). The pattern we take from all of them: **a clean typeface paired with loose ink drawing and handwritten notes, on paper, with one spot color.**
 
 ---
 
 ## 1. Goals
 
-1. A recruiter skimming for 30 seconds learns: name, role, focus areas, years, current employer, and finds the resume in one click.
-2. Side projects (Tong Masters, portfolio v1) give an engineering audience something concrete to click into.
-3. The site is memorable without fighting the content. Personality comes from one moment: the draggable sticker cluster.
+1. A recruiter skimming for 30 seconds learns name, role, focus areas, years and current employer, and finds the resume in one click.
+2. Side projects give an engineering audience something concrete to click into, told as "from napkin to production".
+3. The site is memorable without fighting the content. Personality lives in the drawn layer and a handful of easter eggs (section 5.2), never in the facts.
+4. Experience reads like notes from each job, not like a resume. The formal version is one click away on `/resume` and its PDF.
 
-### Non-goals / retired from v1
+### The two-layer rule (the core of the aesthetic)
 
-- The IDE metaphor: file tabs, sidebar tree, breadcrumb, gutter, status bar, title bar.
-- The command palette (⌘K/⌘P), the Tweaks panel (accent and density pickers).
-- The joke pages `package.json` and `.zshrc`, the fake `page.tsx` source page.
-- The hidden `writing.md` page. No writing section, no placeholder.
-- The public mobile number.
+| Layer | What | Rules |
+|---|---|---|
+| **Structure** | Type, grid, headings, body copy, buttons, nav, screenshots, every fact | Clean. Bricolage Grotesque. Straight edges. Never wobbles. |
+| **Pen** | Circles, underlines, arrows, strike-throughs, margin notes, napkin sketches, illustrations, stickers | Hand-drawn. Shantell Sans for handwriting. Commentary only: it may repeat or point at a fact, never be the only place a fact lives. |
+
+About 80% of what you see is structure, 20% pen. The hero is allowed to lean further toward pen.
+
+### Non-goals / retired
+
+- Everything retired in v1 stays retired: the IDE metaphor, ⌘K palette, Tweaks panel, joke pages, `writing.md`, the phone number.
+- From the neo-brutalist v2: solid offset shadows, 3px outlines everywhere, mint and yellow, Archivo, JetBrains Mono, the status chip eyebrow, the mint contact block.
+- A "Working on" section (decided 2026-10-17: add it later, only once there is something real to show).
+- A fully sketched UI (wobbly borders on every box, handwriting for headings and buttons). Tested as artboard C and rejected: at recruiter speed it reads as an unfinished wireframe.
 
 ---
 
-## 2. Branching and v1 preservation
+## 2. Branching and preservation
 
-Done 2026-10-12:
-
-1. Tag `v1` on `fbbd17f` (last v1 commit on `main`), created on GitHub with the "Portfolio v1" release. The portfolio-v1 case study's Code link points at `github.com/gjvpaet/gabpaet-portfolio/tree/v1`.
-2. Vercel project **`gabpaet-portfolio-v1`**, deployed from a `git archive` of the `v1` tag with the CLI (`vercel deploy --prod`, with a deploy-only `vercel.json` setting `"framework": "nextjs"`). It is deliberately **not** connected to git, so v1 stays frozen. Live at `https://gabpaet-portfolio-v1.vercel.app`.
-3. Domain `v1.gabpaet.dev` is attached to that project, with a Porkbun CNAME `v1` → `c3dfe16e6bb95f14.vercel-dns-017.com`. Verified by Vercel; serves v1 over HTTPS.
-4. Main domain: **`gabpaet.dev` is primary**. `www.gabpaet.dev` 308-redirects to it (path kept), matching the canonical URLs, sitemap and share images. Before this, the apex 307-redirected to `www`, so every v1 canonical pointed at a redirect.
-5. Build v2 on `v2`; merge to `main` when the launch checklist (section 15) passes. The existing `gabpaet-portfolio` project then deploys v2.
+1. `v1` tag, `gabpaet-portfolio-v1` Vercel project and `v1.gabpaet.dev`: done 2026-10-12 and unchanged. `gabpaet.dev` is primary; `www` 308-redirects to it.
+2. Tag **`v2-brutalist`** on `4911a4a` (the last neo-brutalist commit) before the first sketch commit. It is not deployed anywhere.
+3. Build the sketch direction on `v2`. Merge to `main` when the checklist (section 15) passes; the existing `gabpaet-portfolio` project then deploys it.
 
 ## 3. Stack
 
-Keep: Next.js 16 App Router, React 19, TypeScript, Tailwind v4 via `@tailwindcss/postcss`, pnpm, Vercel, `@vercel/analytics`, `@vercel/speed-insights`.
+Keep: Next.js 16 App Router, React 19, TypeScript, Tailwind v4 via `@tailwindcss/postcss`, pnpm (`corepack pnpm`), Vercel Analytics + Speed Insights, `motion` (`motion/react`), `@phosphor-icons/react`, `simple-icons`.
 
 Add:
 
 ```bash
-pnpm add motion @phosphor-icons/react simple-icons
+corepack pnpm add perfect-freehand
 ```
 
-- `motion` (import from `motion/react`): reveals, press physics, draggable stickers.
-- `@phosphor-icons/react`: all UI icons. Use `weight="bold"` everywhere to match the thick outlines. No hand-drawn SVG icons (v1's inline SVGs are removed).
-- `simple-icons`: brand marks for the hero stickers (Claude, Next.js, Node.js, PostgreSQL, Docker). Render the package's `path` data inside one `<BrandIcon>` component; never redraw paths by hand.
-- GitHub and LinkedIn marks (contact buttons, footer, case-study Code button) use Phosphor `GithubLogo` / `LinkedinLogo` (bold). `simple-icons` v16 no longer ships a LinkedIn mark, so both social marks come from Phosphor to stay one family.
+- `perfect-freehand` (1.2.3, MIT, maintained): tapered pen strokes for the pencil doodle layer (5.2) and the placeholder signature (6.15).
+- **Not used:** Rough.js (last release 2023) and rough-notation (last release 2020). Every pen mark is a static SVG path from `lib/ink.ts`, roughened by a shared SVG filter (4.4). That keeps SSR deterministic (no `Math.random()`, no hydration mismatch), costs no JavaScript, and survives resize without re-measuring.
+- Icons: Phosphor, `weight="bold"`, for UI only (`Lamp`, `PencilSimple`, `Eraser`, `Copy`, `Check`, `ArrowRight`, `ArrowUpRight`, `DownloadSimple`, `Printer`, `List`, `X`, `GithubLogo`, `LinkedinLogo`). Icons stay clean (structure layer); they never get the rough filter.
+- Brand marks for the stickers come from `simple-icons` path data through `<BrandIcon>`, never redrawn.
 
-Fonts via `next/font/google` (self-hosted at build, `display: "swap"`):
+Fonts via `next/font/google` (self-hosted, `display: "swap"`):
 
-- **Archivo** variable, `axes: ["wdth"]`, weights 400 to 800. Variable `--font-archivo`.
-- **JetBrains Mono** 400, 500, 600. Variable `--font-mono`.
+- **Bricolage Grotesque**, variable, `axes: ["opsz", "wdth"]` (weight is variable by default). Variable `--font-bricolage`.
+- **Shantell Sans**, variable, `axes: ["BNCE", "INFM"]`. Variable `--font-shantell`.
+- JetBrains Mono and Archivo are removed (and their TTFs in `assets/fonts/`, once the share images are redone).
 
 ---
 
 ## 4. Design tokens
 
-All tokens are CSS custom properties on `:root` in `app/globals.css`, re-pointed under `:root[data-theme="dark"]`, and exposed to Tailwind via `@theme inline`. The same hex values are mirrored in `lib/tokens.ts` for `next/og` images (which cannot read CSS variables). **Change both together.**
+All tokens are CSS custom properties on `:root` in `app/globals.css`, repeated for dark mode under `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and `:root[data-theme="dark"]`, and exposed to Tailwind via `@theme inline`. Hex values are mirrored in `lib/tokens.ts` for `next/og` and `themeColor`. **Change both together.**
 
 ### 4.1 Color
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `--bg` | `#F6F7F3` | `#121412` | Page background |
-| `--surface` | `#FDFDFB` | `#1C1F1B` | Cards, buttons (secondary), stickers |
-| `--ink` | `#1B1C1A` | `#F2F3EE` | Text, **all outlines, all shadows** |
-| `--ink-muted` | `#55584F` | `#A3A69C` | Secondary text, dates |
-| `--mint` | `#2EE5B4` | `#2EE5B4` | Primary accent **fill** |
-| `--yellow` | `#FFD23F` | `#FFD23F` | Supporting accent **fill** |
-| `--on-accent` | `#1B1C1A` | `#1B1C1A` | Text/icons on mint or yellow (both modes) |
-| `--mint-text` | `#0A7A5C` | `#2EE5B4` | Mint used as text or link hover on page bg |
+| `--paper` | `#F2F2EE` | `#1A1B19` | Page background (cool off-white, not cream) |
+| `--sheet` | `#FBFBF8` | `#242622` | Taped-in paper: napkin cards, stickers, secondary buttons |
+| `--ink` | `#1D1D1B` | `#ECEDE6` | Text, outlines, sketches |
+| `--ink-soft` | `#57574F` | `#A6A79C` | Secondary text, pencil labels inside sketches |
+| `--pen` | `#5A2D91` | `#B79CF0` | **The second pen:** circles, underlines, arrows, margin notes, handwritten dates, link underlines |
+| `--btn` | `#4B2380` | `#B79CF0` | Primary button fill |
+| `--on-btn` | `#FBFBF8` | `#1A1B19` | Text and icons on `--btn` |
+| `--wash` | `rgb(124 77 200 / 0.20)` | `rgb(183 156 240 / 0.24)` | Highlighter swipe behind key phrases, active pencil button |
+| `--note` | `#E6DDF3` | `#3A2E52` | Pinned lavender note paper (the motto) |
+| `--on-note` | `#1D1D1B` | `#ECEDE6` | Text on `--note` |
+| `--tape` | `rgb(205 207 196 / 0.72)` | `rgb(150 152 140 / 0.45)` | Masking-tape strips |
+| `--dot` | `rgb(29 29 27 / 0.13)` | `rgb(236 237 230 / 0.10)` | Dot-grid paper pattern |
+| `--lift` | `rgb(29 29 27 / 0.22)` | `rgb(0 0 0 / 0.55)` | Paper-lift shadow color |
 
-Measured contrast (WCAG):
+Measured contrast (WCAG 2):
 
-| Pair | Ratio |
-|---|---|
-| ink on bg (light) | 15.9 |
-| ink-muted on bg (light) | 6.7 |
-| on-accent on mint | 10.6 |
-| on-accent on yellow | 11.9 |
-| mint-text on bg (light) | 4.9 |
-| ink on bg (dark) | 16.6 |
-| ink-muted on bg (dark) | 7.5 |
-| mint on bg (dark) | 11.4 |
+| Pair | Light | Dark |
+|---|---|---|
+| ink on paper | 15.0 | 14.7 |
+| ink-soft on paper | 6.5 | 7.1 |
+| ink-soft on sheet | 7.0 | 6.3 |
+| pen on paper | 8.4 | 7.4 |
+| pen on sheet | 9.1 | 6.6 |
+| on-btn on btn | 10.9 | 7.4 |
+| ink on wash (over paper) | 11.5 | 9.3 |
+| on-note on note | 12.9 | 10.5 |
 
 Rules:
 
-- **Mint is never text on the light background** (1.5:1). Use `--mint-text`.
-- **Mint** is for primary actions and "the important thing": the Resume button, the current-role card, the contact block, the active nav state.
-- **Yellow** is for highlights only: the status chip, the Tong Masters tile backdrop, sticker fills, the `::selection` color.
-- No other hues anywhere. Brand logos render monochrome in `currentColor`.
-- No gradients, no blur shadows, no glows, no pure `#000`/`#FFF`.
+- **One accent: purple.** No other hues anywhere, except inside real screenshots and real brand marks (which render in `currentColor`, so they are ink too).
+- Purple is a **pen**, not a highlighter. Dark purple never sits behind text; behind text use `--wash`.
+- `--pen` text is always handwriting (Shantell). Structure text is `--ink` or `--ink-soft`.
+- No gradients, glows or pure `#000`/`#FFF`. The only shadow is the paper lift (4.4).
+- Paper texture: CSS dot grid (`radial-gradient(var(--dot) 1.1px, transparent 1.4px)`, 22px) plus a static grain. The grain is a tiny `feTurbulence` SVG used as a **fixed, `pointer-events: none` pseudo-element** at 6% opacity (`multiply` light, `screen` dark). Never on scrolling containers, never animated, no paper photos.
 
 ### 4.2 Typography
 
 | Role | Family | Settings | Size | Leading | Tracking |
 |---|---|---|---|---|---|
-| Display (hero name) | Archivo | `wdth 125`, `wght 800`, uppercase | `clamp(3.25rem, 8vw, 6rem)` | 0.92 | -0.02em |
-| H2 (section) | Archivo | `wdth 125`, `wght 800` | `clamp(2.25rem, 5vw, 3.5rem)` | 1.0 | -0.015em |
-| H3 (card title) | Archivo | `wdth 110`, `wght 700` | 1.375rem | 1.25 | -0.01em |
-| Body | Archivo | `wdth 100`, `wght 400` | 1.0625rem | 1.6 | 0 |
-| Body small | Archivo | `wdth 100`, `wght 400` | 0.9375rem | 1.55 | 0 |
-| Button | Archivo | `wdth 110`, `wght 700` | 1rem | 1 | 0 |
-| Meta (dates) | JetBrains Mono | 500 | 0.875rem | 1.4 | 0 |
-| Chip | JetBrains Mono | 500 | 0.8125rem | 1 | 0 |
+| Display (hero name, "Say hi.") | Bricolage | `wght 750`, `opsz 96` | hero `clamp(3.5rem, 7.4vw, 6.5rem)`; contact `clamp(4rem, 11vw, 10rem)` | 0.94 | -0.035em |
+| H2 (section) | Bricolage | `wght 750`, `opsz 72` | `clamp(2.5rem, 5vw, 4rem)` | 1.0 | -0.03em |
+| H3 (company, project) | Bricolage | `wght 700` | `clamp(1.75rem, 2.6vw, 2.125rem)` | 1.1 | -0.02em |
+| Lead (hero subtext, about lead) | Bricolage | `wght 400` | `1.3125rem` (about: `clamp(1.375rem, 2.3vw, 1.75rem)`) | 1.45 | -0.01em |
+| Body | Bricolage | `wght 400` | `1.125rem` | 1.55 | 0 |
+| Meta (title line, mode) | Bricolage | `wght 500` | `1.0625rem`, `--ink-soft` | 1.4 | 0 |
+| Button | Bricolage | `wght 650` | `1.0625rem` | 1 | 0 |
+| Chip | Bricolage | `wght 500` | `0.875rem` | 1 | 0 |
+| **Hand** (notes, dates, captions) | Shantell Sans | `wght 400`, `INFM 70`, `BNCE 30` | `1.125rem` to `1.25rem`, never below `1.0625rem` | 1.3 | 0 |
+| **Hand title** (napkin headings) | Shantell Sans | `wght 600`, `INFM 70`, `BNCE 30` | `1.6875rem` | 1.2 | 0 |
 
-- Body max width `65ch`.
-- Emphasis inside headings uses the same family (weight or a mint highlight block), never a second family.
-- Every heading is a real `<h1>`/`<h2>`/`<h3>` (fixes v1's `div.h1`). One `<h1>` per page.
+- Handwriting runs **8 words or fewer** per note, and never carries body copy, nav, buttons or headings.
+- Body max width `65ch`; the about lead `36ch`.
+- Emphasis inside structure text is the `--wash` highlighter on a phrase, never a second family.
+- One `<h1>` per page; real `h2`/`h3`.
 
 ### 4.3 Shape
 
-**One radius rule, applied everywhere:**
-
 | Element | Radius |
 |---|---|
-| Cards, panels, tiles, screenshot frames, contact block | 16px (`--r-card`) |
-| Buttons, inputs, stickers, theme toggle | 12px (`--r-control`) |
-| Chips, status pill | 999px (`--r-pill`) |
+| Paper (napkin cards, notes, stickers) | 3px: real paper is nearly square |
+| Buttons, icon buttons, screenshot frames | 12px |
+| Chips | 999px |
+| Drawn boxes inside sketches | `rx 4` |
 
-### 4.4 Outline and shadow
+Highlighter swipes use an uneven radius (`3px 9px 4px 8px`) so they read as a marker stroke.
 
-Shadows are solid `var(--ink)` blocks offset down-right, zero blur.
+### 4.4 Lines, marks and the paper lift
 
-| Token | Value | Used on |
-|---|---|---|
-| `--border` | `3px solid var(--ink)` | Cards, buttons, stickers, frames, nav bottom edge |
-| `--border-thin` | `2px solid var(--ink)` | Chips, toggle track |
-| `--shadow-sm` | `3px 3px 0 0 var(--ink)` | Chips (interactive only), small controls |
-| `--shadow-md` | `5px 5px 0 0 var(--ink)` | Buttons, cards, tiles |
-| `--shadow-lg` | `8px 8px 0 0 var(--ink)` | Stickers, featured project tile, contact block |
+- **Structure lines:** 2px solid `--ink` (buttons, screenshot frames, the footer rule); chips 1.5px. One rule above a group, never a hairline under every row.
+- **Paper lift** (only on taped-in paper and screenshots): `box-shadow: 0 22px 44px -22px var(--lift), 0 2px 0 var(--lift)`. Paper is also rotated -2deg to 2deg, and taped with 1 or 2 `--tape` strips (84 to 96 × 26 to 28px, rotated ±3 to 8deg, or -32deg across a corner).
+- **Pen marks:** SVG paths from `lib/ink.ts` (6.1), `fill: none`, `stroke: var(--pen)` (or `--ink` / `--ink-soft` inside sketches), round caps and joins. Widths: annotations 2 to 2.4px; circles and underlines 3.5 to 5px.
+- **Roughness:** one shared filter set, rendered once in the root layout inside an `aria-hidden` 0×0 SVG (not `display: none`; Firefox drops filters there):
+  - `#ink-a`: `feTurbulence fractalNoise baseFrequency 0.035 numOctaves 2 seed 3` → `feDisplacementMap scale 3`
+  - `#ink-b`: same with `baseFrequency 0.05 seed 11`
+  - `#ink-c`: same with `baseFrequency 0.04 seed 23`
+
+  Applied to pen paths only, never to text or a whole section (it blurs text and is CPU-heavy). Sticker logos get `scale 1.5`.
 
 ### 4.5 Spacing and layout
 
-- Container: `max-w-[1200px] mx-auto px-4 md:px-8`.
-- Section padding: `py-16 md:py-24`. Hero top padding never exceeds `pt-24`.
-- Grid gaps: `gap-6` (cards), `gap-3` (chips).
-- Breakpoints: Tailwind defaults (`md 768`, `lg 1024`). Every multi-column layout collapses to one column below `md`.
+- Container `max-w-[1200px] mx-auto px-5 md:px-10`.
+- Section padding `py-16 md:py-24`; hero `pt-10 md:pt-14`, never above `pt-24`.
+- Breakpoints: Tailwind defaults. Every multi-column layout collapses to one column below `lg` (1024), as v2 learned on tablets.
 
-### 4.6 Z-index scale (`lib/z.ts`)
+### 4.6 Z-index scale (`lib/z.ts`, mirrored as `--z-*`)
 
-`base 0` · `sticker 10` · `sticker-dragging 20` · `nav 40` · `mobile-menu 50` · `toast 60`.
+`base 0` · `sticker 10` · `sticker-dragging 20` · `pencil 30` · `nav 40` · `mobile-menu 50` · `toast 60` · `splash 70`.
 
 ---
 
 ## 5. Motion
 
-Library: Motion (`motion/react`). Every animated component is a `"use client"` leaf. Everything below collapses to instant/static under `prefers-reduced-motion: reduce` (`useReducedMotion()` in Motion; a `@media` block in CSS).
+Every animated component is a `"use client"` leaf, or plain CSS. Everything collapses to static under `prefers-reduced-motion: reduce`. Motion's `reducedMotion="user"` only stops transforms, so draw-ins (`stroke-dashoffset`) and boil (`filter`) are gated with `@media (prefers-reduced-motion: no-preference)` explicitly.
+
+### 5.1 Core motion
 
 | Interaction | Spec | Why |
 |---|---|---|
-| **Press** (buttons, clickable cards, chips that link) | Rest: `--shadow-md`. Hover: `translate(-2px,-2px)`, shadow 7px. Active: `translate(5px,5px)`, shadow 0. CSS transition `transform, box-shadow 120ms cubic-bezier(0.16,1,0.3,1)`. | Feedback: the element physically sinks into its shadow. |
-| **Section reveal** | From `opacity 0, translate 0 24px` to rest, 0.5s, ease `[0.16,1,0.3,1]`, once, when any part is 15% above the viewport bottom. Siblings stagger 0.06s (project tiles, about columns). Built as CSS transitions toggled by `components/reveal.tsx` (IntersectionObserver), hidden only under a `.js` class set before paint, so no-JS visitors see everything. Not Motion `whileInView`, whose SSR output would ship the hidden state. | Storytelling: content arrives in reading order. |
-| **Hero entrance** | Status chip, name, subtext, buttons rise in (CSS keyframes, 0.5s, 0.08s stagger) on first paint without waiting for JS. Stickers then drop in from 40px above with a small overshoot (`cubic-bezier(0.34,1.56,0.64,1)`), from 320ms, staggered 0.05s. They keep their tilt during the drop (Motion owns `rotate` for dragging). | Hierarchy: who you are first, personality second. |
-| **Draggable stickers** | `drag`, `dragConstraints={heroBoardRef}`, `dragElastic 0.2`, `dragSnapToOrigin`, snap-back spring `{stiffness:300, damping:20}`. `whileDrag`: `scale 1.06`, rotate to 0, shadow `--shadow-lg` + 4px, `z sticker-dragging`, `cursor: grabbing`. Enabled only when `(pointer: fine)` and motion is allowed; otherwise static. | Feedback and the site's one playful moment. |
-| **Copy email** | Label swaps "Copy email" to "Copied" with a 150ms crossfade, reverts after 2s. | State change. |
-| **Theme toggle** | Knob slides 200ms; no page-wide transition (avoid repaint flash). | State change. |
+| **Draw-in** | Pen paths carry `pathLength="1"` and class `ink-draw`: `stroke-dasharray 1; stroke-dashoffset 1 → 0`, 0.9s `cubic-bezier(.65,0,.35,1)`, per-path delay via `--d`. Above the fold it runs on first paint (CSS only); in other sections it runs when the section's `Reveal` sets `data-shown` (IntersectionObserver, `rootMargin 0px 0px -15% 0px`, once). Hidden only under the `.js` class, so no-JS visitors see every mark fully drawn. | Storytelling: notes get written as you read. |
+| **Section reveal** | Structure content: `opacity 0, translate 0 16px` → rest, 0.5s `cubic-bezier(.16,1,.3,1)`, once, same observer; siblings stagger 0.06s. | Reading order. |
+| **Boil on hover** | Interactive pen marks (drawn link underlines, stickers, the napkin card) cycle `filter: url(#ink-a) → (#ink-b) → (#ink-c)` with `steps(1)` at about 10fps while hovered or focused. Never runs on its own. | Feedback: the ink comes alive under your hand. |
+| **Lift** (buttons, stickers, paper links) | Hover `translateY(-2px) rotate(-0.6deg)`; active `translateY(1px) scale(.98)`; 0.25s `cubic-bezier(.16,1,.3,1)`; hover only under `(hover: hover)`. | Tactile feedback. |
+| **Copy email** | Label "Copy email" → "Copied" with a 150ms crossfade; reverts after 2s. | State change. |
 
-Banned: marquees, scroll listeners (`window.addEventListener("scroll")`), parallax, infinite loops, custom cursors, GSAP.
+Banned: marquees, scroll listeners, parallax, infinite loops, custom cursors, GSAP, animating grain or any full-section filter.
+
+### 5.2 Easter eggs
+
+| Egg | Spec |
+|---|---|
+| **Splash signature** | See 6.15. |
+| **Ink marks** | Clicking empty paper in the hero (not a link or button, and not while the pencil is out) drops a hand-drawn mark at the pointer: a star, check, scribble or burst, in rotation, alternating `--pen` and `--ink`, rotated -20 to 20deg, 52px. It draws in 0.35s, fades after 1.6s and is removed at 2.6s. At most 6 on screen. Reduced motion: it appears without drawing, then fades. Marks are `aria-hidden`. |
+| **The pencil** | Nav button (`PencilSimple`, `aria-pressed`, label "Pick up the pencil"). See `PencilLayer` (6.10). |
+| **Crossed-out draft** | Above the hero title, "Full-stack ninja" in handwriting with a zigzag strike drawn through it (`<s>` in the DOM). |
+| **Taped stickers** | Six hand-traced logo stickers taped around the napkin card, draggable (6.6). |
+| **Hidden margin notes** | At most 2 on the whole site: a short handwritten aside that appears (draws in) on hover or focus of its anchor. Draft: on the Tong Masters "Play it" link, "bring two friends". VERIFY. |
+| **Desk lamp** | The theme toggle is a desk lamp (6.7). |
 
 ---
 
 ## 6. Components
 
-Folder: `components/` (flat, one component per file). Server components by default; client leaves marked.
+Folder `components/` (flat). Pen components live in `components/ink/`. Server components by default; client leaves marked.
 
-### 6.1 `Button` / `ButtonLink`
+### 6.1 Pen primitives (`components/ink/*`, server)
 
-- Variants: `primary` (mint fill, `--on-accent` text), `secondary` (`--surface` fill, `--ink` text). Both 3px border, `--r-control`, `--shadow-md`, press motion. Height 48px, padding-x 20px, label one line, optional Phosphor icon (20px, bold) on the left.
-- `focus-visible`: `outline: 3px solid var(--ink); outline-offset: 4px`.
-- Disabled: 50% opacity, no shadow, no press.
+All are `aria-hidden` SVGs that inherit color from a `tone` prop (`pen` default, `ink`, `soft`), take `draw` (boolean, default true) and `delay` (seconds), and pull path data from `lib/ink.ts`. The path library is small and fixed, and is reviewed on the style sheet; never invent a one-off path inline.
 
-### 6.2 `Chip`
+| Component | Use | Geometry |
+|---|---|---|
+| `InkCircle` | Circles a phrase (hero title) | Overshooting ellipse, absolutely positioned around its child with -8 to -10px insets, `preserveAspectRatio="none"` |
+| `InkUnderline` | Under headings, the email, drawn links | One slightly bowed stroke; `variant="link"` is 3px and boils on hover |
+| `InkArrow` | Margin notes to their subject | Curved shaft + 2-stroke head; `dir` = `left`, `down`, `down-right`, `up-right`, `loop` |
+| `InkStrike` | The crossed-out draft | Zigzag through the text |
+| `InkBox` | Boxes in napkin sketches | Rough rect, `rx 4` |
+| `Highlight` | Highlighter swipe | A `<mark>` with `--wash`, uneven radius, `box-decoration-break: clone` (no SVG) |
+| `Tape` | Tape strips on paper | A `<span>` with `--tape` (no SVG) |
 
-- `tech` chip: mono, `--surface` fill, 2px border, `--r-pill`, no shadow (static label). Padding `4px 10px`.
-- `status` chip: yellow fill, 2px border, `--shadow-sm`, Archivo 600 0.875rem, Phosphor `ChatCircleDots` icon. Text: **"Not actively looking, open to a chat"**. This is the one eyebrow on the page.
+### 6.2 `MarginNote` (server)
 
-### 6.3 `Card`
+A handwritten note (`--pen`, Hand role) with an optional `InkArrow` pointing at its subject. On `lg+` it sits in the right-hand margin column; below `lg` it drops under its subject, the arrow turns to `up-right`, and it gets `margin-top: 8px`. Text ≤ 8 words.
 
-`--surface` fill, 3px border, `--r-card`, `--shadow-md`, padding `24px` (`md: 28px`). Variant `current`: mint fill. Clickable cards get the press motion; static cards do not.
+### 6.3 `PaperCard` (server)
 
-### 6.4 `Sticker` (client)
+Taped-in paper: `--sheet`, 3px radius, paper lift, `rotate` prop (-2 to 2deg), `tape` prop (`top`, `top-pair`, `corners`). Children are usually a napkin sketch.
 
-- 88px square desktop (64px mobile), `--r-control`, 3px border, `--shadow-lg`, logo 44px in `currentColor`.
-- Set and fills (left to right on the board, fills alternate so no two neighbors match):
+### 6.4 `NapkinSketch` (server)
 
-| Sticker | Content | Fill | Rest rotation |
-|---|---|---|---|
-| 1 | Claude logo | mint | -8deg |
-| 2 | Next.js logo | surface | 6deg |
-| 3 | `>_` keycap (JetBrains Mono 600, 28px) | ink (text `--bg`) | -4deg |
-| 4 | Node.js logo | yellow | 10deg |
-| 5 | PostgreSQL logo | surface | -6deg |
-| 6 | Docker logo | mint | 4deg |
+Per-project sketches drawn in SVG with pen primitives plus `<text>` labels in Shantell (`--ink-soft`) and a single `--wash` patch. Each one is a component in `components/napkins/` (`tong-masters.tsx`, `portfolio-v1.tsx`, `how-i-build.tsx`), `role="img"` with an `aria-label` that says what is drawn. Strokes draw in with staggered `--d`.
 
-- `aria-hidden="true"` on each sticker; the board has a visually hidden sentence "Tools I use daily: Claude, Next.js, Node.js, PostgreSQL and Docker." The keycap is decorative.
-- Desktop: absolutely positioned on a bounded "board" (the right 5 columns of the hero), loosely clustered and overlapping by up to 16px. Mobile: a single wrapping row under the buttons, static, smaller.
+### 6.5 `Button` / `ButtonLink`
 
-### 6.5 `Nav` (client for the mobile menu only)
+- `primary`: `--btn` fill, `--on-btn` text, 2px `--ink` border, 12px radius. `secondary`: `--sheet` fill, `--ink` text, same border.
+- Heights 52px (`md`) / 44px (`sm`), 44×44 (`icon`). Lift motion. Optional Phosphor icon (20px, bold).
+- `focus-visible`: `outline: 3px solid var(--pen); outline-offset: 4px`.
+- Disabled: 50% opacity, no lift.
 
-- Sticky, height 64px (`md: 72px`), `--bg` fill. Gains a 3px bottom border once the hero is out of view (IntersectionObserver on the hero, not a scroll listener).
-- Left: `GP` monogram tile (40px, mint, 3px border, `--shadow-sm`) + "Gabriel Paet" (Archivo `wdth 110` 700).
-- Right (≥ `lg`, 1024px): links **Experience / Projects / About**, `ThemeToggle`, `ButtonLink secondary` **"Get in touch"** → `/#contact`. Links get a 3px mint underline on hover and when their section is in view.
-- Below `lg`: monogram + toggle + menu button (Phosphor `List`; `X` when open). The full row does not fit on one line at 768px, so the menu covers tablets too. The menu opens as a full-width sheet under the nav with 32px links and the "Get in touch" button; focus is trapped, Esc closes, it closes on navigation.
-- One line at all widths ≥ `lg`.
+### 6.6 `Sticker` (client) and `StickerBoard`
 
-### 6.6 `ThemeToggle` (client)
+- Paper scrap: `--sheet`, 3px radius, paper lift, one tape strip across the top, 80px square (60px on phones), brand mark 40px in `--ink` with the rough filter at scale 1.5. The `>_` keycap is Shantell 600 30px.
+- Set and rest rotation, clustered around the napkin card's top and right edges: Claude -8deg, Next.js 6deg, `>_` -4deg, Node.js 10deg, PostgreSQL -6deg, Docker 4deg.
+- Drag (from v2): `drag`, `dragConstraints` = hero board, `dragElastic 0.2`, `dragSnapToOrigin`, spring `{stiffness 300, damping 20}`; `whileDrag` scale 1.06, rotate 0, `z sticker-dragging`. Enabled only under `(pointer: fine)` with motion allowed. Boils while hovered.
+- `aria-hidden`, plus a visually hidden sentence: "Tools I use daily: Claude, Next.js, Node.js, PostgreSQL and Docker."
+- Phones: a static wrapping row under the hero buttons.
 
-- Chunky switch: 56×32 track, 2px border, `--r-pill`, knob 24px with a Phosphor `Sun` / `Moon` (bold, 14px). `role="switch"`, `aria-checked`, label "Dark mode".
-- Behaviour: first visit follows `prefers-color-scheme`. Clicking stores an explicit choice in `localStorage["gabpaet.theme.v2"]` (`"light" | "dark"`). A tiny pre-hydration inline script in `app/layout.tsx` sets `data-theme` before paint (it is the only copy of this logic besides the toggle; keep the storage key in `lib/theme.ts` and import the constant into both).
-- `<meta name="theme-color">` has light and dark entries (`#F6F7F3`, `#121412`).
+### 6.7 `LampToggle` (client)
 
-### 6.7 `SectionHeading`
+- A 44×44 icon button: 2px ink border, 12px radius, `--sheet` fill, Phosphor `Lamp` (bold). In light mode two short pen "rays" under the shade are drawn; in dark mode they're gone (lamp off).
+- `role="switch"`, `aria-checked` = dark, `aria-label="Dark mode"`, `title` "Turn the lamp off" / "Turn the lamp on".
+- Behaviour unchanged from v2: no stored value follows the OS; a click stores `"light" | "dark"` under `THEME_STORAGE_KEY` (`gabpaet.theme.v2`) from `lib/theme.ts`; `THEME_INIT_SCRIPT` applies it before paint.
+- Switching themes crossfades `background-color` and `color` for 0.4s (reduced motion: instant).
 
-`<h2>` at H2 scale, left-aligned, optional one-line body below at `--ink-muted`, `max-w-[65ch]`. **No eyebrows, no numbering, no right-floating explainer.**
+### 6.8 `Nav` (client for the menu)
 
-### 6.8 `TimelineItem`
+- Sticky, 72px, `--paper` fill. A 2px ink rule appears once the hero is out of view (IntersectionObserver).
+- Left: "Gabriel Paet" (Bricolage 700, 20px) with a short `InkUnderline` in `--pen`, linking to `/`.
+- Right on `lg+`: links **Experience / Projects / About / Contact** (16px, 500). The active section gets a 3px `--pen` drawn underline. Then `PencilButton`, `LampToggle` and `ButtonLink secondary sm` **"Résumé"** → `/resume`.
+- Below `lg`: name, pencil, lamp, menu button (`List` / `X`). The menu is the v2 sheet (focus trap, Esc, closes on navigation), restyled as taped-in paper, with the links in Bricolage 32px and the Résumé button.
 
-See section 7.2.
+### 6.9 `Chip`
 
-### 6.9 `ProjectTile`
+Tech label: 1.5px `--ink` border, pill, padding `3px 12px`, Chip type, static. The home page shows 4 per role; the full lists live on `/resume`.
 
-See section 7.3. Whole tile is one link (`<a>` wrapping), press motion, `aria-label` with the project name.
+### 6.10 `PencilLayer` (client) and `PencilButton`
 
-### 6.10 `ScreenshotFrame`
+- `PencilButton` in the nav toggles pencil mode (`aria-pressed`; its fill becomes `--wash` while active).
+- While active, a document-height absolute layer (`z pencil`, above content, below the nav) captures `pointerdown/move/up` and records points in page coordinates. Each finished stroke goes through `getStroke()` from perfect-freehand (`size 4, thinning 0.6, smoothing 0.5, streamline 0.5`) and renders as a filled `--ink` path. The live stroke renders through the same function.
+- A pinned bar at the bottom center (`fixed`, `z pencil`, taped paper, 48px buttons) holds **"Put the pencil down"** and, once something is drawn, **"Erase"**. Esc also puts it down.
+- Phones: while the pencil is out the layer sets `touch-action: none`, so the page does not scroll; the pinned bar is the way out. A Hand note under the nav appears for 3s: "pencil's out. draw anywhere."
+- Nothing is saved. Doodles are cleared on navigation. `aria-hidden` layer; the buttons are real buttons.
+- Reduced motion does not disable it (the visitor's own drawing is not motion).
 
-`next/image` inside a 3px border, `--r-card`, `--shadow-md`, `overflow-hidden`, fixed aspect ratio (desktop 16:10, phone 9:19.5) so there is no layout shift. Optional caption below the frame (never overlaid), Archivo small, `--ink-muted`.
+### 6.11 `SectionHeading`
 
-### 6.11 `CopyEmailButton` (client)
+`<h2>` at H2 scale with an optional `InkUnderline` under part of it (in `--pen`, 5px, about 60% width). No eyebrows, numbers or right-floating explainers. An optional one-line `--ink-soft` intro below.
 
-`secondary` button with Phosphor `Copy` icon, label "Copy email". On success: label "Copied", icon `Check`. If the Clipboard API is unavailable or rejects: select the email text in place and show "Press ⌘C to copy" (Ctrl+C on non-Mac) for 3s. Announces via an `aria-live="polite"` region.
+### 6.12 `ScreenshotFrame`
 
-### 6.12 `BrandIcon`
+`next/image` in a 2px ink border, 12px radius, paper lift, slight rotation (0.5 to 1deg), 1 or 2 tape strips across the corners. Fixed aspect ratio (16:10 desktop, 9:19.5 phone). Captions sit below in Hand (`--pen`), never on the image.
 
-`<svg viewBox="0 0 24 24" role="img" aria-label={title}><path d={icon.path} fill="currentColor"/></svg>` from `simple-icons`. Used for the hero stickers only.
+### 6.13 `CopyEmailButton` (client)
 
-### 6.13 `Footer`
+v2 behaviour (Clipboard API, select-text fallback "Press ⌘C to copy", `aria-live`), restyled as `secondary`.
 
-3px top border. Left: "© 2026 Gabriel Joshua Paet". Right: text links **Resume**, **GitHub**, **LinkedIn**, **v1 of this site** (→ `https://v1.gabpaet.dev`). Wraps to stacked lines on mobile.
+### 6.14 `Illustration` (server)
 
-### 6.14 `ArchitectureDiagram` (case studies)
+- Traced ink illustrations (section 10.3) are rendered as **CSS masks**: a `<span role="img" aria-label>` with `mask: url(/illustrations/<name>-ink.svg) center / contain no-repeat` and `background: var(--ink)`, so they re-ink in dark mode and stay cacheable. An optional second mask layer `<name>-pen.svg` paints one element in `--pen`.
+- Fixed aspect ratio box (no CLS), `loading`-equivalent: below-the-fold ones are lazy via `content-visibility: auto`.
+- **Every layout must work without its illustration.** Until the art arrives, the slot renders nothing.
 
-Plain HTML/CSS: outlined boxes (`Card` styling at small scale, mono labels) joined by 3px ink connector lines and Phosphor `ArrowRight` icons. Stacks vertically on mobile. No images, no hand-drawn SVG art.
+### 6.15 `SplashSignature` (client)
+
+A short intro, not a loading screen.
+
+- **When:** only on `/`, only on the first home view of a browser session (`sessionStorage["gabpaet.splash.v2"]`), and never when the URL has a hash, under reduced motion, without JS, or in print. The pre-paint script in `<head>` decides and sets `html.splash`; CSS shows the overlay only under that class, so nothing flashes and no-JS visitors never see it.
+- **What:** a fixed full-screen `--paper` sheet (dot grid, grain) with the signature centered. A `--pen` stroke signs "Gabriel Paet" in one continuous line (0.15s → 0.95s, `cubic-bezier(.65,0,.35,1)`). Then the sheet lifts up and away (`translateY(-104%) rotate(-2deg)`, 0.3s, ease-in, with the paper-lift shadow), revealing the hero. The hero's own draw-ins start as the sheet lifts (`html.splash` adds 1s to their delays). **Total ≤ 1.2s.**
+- **Skip:** any `pointerdown`, `keydown`, `wheel` or `touchmove` lifts the sheet immediately.
+- **Never blocks:** the page renders underneath from the first paint, so LCP is the real hero; the overlay is `aria-hidden` and has no focusable content. Focus stays on the document.
+- **Signature source:** Gabriel's real signature, traced from a phone photo (black pen on white paper) into one centerline path in `lib/signature.ts` and drawn with `stroke-dashoffset`. **Placeholder** until the photo arrives: "Gabriel Paet" in Shantell Sans 600 revealed by a left-to-right `clip-path` wipe, same timing.
+- `z splash`. Removed from the DOM once lifted.
+
+### 6.16 `Footer`
+
+A 2px ink rule. Left: "© 2026 Gabriel Joshua Paet" (`--ink-soft`). Right: links **Résumé**, **GitHub**, **LinkedIn**, **v1 of this site**, each at least 44px tall. Stacks on phones. `print:hidden`.
 
 ---
 
 ## 7. Home page `/`
 
-Single scroll. Every section uses a different layout. One eyebrow on the page (the hero status chip).
+Single scroll. Every section uses a different layout family. No eyebrows: handwritten notes do the labelling.
 
 ```
 Nav
-Hero            split: text 7 cols / sticker board 5 cols
-Experience      vertical timeline
-Projects        2-cell bento
-About           bio column + skills panel
-Contact         full-width mint block
+Hero         split: name + title + buttons | napkin card + stickers + illustration #1
+Experience   margin-note rows: date margin | entry | note
+Projects     napkin vs shipped two-up, then a v1 row
+About        lead paragraph | pinned lavender note + illustration #3
+Contact      giant "Say hi." + email + note + illustration #4
 Footer
 ```
 
 ### 7.1 Hero (`<section aria-labelledby="hero-name">`)
 
-- **Status chip:** "Not actively looking, open to a chat"
-- **H1 (display):** full name, one word per line: "Gabriel" / "Joshua" / "Paet" (uppercase via CSS; the DOM text is `profile.name`, "Gabriel Joshua Paet", with the line breaks done in CSS, e.g. each word in a `display: block` span). The longest line ("GABRIEL") must fit the text column without wrapping at every width from 375px up. The nav keeps the short "Gabriel Paet".
-- **Subtext (17 words):** "Senior programmer building AI agents, workflow automation, and the cloud infrastructure that runs them. 9 years shipping."
-- **Buttons:** `primary` **"Resume"** (Phosphor `FileText`) → `/resume`. `secondary` **"See projects"** (Phosphor `ArrowDown`) → `/#projects`.
-- **Right:** sticker board (6.4).
-- Fits the first viewport at 1280×720 and 375×812 with buttons visible. Padding `pt-12 md:pt-20 pb-16 md:pb-24`.
-- Mobile: single column; stickers become a static row under the buttons.
+- Left column (`lg`: 1.15fr):
+  1. Hand note **"hi, I'm"** (`--pen`, rotated -3deg) with a small `InkArrow down-right` toward the name.
+  2. **H1:** `profile.name` ("Gabriel Joshua Paet") at Display. It wraps naturally (two lines from `lg`, three on phones).
+  3. Title row: `profile.heroDraft` ("Full-stack ninja") in Hand `--ink-soft` with `InkStrike`, then **`profile.role`** ("Senior Programmer", Bricolage 650, 28px) with `InkCircle` in `--pen`.
+  4. Lead: **"I build AI agents, workflow automation, and the cloud infrastructure that runs them. 9 years shipping."** (17 words; years interpolated from `yearsShipping`), `--ink-soft`, `max-w-[34ch]`.
+  5. Buttons: `primary` **"Résumé"** (`FileText`) → `/resume`; `secondary` **"See projects"** (`ArrowDown`) → `/#projects`.
+- Right column: `PaperCard` (rotate 1.4deg, tape pair) holding `NapkinSketch how-i-build`: a Hand title "how I like to build", then three `InkBox`es "rough idea" → "first version" → "people use it" (the last on `--wash`), a loop arrow back, and "then make it better. repeat." Stickers are taped around it (6.6). Illustration #1 (the hand with a pencil) overlaps the card's bottom-right corner, as if drawing it; hidden below `md`.
+- Under the card, Hand caption "click the paper, it leaves a mark".
+- Fits the first viewport at 1280×720 and 375×812 with buttons visible. Phones: single column, card below the buttons, stickers a static row.
 
 ### 7.2 Experience (`#experience`)
 
-- H2 **"Experience"**. No intro line.
-- Vertical timeline: a 3px ink rail on the left (desktop) with a 16px square node per entry, each node a mint or surface fill matching its card. Cards to the right of the rail. Mobile: rail hidden, cards stacked.
-- Each card: dates (mono, `--ink-muted`) · H3 title · company (Archivo 600) · work mode · 1 to 2 impact highlights (body small, Phosphor `ArrowRight` bullets) · up to **6** tech chips (full lists live on `/resume`).
-- Lumora card uses the `current` (mint) variant.
-- ahaStudio renders as one card with both titles (Programmer → Senior Programmer) to show the promotion.
-- HPE renders as a compact one-line card (dates, title, company, one highlight, no chips).
+- H2 **"Where I've built things"** with an `InkUnderline`.
+- One row per role, `lg+` grid `170px | minmax(0,1fr) | 230px`, gap 32px, rows 56px apart; below `lg`, one column (date, entry, note).
+  - **Margin:** handwritten dates (`--pen`, rotated -3deg), for example "May 2026 → now".
+  - **Entry:** company (H3); a Meta line with the title and mode; **one** `homeLine` sentence with one `Highlight`ed phrase; up to 4 `Chip`s.
+  - **Note:** a `MarginNote` with an `InkArrow left` (`role.note`).
+- HPE is a single compact row (dates, "Hewlett Packard Enterprise, intern. A C# app for tracking FTE allocations."), with the **"Full résumé"** drawn link in its note column.
 
-Entries and draft copy (from v1 text; **every highlight marked VERIFY must be confirmed by Gabriel before launch; no invented numbers**):
-
-| Dates | Role | Highlights (draft) | Chips (home) |
+| Role | `homeLine` (highlight in **bold**) | Note | Chips |
 |---|---|---|---|
-| 2026-05 to now | Senior Programmer, **Lumora Capital** · Hybrid | "Building Centra, Lumora's proprietary loan origination and servicing system." (confirmed, from LinkedIn) VERIFY: "Automating manual operations with n8n and agent tooling, including Claude Code in the daily workflow." | Next.js, Node.js, PostgreSQL, n8n, GCP, Docker |
-| 2024-01 to 2026-04 | Programmer → Senior Programmer, **ahaStudio** (a Volenday Group studio) · Hybrid | VERIFY: "Shipped LLM features with LangChain, LangGraph, OpenAI, AWS Bedrock Agents and Vertex AI." VERIFY: "Built web and mobile apps across Next.js, React Native and Flutter." | LangChain, LangGraph, Bedrock, Next.js, React Native, Supabase |
-| 2017-05 to 2024-01 | Programmer, **Volenday Group** · Remote | "Built a React Native app with Danish and Norwegian language support, plus its REST API." "Led a team as scrum master for a web app serving offshore employees, and migrated it to Azure with MSSQL and Azure File Share for faster deploys." | React Native, Node.js, Next.js, Azure, MSSQL, MongoDB |
-| 2015-11 to 2016-04 | Intern, **Hewlett Packard Enterprise** · Taguig | "Built a C# (MVVM) app to track employee FTE allocations and requirements." | none |
+| Lumora Capital, Senior Programmer, hybrid | Building **Centra**, Lumora's proprietary loan origination and servicing system, and automating manual operations with n8n and agent tooling. VERIFY (second half) | "Claude Code is part of my daily workflow here" VERIFY | Next.js, Node.js, PostgreSQL, n8n |
+| ahaStudio, Senior Programmer, a Volenday Group studio | Shipped **LLM features** with LangChain, LangGraph, OpenAI, AWS Bedrock Agents and Vertex AI, across web and mobile apps. VERIFY | "Programmer to Senior in 8 months" (computed from `titles`) | LangGraph, Bedrock Agents, Next.js, React Native |
+| Volenday Group, Programmer, remote | Built a React Native app in Danish and Norwegian with its REST API, then **led the team** as scrum master on a web app we moved to Azure. | "my first full-time job. 6 years, 8 months" (duration computed) VERIFY | React Native, Azure, MSSQL, Node.js |
+
+Computed notes come from a helper (`lib/dates.ts`) so they can never drift from `titles`.
 
 ### 7.3 Projects (`#projects`)
 
-- H2 **"Projects"**.
-- Bento with exactly 2 cells. From `lg`: `grid-cols-12`, Tong Masters `col-span-8`, v1 `col-span-4`, equal height. Below `lg` (phones and tablets): stacked, since a 4-column tile is too narrow at 768px.
-- **Tong Masters tile** (featured): `--shadow-lg`. Top area: yellow fill with a desktop screenshot in a `ScreenshotFrame`, tilted -2deg, overlapping the tile's bottom edge of that area by 24px. Below: H3 "Tong Masters", one line "Real-time multiplayer Tong-its in the browser, with bots and a guided tutorial.", chips `Next.js` `Cloudflare` `Durable Objects` `TypeScript`, and a row with Phosphor `ArrowUpRight` "Case study". Links to `/projects/tong-masters`.
-- **Portfolio v1 tile**: surface fill, v1 screenshot (shows the IDE look, which is visually distinct from v2 and makes a good contrast tile). H3 "Portfolio v1", one line "The previous version of this site, styled as a code editor.", chips `Next.js` `Tailwind`, "Case study". Links to `/projects/portfolio-v1`.
+- H2 **"From napkin to production"**, intro "Every project starts as a scribble. Here's the scribble, and here's what shipped."
+- Tong Masters two-up (`lg+` `1fr | 1.1fr`, stacked below):
+  - Left: `PaperCard` (rotate -1.8deg) with `NapkinSketch tong-masters`: a Hand title "tong-its, but online?", a rough oval table, three seats, a stock pile, a `--wash` "melds" patch, and the labels "3 players" and "draw from the stock, or fight". Hand caption "the napkin".
+  - Right: `ScreenshotFrame` (desktop shot, taped corners), Hand caption "the thing that shipped", H3 "Tong Masters", summary, then drawn links **"Read the case study"** → `/projects/tong-masters` and **"Play it"** → live site (the "Play it" link carries the hidden margin note, 5.2).
+- Below it, after a 2px rule: the **Portfolio v1** row: "**Portfolio v1.** The site before this one, built to look and work like VS Code." plus drawn links "Read the case study" and "Visit v1".
 
 ### 7.4 About (`#about`)
 
-- Layout from `lg`: `grid-cols-12`. Left `col-span-5`: H2 **"About"** + bio. Right `col-span-7`: skills panel. Below `lg`: stacked, so the bio never runs in a narrow column.
-- **Bio draft (VERIFY voice):** personal, about why he builds. **Must not mention Lumora or his current role**; Experience covers that. "I love building things that interest me, whether it's a tool that makes a tedious job disappear or a weekend idea that turns into something real. Tong Masters started that way: I wanted an online Tong-its game so friends and family could play together, so I built one. I'd rather see a thing all the way through, from the first rough version to something people actually use. Nine years of building web and mobile apps later, that's still the part I enjoy most."
-- Pull line under the bio, H3 scale, with a yellow highlight block behind it: "Always view problems as an opportunity."
-- **Skills panel:** one `Card`, three labeled rows (label: Archivo 700 1rem; chips wrap below). Rows separated by spacing only, no rules.
-  - **AI & automation:** LangChain, LangGraph, OpenAI API, AWS Bedrock Agents, Vertex AI, n8n, Claude Code
-  - **Cloud & DevOps:** AWS, Elastic Beanstalk, S3, GitHub Actions, Azure, GCP, Docker
-  - **Web:** Node.js, Express, React, Next.js, PostgreSQL, React Native
+- `lg+` grid `minmax(0,1fr) | 260px`, stacked below.
+- Left: H2 **"About"**, then the bio lead (`profile.bio`, first sentence) at Lead size with **"I love building things that interest me"** highlighted, then the rest of the bio in Body `--ink-soft`. **Never mentions Lumora or the current role.** Bio VERIFY.
+- Right: illustration #3 (desk lamp over a notebook), then a pinned `--note` card (rotate 2.5deg): Hand "always view problems as an opportunity." and a smaller Hand line "my motto, for what it's worth".
 
 ### 7.5 Contact (`#contact`)
 
-- Full-width block inside the container: mint fill, 3px border, `--r-card`, `--shadow-lg`, padding `48px` (`md: 64px`). Text `--on-accent` (dark in both themes).
-- H2 **"Get in touch"**.
-- Line: "Not actively looking, but always happy to talk about AI, automation or web work."
-- Email `hello@gabpaet.dev` at H3 scale as a `mailto:` link, then a button row: `CopyEmailButton`, `ButtonLink secondary` LinkedIn (Phosphor `LinkedinLogo`), `ButtonLink secondary` GitHub (Phosphor `GithubLogo`). Buttons on mint use `--surface` fill.
-- No form. No phone number.
+- H2 **"Say hi."** at the contact Display size.
+- `hello@gabpaet.dev` (`mailto:`), 42px Bricolage 650, with a 5px `--pen` `InkUnderline`; next to it `CopyEmailButton`, then `secondary` buttons LinkedIn and GitHub.
+- `MarginNote` with an `InkArrow up-right`: **"not actively looking, open to a chat"** (from `profile.status`).
+- Illustration #4 (paper plane with a looping dotted path) at the right on `lg+`.
 
 ---
 
 ## 8. Project case studies `/projects/[slug]`
 
-Static routes generated from `content/projects.ts` (`generateStaticParams`). Target length: about 1.5 screens of reading.
+Static routes from `content/projects.ts`, a **notebook spread** from top to bottom:
 
-Template:
-
-1. Back link "All projects" → `/#projects`.
-2. H1 (H2 scale, it is the page's only h1), one-line summary, buttons: `primary` **"Live site"** (`ArrowUpRight`) and, when public, `secondary` **"Code"** (Phosphor `GithubLogo`).
-3. Screenshots: one desktop `ScreenshotFrame` full width, plus one phone frame beside it on desktop (stacked on mobile).
+1. Drawn back link "All projects" → `/#projects`.
+2. H1 (H2 scale), summary, buttons `primary` **"Live site"** (`ArrowUpRight`) and, when public, `secondary` **"Code"** (`GithubLogo`). Tong Masters adds illustration #2 (hands fanning cards) to the right on `lg+`.
+3. **The napkin:** the project's `NapkinSketch` on a `PaperCard`, with 1 or 2 `MarginNote`s.
 4. **What it is:** 2 to 3 sentences.
-5. **How it's built:** stack chips + `ArchitectureDiagram`.
-6. **Hard problems:** 2 to 3 entries, each an H3 + 2 sentences. Rendered as a 2-column grid of `Card`s on desktop (or one column if there are 3, to avoid a 3-equal-card row).
-7. **What's next:** 2 to 3 sentences.
-8. Credits line when contributors exist.
+5. **How it's built:** stack chips, then `WhiteboardDiagram` (8.1).
+6. **What shipped:** desktop `ScreenshotFrame` full width plus the phone frame beside it on `lg+` (stacked below), taped in, with Hand captions.
+7. **Hard problems:** an annotated list. Each entry is an H3 and 2 sentences, with an optional `MarginNote` (`problem.note`, ≤ 8 words) in the margin column. Entries are separated by space, not boxes.
+8. **What's next:** a to-do list. Each item has a hand-drawn checkbox (an `InkBox` 20px, plus an `InkPath` check when `done`), and Body text. Real `<ul>`; the check state is in the text for screen readers ("done:").
+9. Credits line (Hand) when contributors exist.
 
-### 8.1 `/projects/tong-masters`
+### 8.1 `WhiteboardDiagram`
 
-- Live: `https://tongmasters.gabpaet.dev`. Repo is private: **no Code button**.
-- Summary: "Real-time multiplayer Tong-its in the browser, with bots and a guided tutorial."
-- Architecture (named publicly, approved): Next.js web app on Vercel (runs solo games in the browser) → PartyServer rooms on Cloudflare Durable Objects (server-authoritative online tables) → D1 for guest wallets, chip ledger and play stats. The pure TypeScript rules engine and bot (`packages/engine`, unit tested with Vitest) is a library used by both the web app and the rooms, so the diagram names it inside both nodes instead of drawing it as a step.
-- Hard problems (drafts, VERIFY wording): server-authoritative multiplayer with bots filling empty seats; a pure, test-driven rules engine shared by client and server; virtual chips that can never be bought or cashed out, by design.
-- Credits: "Built with contributions from Koddi Evangelista." (Add Nicolas Recto only if In Between returns to the home page.)
-- Screenshots (captured 2026-10-12, headless Chrome at 2x, saved as WebP in `public/projects/tong-masters/`): desktop 1440×900 of `/solo` mid-hand, and phone 390×844 of the home screen (the table itself is landscape-only on phones, so the portrait phone frame shows the home screen).
+It replaces `ArchitectureDiagram`. Nodes are `InkBox`es with Bricolage 600 labels and `--ink-soft` details, joined by `InkArrow`s, laid out left to right on `lg+` and top to bottom below. It stays an `<ol>` (reading order = data flow). The Tong Masters engine is named inside both nodes, as in v2.
 
-### 8.2 `/projects/portfolio-v1`
+### 8.2 Content
 
-- Live: `https://v1.gabpaet.dev`. Code: `https://github.com/gjvpaet/gabpaet-portfolio/tree/v1`.
-- Summary: "The previous version of this site, styled as a code editor."
-- Architecture: `content/files.ts` registry → routes and IDE chrome (pages, sidebar, tabs, command palette, sitemap all read it). Theming is covered under Hard problems, not drawn as a step.
-- Hard problems (drafts): one source of truth for an IDE-style navigation; theme and accent switching without a flash on first paint; making an IDE layout usable on a phone.
-- What's next: "Retired in favour of v2, kept live as a reference."
-- Screenshots (captured 2026-10-12 from `gabpaet.dev/about`, which still served v1; identical to what `v1.gabpaet.dev` will serve): desktop 1440×900 and phone 390×844, saved as WebP in `public/projects/portfolio-v1/`.
+Unchanged from the 2026-10-12 spec (now in `content/projects.ts`): live URLs, Tong Masters' private repo (no Code button), architecture, credits ("Built with contributions from Koddi Evangelista."), and screenshots. New fields:
+
+- `hardProblems[].note?: string` (VERIFY drafts).
+- `whatsNext: { text: string; done?: boolean }[]` (v1: `[{ text: "Retired in favour of v2, kept live as a reference.", done: true }]`; Tong Masters: Gabriel to supply, VERIFY).
+- `napkin: "tong-masters" | "portfolio-v1"` (which `NapkinSketch` to render).
+- v1 napkin: a rough sketch of an editor window (sidebar, tabs, a ⌘K box) labelled "a portfolio that's a code editor?".
 
 ---
 
 ## 9. Resume `/resume`
 
-- Same content source as the home page (`content/profile.ts`), but complete: every role with all highlights and **full** chip lists, education/internship, skills groups, contact (email, LinkedIn, GitHub, site). No phone.
-- Screen view: single column `max-w-[800px]`, neo-brutalist cards like the home page, plus a `primary` button **"Download PDF"** (`DownloadSimple`) → `/gabriel-paet-resume.pdf` and a `secondary` "Print".
-- Print stylesheet (`@media print`): hide nav, footer, buttons and theme toggle; force light tokens; remove shadows; borders 1px; A4 and Letter safe margins (`@page { margin: 14mm }`); avoid breaking inside a role (`break-inside: avoid`).
-- The PDF in `public/gabriel-paet-resume.pdf` is produced by printing `/resume` from a **production** build (the dev server's overlay would print) and committing it: Chrome Print → Save as PDF, or headless Chrome `page.pdf({ preferCSSPageSize: true })`, which picks up the `@page` A4 size and 14mm margins. Regenerate whenever `content/profile.ts` or `content/projects.ts` changes (checklist item).
-- Sections: header (name, role and location, contact links shown as bare URLs so they read on paper, hero line), Experience (every role, every highlight, full chip list), Skills, Projects (name, URL, summary). No Education section until Gabriel supplies education details.
+- Content and structure from v2 (every role and highlight, full chip lists, skills, projects; no phone; no Education until Gabriel supplies it).
+- Screen: single column `max-w-[800px]`, structure layer only, plus up to one `MarginNote` per role (the same `role.note`) in a right margin on `lg+`. Buttons `primary` **"Download PDF"** and `secondary` **"Print"**.
+- Print and PDF: **no pen layer at all** (`print:hidden` on every pen component, illustration and the grain), light tokens forced, 1px lines, no lift shadows or rotation, A4 with 14mm margins, `break-inside: avoid` per role. Body stays Bricolage.
+- The PDF is regenerated from a production build after any content change (CLAUDE.md has the procedure).
 
 ---
 
-## 10. Content model (`content/profile.ts`)
+## 10. Content model and assets
 
-Single typed source for the home page, `/resume`, JSON-LD, the OG image and `metadata`.
+### 10.1 `content/profile.ts` additions
 
-```ts
-export type Role = {
-  company: string;
-  companyNote?: string;            // "a Volenday Group studio"
-  titles: { title: string; from: string; to?: string }[]; // promotion history, newest first
-  mode: "Remote" | "Hybrid" | "On-site";
-  location?: string;
-  highlights: string[];            // first 2 shown on home
-  stack: string[];                 // first 6 shown on home
-  current?: boolean;
-  compact?: boolean;               // HPE
-};
+- `heroDraft: "Full-stack ninja"`
+- `heroLine`: "I build AI agents, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping."
+- `Role.homeLine: string` and `Role.mark: string` (the substring to highlight; it must occur in `homeLine`; dev-time assert).
+- `Role.note?: string`, or `noteKind?: "promotion" | "tenure"` for the computed notes.
+- Everything else is unchanged. `profile.ts` stays the single source for the home page, `/resume`, JSON-LD, metadata and share images.
 
-export type Project = {
-  slug: "tong-masters" | "portfolio-v1";
-  name: string;
-  summary: string;
-  liveUrl: string;
-  codeUrl?: string;
-  stack: string[];
-  featured?: boolean;
-  screenshots: { src: string; alt: string; kind: "desktop" | "phone" }[];
-  whatItIs: string;
-  architecture: { label: string; detail?: string }[];
-  hardProblems: { title: string; body: string }[];
-  whatsNext: string;
-  credits?: string;
-};
+### 10.2 `lib/ink.ts`
 
-export const profile = {
-  name: "Gabriel Joshua Paet",
-  shortName: "Gabriel Paet",
-  role: "Senior Programmer",
-  location: "Pasay City, Philippines",
-  yearsShipping: 9,                 // first full-time role 2017-05
-  status: "Not actively looking, open to a chat",
-  email: "hello@gabpaet.dev",
-  links: { github: "https://github.com/gjvpaet", linkedin: "https://www.linkedin.com/in/gjvpaet/" },
-  heroLine: "Senior programmer building AI agents, workflow automation, and the cloud infrastructure that runs them. 9 years shipping.",
-  bio: "...",
-  motto: "Always view problems as an opportunity.",
-  skills: { "AI & automation": [...], "Cloud & DevOps": [...], Web: [...] },
-  roles: [/* Role[] newest first */],
-} as const;
-```
+The named path library (circle, underline variants, arrow variants, strike, box corner jitter, the four click marks, the check). Each is a `d` string drawn once and reviewed on the style sheet.
 
-`heroLine` interpolates `yearsShipping` so the number exists once.
+### 10.3 Illustrations (ChatGPT, then traced)
+
+- Four illustrations, generated by Gabriel in one ChatGPT conversation from a shared style block (black fine-liner, plain white background, no shading beyond sparse crosshatching, no text). #1 is the style anchor for the rest:
+  1. Hero: a hand with a pencil drawing a box-and-arrow napkin, coffee mug alongside (2:3).
+  2. Case study: two hands fanning Tong-its cards, stock pile and a meld (4:3).
+  3. About: a desk lamp over an open notebook (3:4).
+  4. Contact and 404: a paper plane with a looping dotted path (3:2).
+- Pipeline: PNG → threshold → `potrace` to SVG (fill-only, no strokes, optimised with SVGO, target < 30 KB each) → `public/illustrations/<name>-ink.svg` (+ optional `<name>-pen.svg` for one purple element). Reject any generation with wrong hands or stray text.
+
+### 10.4 Signature
+
+A phone photo of Gabriel's signature (black pen on white paper). Traced to a single centerline path (`autotrace --centerline`, then hand-cleaned) in `lib/signature.ts`. The placeholder is described in 6.15.
 
 ---
 
-## 11. Dark mode
+## 11. Dark mode: "night page"
 
-- `data-theme="light" | "dark"` on `<html>`; default from `prefers-color-scheme`; manual override persisted (6.6).
-- Token swap only (table 4.1). Outlines and shadows become `#F2F3EE`. Mint and yellow fills are identical in both modes and always carry dark text (`--on-accent`).
-- Screenshots get no dark treatment; their 3px border carries the theme.
-- Test every section in both modes before calling a component done.
-
----
+- Token swap only (4.1): charcoal paper, chalk-white ink, light violet pen. Illustrations re-ink through their masks. Screenshots are untouched; their frame and tape carry the theme.
+- The lamp toggle is the only control. Both themes are tested for every component.
 
 ## 12. Accessibility
 
-- Semantic landmarks: `<header>`, `<nav aria-label="Primary">`, `<main id="main">`, `<footer>`; one `<h1>` per page; logical h2/h3.
-- "Skip to content" link, first focusable element, visible on focus (mint fill, 3px border).
-- Focus ring on every interactive element: `outline 3px solid var(--ink)`, `offset 4px`. Never removed.
-- All text pairs from table 4.1 pass AA; body text passes AAA in both modes.
-- Hit targets ≥ 44×44px.
-- Stickers are `aria-hidden` with a visually hidden equivalent sentence; dragging is never required for anything.
-- Mobile menu: focus trap, Esc to close, `aria-expanded` on the trigger.
-- Reduced motion: all of section 5 collapses to static.
-- Images: meaningful `alt` on screenshots ("Tong Masters game table on desktop, three players mid-hand").
-
----
+- Landmarks, skip link, a single `h1`, and the mobile-menu focus trap, as in v2.
+- Focus ring on every interactive element: `3px solid var(--pen)`, offset 4px.
+- Pen layer: every SVG is `aria-hidden`; no fact exists only in handwriting or only in a drawing. Napkin sketches and illustrations that carry meaning have `role="img"` and an `aria-label`.
+- Strike-through draft: the `<s>` element plus visually hidden text "(crossed out)".
+- Hit targets ≥ 44×44, including drawn links (padding, not the visible underline).
+- Contrast (4.1) passes AA everywhere and AAA for body.
+- Reduced motion: no splash, no draw-ins (marks render drawn), no boil, no lift, no reveal movement. The ink marks and the pencil stay.
+- The pencil and stickers are optional toys; nothing requires them.
 
 ## 13. SEO, metadata, redirects
 
-- `metadataBase: https://gabpaet.dev`. Title default "Gabriel Joshua Paet, Senior Programmer"; template "%s | Gabriel Joshua Paet". Description from `profile`.
-- **Canonical per page** (fixes v1, where every page pointed to `/`): `/`, `/resume`, `/projects/tong-masters`, `/projects/portfolio-v1`. Do not set `alternates.canonical` in the root layout.
-- `app/sitemap.ts`: those four URLs. `app/robots.ts`: allow all.
-- JSON-LD `Person`: `name`, `jobTitle`, `worksFor` (Lumora Capital), `address` (Pasay City, PH), `email`, `url`, `sameAs` **GitHub and LinkedIn** (v1 missed LinkedIn), `knowsAbout` from `skills`. Plus `WebSite`.
-- Permanent redirects in `next.config.ts`:
+Unchanged from v2 and already built: `metadataBase`, title and description from `profile`, per-page canonicals, sitemap, robots, JSON-LD `Person` + `WebSite`, and the 8 permanent redirects in `next.config.ts`. Section IDs stay `#experience`, `#projects`, `#about` and `#contact` so those redirects still land.
 
-| From | To |
-|---|---|
-| `/about` | `/#about` |
-| `/work` | `/#experience` |
-| `/contact` | `/#contact` |
-| `/projects/gabpaet-dev/readme` | `/projects/portfolio-v1` |
-| `/projects/gabpaet-dev/page-tsx` | `/projects/portfolio-v1` |
-| `/package` | `/` |
-| `/zshrc` | `/` |
-| `/writing` | `/` |
+**Share images and icons (redo):**
 
-- **OG image** (`app/opengraph-image.tsx`, 1200×630, static): `--bg` light background, 6px ink border inset 32px with 12px shadow; full name from `profile.name`, stacked one word per line like the hero ("GABRIEL" / "JOSHUA" / "PAET", about 104px, leading 0.92, left-aligned), in Archivo Expanded ExtraBold; role line in Archivo; yellow status chip; two stickers (Claude, `>_`) tilted at the right. Colors from `lib/tokens.ts`. Fonts: static TTF instances in `assets/fonts/` (`Archivo-Expanded-ExtraBold.ttf` = wdth 125 / wght 800, `Archivo-Medium.ttf`, `JetBrainsMono-SemiBold.ttf`, all OFL, fetched from Google Fonts' static instances) since Satori does not read variable axes. The renderer lives in `lib/og.tsx`; the title shrinks below 104px only when its longest word would not fit beside the stickers. Per-project OG images (`app/projects/[slug]/opengraph-image.tsx`) reuse it with the project name, summary and a "Case study" chip.
-- **Favicon:** `app/icon.tsx` (32×32): "GP" in Archivo Expanded ExtraBold, ink on mint, rounded 6px tile with a 2px ink border. `app/apple-icon.tsx` (180×180) is a full-bleed mint square with no outline, because iOS rounds the corners itself and would clip an outline unevenly. `app/favicon.ico` is deleted.
-- **Meta description and title** come from `profile.metaDescription` and `profile.name` / `profile.role`; JSON-LD is built from `profile` (current employer from the `current` role, `knowsAbout` from the skill groups).
-
----
+- `app/opengraph-image.tsx` (1200×630) through `lib/og.tsx`: `--paper` background with the dot grid drawn as a pattern; `profile.name` in Bricolage ExtraBold (about 96px, two lines); "Senior Programmer" below with a hand-drawn `--pen` ellipse around it (the `InkCircle` path, unfiltered: Satori has no SVG filters); a small `how-i-build` napkin doodle at the right, rotated 3deg, with a tape strip. Per-project images reuse it with the project name, summary and a Hand "case study" note.
+- `app/icon.tsx` (32×32): a handwritten "gp" in Shantell 700, `--ink` on `--paper`, inside a `--pen` hand-drawn circle. `app/apple-icon.tsx` (180×180): full-bleed `--paper` with the same mark, no border.
+- Fonts: static TTF instances fetched from Google Fonts' static instances (Satori cannot read variable axes): `BricolageGrotesque-ExtraBold.ttf` (opsz 96), `BricolageGrotesque-Medium.ttf`, `ShantellSans-SemiBold.ttf` (INFM 70, if the static API serves it; otherwise the default instance). All OFL, in `assets/fonts/`. Remove the Archivo and JetBrains Mono TTFs.
 
 ## 14. States and edge cases
 
-- **404** (`app/not-found.tsx`): H1 "Page not found", one line "That page moved or never existed.", `primary` button "Back home". A single tilted `>_` sticker.
-- **Copy email failure:** see 6.11.
-- **No JS:** page fully readable; theme follows the system setting; stickers static. The mobile menu button does nothing without JS, which is acceptable because the home page is a single scroll and every section is reachable by scrolling; the footer links cover Resume, GitHub, LinkedIn and v1.
-- **Images:** fixed aspect-ratio frames, `next/image` with `sizes`; hero has no images, so LCP is the H1 text.
-- **Long names in chips:** chips wrap as whole units, never mid-word.
+- **404:** H1 "Page not found", line "That page moved or never existed.", `primary` "Back home", illustration #4 (the paper plane) with a Hand note "this one flew off".
+- **No JS:** fully readable. Every mark is drawn, there's no splash, stickers are static, and the pencil button does nothing (acceptable; it is a toy).
+- **Illustrations missing:** the slots collapse; nothing else moves.
+- **Long text in handwriting:** never happens by rule (≤ 8 words).
+- **Copy email failure:** v2 fallback.
 
 ---
 
 ## 15. Build checklist
 
-Order matters; each step should leave the site buildable.
+Order matters; each step leaves the site buildable. Reuse v2 code wherever the behaviour is unchanged (content, routes, SEO, redirects, resume pipeline, theme logic, reveal observer, sticker drag, menu, copy email).
 
-1. [x] On `v2`: remove v1 IDE code (`app/(ide)`, `components/ide/*`, `context/*`, `lib/tweaks.ts`, `lib/files.ts`, `content/*.tsx`, v1 tokens in `globals.css`). Move v1 reference docs out of the way (`portfolio.html`, `HANDOFF.md`, `DESIGN.md`, `PRODUCT.md` are preserved on the `v1` tag; delete or replace them on `v2`).
-2. [x] Install `motion`, `@phosphor-icons/react`, `simple-icons`. Wire Archivo (wdth axis) + JetBrains Mono via `next/font`.
-3. [x] Tokens: `globals.css` (light + dark), `lib/tokens.ts`, `lib/z.ts`, `lib/theme.ts`, pre-hydration theme script.
-4. [x] `content/profile.ts` and `content/projects.ts` with draft copy from sections 7 to 8.
-5. [x] Primitives: Button, Chip, Card, BrandIcon, ScreenshotFrame, SectionHeading, ThemeToggle, CopyEmailButton.
-6. [x] Nav + Footer + skip link + `not-found`.
-7. [x] Home sections in order: Hero (static first), Experience, Projects, About, Contact.
-8. [x] Motion layer: press, reveals, hero entrance, draggable stickers. Verify reduced motion.
-9. [x] Capture screenshots (both projects; v1 from gabpaet.dev while it still served v1) as WebP into `public/projects/<slug>/`.
-10. [x] Case study pages + ArchitectureDiagram.
-11. [x] `/resume` + print stylesheet; generate and commit the PDF.
-12. [x] Metadata, canonicals, JSON-LD, sitemap, robots, redirects, OG images, icons.
-13. [x] v1 preservation (section 2): tag, Vercel project, `v1.gabpaet.dev`, apex made primary.
-14. [ ] Gabriel verifies every VERIFY string.
-15. [x] QA (2026-10-12, production build): 4 pages x 375/768/1280 x light/dark with no overflow or console errors (besides local Vercel Analytics 404s); keyboard pass with visible focus on all 19 home stops and 44px tap targets; reduced motion static; contrast floor 7.1:1 light / 6.7:1 dark; Lighthouse mobile home 90/100/96/100 (perf/a11y/best/SEO), desktop home 100/100/96/100, resume and case study 96/100/96/100; all 8 redirects 308; unknown routes 404; zero em dashes. Re-run Lighthouse after step 14 copy changes.
-16. [ ] Merge `v2` → `main`.
+1. [x] Tag `v2-brutalist` on `4911a4a` (annotated tag created locally 2026-10-17; Gabriel pushes it, or creates it from a GitHub release on that commit).
+2. [ ] Fonts: swap Archivo and JetBrains Mono for Bricolage Grotesque and Shantell Sans; `corepack pnpm add perfect-freehand`.
+3. [ ] Tokens: rewrite `globals.css` (4.1 to 4.6, type utilities, grain, dot grid, ink filters, draw-in, boil, lift, print), `lib/tokens.ts`, `lib/z.ts`.
+4. [ ] `lib/ink.ts` + pen primitives (6.1) + `MarginNote`, `PaperCard`, `Highlight`, `Tape`.
+5. [ ] Restyle the primitives: Button, Chip, ScreenshotFrame, SectionHeading, CopyEmailButton, Footer; `LampToggle` replaces ThemeToggle.
+6. [ ] Content: `profile.ts` additions (10.1), `projects.ts` additions (8.2), `lib/dates.ts` for the computed notes. New drafts carry `// VERIFY`.
+7. [ ] Nav (pencil + lamp + Résumé), mobile menu restyle.
+8. [ ] Home sections in order: Hero (with `how-i-build` napkin and stickers), Experience, Projects (Tong Masters napkin), About, Contact.
+9. [ ] Motion: draw-in, reveal, boil, lift; reduced-motion pass.
+10. [ ] Easter eggs: ink marks, `PencilLayer`, hidden margin note, `SplashSignature` (placeholder signature).
+11. [ ] Case studies: notebook spread, `WhiteboardDiagram`, v1 napkin, annotated hard problems, to-do list.
+12. [ ] `/resume` restyle with screen-only margin notes; regenerate the PDF.
+13. [ ] Share images, icon and apple icon (13); swap the fonts in `assets/fonts/`.
+14. [ ] 404 restyle.
+15. [ ] Illustrations: Gabriel generates #1 to #4; trace, add, place (10.3).
+16. [ ] Signature: Gabriel sends the photo; trace and swap in for the placeholder (10.4).
+17. [ ] Gabriel verifies every VERIFY string (`grep -rn VERIFY content/`), including those carried over from the brutalist build.
+18. [ ] QA on a production build: 4 pages × 375/768/1280 × light/dark; keyboard pass; 44px targets; reduced motion; splash rules (first visit only, skip, deep links, hash, no-JS); pencil on a phone (scroll lock and exit); print and PDF have no pen layer; contrast; Lighthouse (target mobile perf ≥ 90 with the splash on); redirects 308; zero em dashes.
+19. [ ] Merge `v2` → `main`.
 
 ---
 
-## 16. Pre-flight (design rules to re-check before merge)
+## 16. Pre-flight (re-check before merge)
 
-- One accent (mint) + one supporting (yellow); no other hues; mint never as text on light bg.
-- Radius rule (4.3) holds everywhere; every outline is 2 or 3px ink; every shadow is solid, zero blur, down-right.
-- Hero: 4 text elements max, name stacked on exactly 3 lines (one word each, nothing wraps mid-line), subtext ≤ 20 words, buttons visible without scrolling at 1280×720 and 375×812.
-- One eyebrow on the page (status chip). No section numbers, no scroll cues, no marquee, no decorative dots, no labels on images.
-- No duplicate CTA intent: "Resume" (resume), "See projects" (projects), "Get in touch" (contact), "Copy email" (copy), "Live site" / "Code" (project links).
-- Each home section uses a distinct layout family (split, timeline, bento, column + panel, full-width block).
+- One accent (purple), used as a pen; nothing purple behind text except `--wash`.
+- Two-layer rule: no fact lives only in handwriting; handwriting ≤ 8 words per note; no handwriting in nav, buttons, headings or body.
+- Pen marks come only from `lib/ink.ts`; no filter on text or whole sections; nothing loops on its own.
+- Radius rule (4.3); structure lines 2px; the only shadow is the paper lift.
+- Hero: buttons visible without scrolling at 1280×720 and 375×812; lead ≤ 20 words.
+- No eyebrows, section numbers, scroll cues, marquees, decorative dots or labels on images.
+- No duplicate CTA intent: "Résumé" (resume, nav and hero), "See projects", "Read the case study", "Play it" / "Live site" / "Visit v1" (live), "Code", "Copy email".
+- Each home section uses a distinct layout family.
+- Splash ≤ 1.2s, skippable, once per session, home only; never on reduced motion, hash links or no-JS.
 - Copy self-audit: no em dashes, no invented metrics, every VERIFY resolved.
-- Both themes and reduced motion tested.
+- Both themes, reduced motion and print tested.
