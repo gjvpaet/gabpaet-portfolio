@@ -212,7 +212,7 @@ All are `aria-hidden` SVGs that inherit color from a `tone` prop (`pen` default,
 | `InkCircle` | Circles a phrase (hero title) | Overshooting ellipse, absolutely positioned around its child with -8 to -10px insets, `preserveAspectRatio="none"` |
 | `InkUnderline` | Under headings, the email, drawn links | One slightly bowed stroke; `variant="link"` is 3px and boils on hover |
 | `InkArrow` | Margin notes to their subject | Curved shaft + 2-stroke head; `dir` = `left`, `down`, `down-right`, `up-right`, `loop` |
-| `InkStrike` | The crossed-out draft | Zigzag through the text |
+| `InkStrike` | The crossed-out draft | Two loose lines through the text, so it stays readable |
 | `InkBox` | Boxes in napkin sketches | Rough rect, `rx 4` |
 | `Highlight` | Highlighter swipe | A `<mark>` with `--wash`, uneven radius, `box-decoration-break: clone` (no SVG) |
 | `Tape` | Tape strips on paper | A `<span>` with `--tape` (no SVG) |
@@ -482,7 +482,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 1. [x] Tag `v2-brutalist` on `4911a4a` (annotated tag created locally 2026-10-17; Gabriel pushes it, or creates it from a GitHub release on that commit).
 2. [x] Fonts: swap Archivo and JetBrains Mono for Bricolage Grotesque and Shantell Sans; `corepack pnpm add perfect-freehand`.
 3. [x] Tokens: rewrite `globals.css` (4.1 to 4.6, type utilities, grain, dot grid, ink filters, draw-in, boil, lift, print), `lib/tokens.ts`, `lib/z.ts`. The ink filters render from `components/ink/ink-filters.tsx` in the root layout. Old token names (`bg-surface`, `bg-mint`, `shadow-brut-md`, `press`, `tone-accent`, ...) survive as marked legacy aliases in `globals.css` so unrestyled components keep rendering; delete each alias once steps 5 to 8 stop using it. `lib/og.tsx` reads `legacyTokens` until step 13.
-4. [ ] `lib/ink.ts` + pen primitives (6.1) + `MarginNote`, `PaperCard`, `Highlight`, `Tape`.
+4. [x] `lib/ink.ts` + pen primitives (6.1) + `MarginNote`, `PaperCard`, `Highlight`, `Tape`. `InkSvg` (`components/ink/ink-svg.tsx`) renders any named mark; the wrappers are `InkCircle`, `InkUnderline`, `InkStrike`, `InkArrow`, `InkBox`. The strike is two loose lines rather than a zigzag, so the crossed-out joke stays readable.
 5. [ ] Restyle the primitives: Button, Chip, ScreenshotFrame, SectionHeading, CopyEmailButton, Footer; `LampToggle` replaces ThemeToggle.
 6. [ ] Content: `profile.ts` additions (10.1), `projects.ts` additions (8.2), `lib/dates.ts` for the computed notes. New drafts carry `// VERIFY`.
 7. [ ] Nav (pencil + lamp + Résumé), mobile menu restyle.
