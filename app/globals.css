@@ -59,7 +59,7 @@
 }
 
 /* Expose tokens as Tailwind utilities: bg-surface, text-ink-muted,
-   border-ink, rounded-card, shadow-brut-md, font-mono, etc. */
+   border-ink, rounded-card, shadow-brut-md, font-hand, etc. */
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
@@ -70,8 +70,8 @@
   --color-on-accent: var(--on-accent);
   --color-mint-text: var(--mint-text);
 
-  --font-sans: var(--font-archivo), system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-sans: var(--font-bricolage), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-hand: var(--font-shantell), "Comic Neue", ui-rounded, cursive;
 
   --radius-card: var(--r-card);
   --radius-control: var(--r-control);
@@ -130,27 +130,26 @@ h3 {
 }
 
 /* =========================================================
-   Type roles (spec 4.2). Width uses the Archivo wdth axis.
+   Type roles (spec 4.2). Bricolage for structure, Shantell for the pen
+   layer. Sizes are retuned with the tokens in build step 3.
    ========================================================= */
 @utility type-display {
-  font-stretch: 125%;
-  font-weight: 800;
-  text-transform: uppercase;
+  font-weight: 750;
+  font-variation-settings: "opsz" 96;
   font-size: clamp(3.25rem, 8vw, 6rem);
-  line-height: 0.92;
-  letter-spacing: -0.02em;
+  line-height: 0.94;
+  letter-spacing: -0.035em;
 }
 
 @utility type-h2 {
-  font-stretch: 125%;
-  font-weight: 800;
+  font-weight: 750;
+  font-variation-settings: "opsz" 72;
   font-size: clamp(2.25rem, 5vw, 3.5rem);
   line-height: 1;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.03em;
 }
 
 @utility type-h3 {
-  font-stretch: 110%;
   font-weight: 700;
   font-size: 1.375rem;
   line-height: 1.25;
@@ -163,24 +162,38 @@ h3 {
 }
 
 @utility type-button {
-  font-stretch: 110%;
-  font-weight: 700;
+  font-weight: 650;
   font-size: 1rem;
   line-height: 1;
 }
 
 @utility type-meta {
-  font-family: var(--font-mono);
   font-weight: 500;
   font-size: 0.875rem;
   line-height: 1.4;
 }
 
 @utility type-chip {
-  font-family: var(--font-mono);
   font-weight: 500;
   font-size: 0.8125rem;
   line-height: 1;
+}
+
+/* Handwriting (pen layer). Never below 1.0625rem; 8 words or fewer. */
+@utility type-hand {
+  font-family: var(--font-hand);
+  font-weight: 400;
+  font-variation-settings: "INFM" 70, "BNCE" 30;
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+
+@utility type-hand-title {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-variation-settings: "INFM" 70, "BNCE" 30;
+  font-size: 1.6875rem;
+  line-height: 1.2;
 }
 
 /* =========================================================

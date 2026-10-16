@@ -43,7 +43,7 @@ function RoleCard({ role }: { role: Role }) {
       <Card as="article" className="grid gap-2 p-5 md:p-6">
         <p className="type-meta text-ink-muted">{meta}</p>
         <h3 className="type-h3">
-          {titleLine(role)}, <span className="font-semibold [font-stretch:100%]">{role.company}</span>
+          {titleLine(role)}, <span className="font-semibold">{role.company}</span>
         </h3>
         <p className="type-body-sm">{role.highlights[0]}</p>
       </Card>

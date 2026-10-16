@@ -8,7 +8,7 @@ export function Monogram({ className }: { className?: string }) {
       aria-hidden="true"
       className={cn(
         "tone-accent grid size-10 shrink-0 place-items-center rounded-control border-3 border-ink bg-mint shadow-brut-sm",
-        "text-[0.95rem] font-extrabold tracking-[-0.02em] [font-stretch:125%]",
+        "text-[0.95rem] font-extrabold tracking-[-0.02em]",
         className,
       )}
     >

@@ -21,7 +21,7 @@ export function About() {
           <Card className="grid gap-6">
             {profile.skills.map((group) => (
               <div key={group.label} className="grid gap-3">
-                <h3 className="font-bold [font-stretch:110%]">{group.label}</h3>
+                <h3 className="font-bold">{group.label}</h3>
                 <ChipList items={group.items} />
               </div>
             ))}

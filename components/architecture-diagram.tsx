@@ -10,7 +10,7 @@ export function ArchitectureDiagram({ nodes, label }: { nodes: ArchitectureNode[
       {nodes.map((node, i) => (
         <li key={node.label} className="flex flex-col md:flex-1 md:flex-row">
           <div className="grid flex-1 content-start gap-1.5 rounded-control border-3 border-ink bg-surface p-4 shadow-brut-sm">
-            <span className="font-bold [font-stretch:110%]">{node.label}</span>
+            <span className="font-bold">{node.label}</span>
             {node.detail ? <span className="type-meta text-ink-muted">{node.detail}</span> : null}
           </div>
           {i < nodes.length - 1 ? (

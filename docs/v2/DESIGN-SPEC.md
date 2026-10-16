@@ -478,7 +478,7 @@ Unchanged from v2 and already built: `metadataBase`, title and description from 
 Order matters; each step leaves the site buildable. Reuse v2 code wherever the behaviour is unchanged (content, routes, SEO, redirects, resume pipeline, theme logic, reveal observer, sticker drag, menu, copy email).
 
 1. [x] Tag `v2-brutalist` on `4911a4a` (annotated tag created locally 2026-10-17; Gabriel pushes it, or creates it from a GitHub release on that commit).
-2. [ ] Fonts: swap Archivo and JetBrains Mono for Bricolage Grotesque and Shantell Sans; `corepack pnpm add perfect-freehand`.
+2. [x] Fonts: swap Archivo and JetBrains Mono for Bricolage Grotesque and Shantell Sans; `corepack pnpm add perfect-freehand`.
 3. [ ] Tokens: rewrite `globals.css` (4.1 to 4.6, type utilities, grain, dot grid, ink filters, draw-in, boil, lift, print), `lib/tokens.ts`, `lib/z.ts`.
 4. [ ] `lib/ink.ts` + pen primitives (6.1) + `MarginNote`, `PaperCard`, `Highlight`, `Tape`.
 5. [ ] Restyle the primitives: Button, Chip, ScreenshotFrame, SectionHeading, CopyEmailButton, Footer; `LampToggle` replaces ThemeToggle.

@@ -118,7 +118,7 @@ export function Nav({ shortName }: { shortName: string }) {
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 md:h-[72px] md:px-8">
         <Link href="/" className="flex min-h-11 items-center gap-3 rounded-control no-underline">
           <Monogram />
-          <span className="whitespace-nowrap font-bold [font-stretch:110%]">{shortName}</span>
+          <span className="whitespace-nowrap font-bold">{shortName}</span>
         </Link>
 
         {/* lg and up: the full row */}
@@ -176,7 +176,7 @@ export function Nav({ shortName }: { shortName: string }) {
                 <Link
                   href={`/#${section.id}`}
                   onClick={() => setMenuOpen(false)}
-                  className="block py-1 text-[2rem] leading-tight font-extrabold no-underline [font-stretch:125%]"
+                  className="block py-1 text-[2rem] leading-tight font-extrabold no-underline"
                 >
                   {section.label}
                 </Link>

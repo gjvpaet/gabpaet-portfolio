@@ -78,7 +78,7 @@ export function StickerBoard({ tools }: { tools: string }) {
           {"icon" in s ? (
             <BrandIcon icon={s.icon} decorative className="pointer-events-none size-8 md:size-11" />
           ) : (
-            <span className="pointer-events-none font-mono text-xl font-semibold md:text-[1.75rem]">&gt;_</span>
+            <span className="pointer-events-none font-hand text-xl font-semibold md:text-[1.75rem]">&gt;_</span>
           )}
         </motion.span>
       ))}

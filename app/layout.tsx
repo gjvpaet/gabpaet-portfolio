@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Shantell_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Footer } from "@/components/footer";
@@ -12,19 +12,21 @@ import "./globals.css";
 
 const SITE_TITLE = `${profile.name}, ${profile.role}`;
 
-// Archivo is variable on weight and width; the wdth axis drives the wide
-// display type (font-stretch: 110% / 125%).
-const archivo = Archivo({
-  variable: "--font-archivo",
+// Structure layer (spec 4.2). Variable on weight, optical size and width;
+// display type uses opsz 96.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  axes: ["wdth"],
+  axes: ["opsz", "wdth"],
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+// Pen layer: handwriting for notes, dates and captions. INFM (informality)
+// and BNCE (bounce) are set per role in globals.css.
+const shantell = Shantell_Sans({
+  variable: "--font-shantell",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  axes: ["BNCE", "INFM"],
   display: "swap",
 });
 
@@ -130,7 +132,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${jetbrainsMono.variable}`}
+      className={`${bricolage.variable} ${shantell.variable}`}
       suppressHydrationWarning
     >
       <head>

@@ -105,7 +105,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
           <div className="grid gap-5">
             {project.hardProblems.map((problem) => (
               <Card key={problem.title} as="article" className="grid gap-2">
-                <h3 className="font-bold [font-stretch:110%]">{problem.title}</h3>
+                <h3 className="font-bold">{problem.title}</h3>
                 <p className="type-body-sm">{problem.body}</p>
               </Card>
             ))}

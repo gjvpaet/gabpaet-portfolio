@@ -34,7 +34,7 @@ function RoleEntry({ role }: { role: Role }) {
   return (
     <article className="grid gap-3 rounded-card border-3 border-ink bg-surface p-6 shadow-brut-md break-inside-avoid print:gap-2 print:p-4">
       <div className="grid gap-1">
-        <p className="font-bold [font-stretch:110%]">
+        <p className="font-bold">
           {role.company}
           {role.companyNote ? <span className="font-normal text-ink-muted">, {role.companyNote}</span> : null}
         </p>
@@ -112,7 +112,7 @@ export default function ResumePage() {
         <div className="grid gap-4 print:gap-2">
           {profile.skills.map((group) => (
             <div key={group.label} className="grid gap-2 break-inside-avoid">
-              <h3 className="font-bold [font-stretch:110%]">{group.label}</h3>
+              <h3 className="font-bold">{group.label}</h3>
               <ChipList items={group.items} />
             </div>
           ))}
@@ -124,7 +124,7 @@ export default function ResumePage() {
           {projects.map((p) => (
             <li key={p.slug} className="break-inside-avoid">
               <p>
-                <span className="font-bold [font-stretch:110%]">{p.name}</span>
+                <span className="font-bold">{p.name}</span>
                 <span className="text-ink-muted">, {bare(p.liveUrl)}</span>
               </p>
               <p className="type-body-sm">{p.summary}</p>
