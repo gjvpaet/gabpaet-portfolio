@@ -3,12 +3,12 @@ import type { ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
 
-// Spec 6.2. A tech chip is a static label (no shadow, no press).
+// Spec 6.9. A tech chip is a static label: thin ink outline, pill, no lift.
 export function Chip({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <span
       className={cn(
-        "type-chip inline-flex h-7 items-center whitespace-nowrap rounded-pill border-2 border-ink bg-surface px-2.5 text-ink",
+        "type-chip inline-flex h-6.5 items-center whitespace-nowrap rounded-pill border-[1.5px] border-ink px-3 text-ink",
         className,
       )}
     >
@@ -29,13 +29,14 @@ export function ChipList({ items, className }: { items: readonly string[]; class
   );
 }
 
-// The availability chip: the page's one eyebrow.
+// LEGACY: the brutalist hero's availability chip. The sketch hero drops it
+// (the status moves to a contact margin note); delete in build step 8.
 export function StatusChip({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <span
       className={cn(
-        "tone-accent inline-flex h-[34px] w-fit items-center gap-2 rounded-pill border-2 border-ink bg-yellow px-3.5",
-        "text-sm font-semibold shadow-brut-sm",
+        "inline-flex h-[34px] w-fit items-center gap-2 rounded-pill bg-wash px-3.5",
+        "text-sm font-semibold",
         className,
       )}
     >

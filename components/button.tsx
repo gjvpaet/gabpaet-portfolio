@@ -11,22 +11,23 @@ export type ButtonVariant = "primary" | "secondary";
 export type ButtonSize = "md" | "sm" | "icon";
 
 const SIZES: Record<ButtonSize, string> = {
-  md: "h-12 px-5", // spec 6.1 default, 48px
-  sm: "h-11 px-4", // nav bar
-  icon: "size-11", // square icon-only button (menu)
+  md: "h-13 px-6", // spec 6.5 default, 52px
+  sm: "h-11 px-4.5", // nav bar, 44px
+  icon: "size-11", // square icon-only button (pencil, lamp, menu)
 };
 
-// Spec 6.1: 3px outline, 12px radius, one-line label, press physics.
+// Spec 6.5: structure layer, so clean: 2px ink outline, 12px radius, no
+// shadow, one-line label, lift on hover. Focus is the global pen ring.
 export function buttonClasses(
   variant: ButtonVariant = "secondary",
   className?: string,
   size: ButtonSize = "md",
 ): string {
   return cn(
-    "press type-button inline-flex shrink-0 items-center justify-center gap-2.5 whitespace-nowrap",
-    "rounded-control border-3 border-ink no-underline select-none",
+    "lift type-button inline-flex shrink-0 cursor-pointer items-center justify-center gap-2.5 whitespace-nowrap",
+    "rounded-control border-2 border-ink no-underline select-none",
     SIZES[size],
-    variant === "primary" ? "bg-mint text-on-accent" : "bg-surface text-ink",
+    variant === "primary" ? "bg-btn text-on-btn" : "bg-sheet text-ink",
     className,
   );
 }

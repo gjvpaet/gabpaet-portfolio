@@ -91,8 +91,10 @@ export const ink = {
     3,
   ),
 
-  /** The lamp's light, drawn under the shade in light mode (LampToggle). */
-  lampRays: mark("0 0 24 24", ["M9 14 L7.5 16.5", "M15 14 L16.5 16.5"], 2),
+  /** The lamp's light, drawn under the shade of Phosphor's Lamp icon in
+      light mode (LampToggle). Same 24px box as the icon; left of the stem,
+      clear of the pull cord on the right. */
+  lampRays: mark("0 0 24 24", ["M4.5 17 L2.6 20.6", "M8 17.2 L7 20.4"], 1.8),
 } as const satisfies Record<string, InkMark>;
 
 export type InkName = keyof typeof ink;

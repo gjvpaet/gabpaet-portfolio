@@ -1,8 +1,9 @@
 "use client";
 
-import { Moon, Sun } from "@phosphor-icons/react";
+import { Lamp } from "@phosphor-icons/react";
 import { useSyncExternalStore } from "react";
 
+import { InkSvg } from "@/components/ink/ink-svg";
 import { cn } from "@/lib/cn";
 import { THEME_STORAGE_KEY, type Theme } from "@/lib/theme";
 
@@ -26,8 +27,10 @@ function subscribe(onChange: () => void) {
   };
 }
 
-// Spec 6.6: a chunky switch. First visit follows the OS; a click pins a choice.
-export function ThemeToggle({ className }: { className?: string }) {
+// Spec 6.7: the theme switch is a desk lamp. Light mode is the lamp on (two
+// pen strokes of light under the shade); dark mode, the "night page", is the
+// lamp off. First visit follows the OS; a click pins a choice.
+export function LampToggle({ className }: { className?: string }) {
   // null during SSR and hydration, so server and client markup match.
   const theme = useSyncExternalStore<Theme | null>(subscribe, getTheme, () => null);
   const isDark = theme === "dark";
@@ -48,21 +51,18 @@ export function ThemeToggle({ className }: { className?: string }) {
       role="switch"
       aria-checked={isDark}
       aria-label="Dark mode"
+      title={isDark ? "Turn the lamp on" : "Turn the lamp off"}
       onClick={toggle}
-      className={cn("inline-flex h-11 shrink-0 cursor-pointer items-center rounded-pill px-0.5", className)}
+      className={cn(
+        "lift relative grid size-11 shrink-0 cursor-pointer place-items-center rounded-control border-2 border-ink bg-sheet text-ink",
+        className,
+      )}
     >
-      <span className="relative block h-8 w-14 rounded-pill border-2 border-ink bg-surface">
-        <span
-          aria-hidden="true"
-          className={cn(
-            "tone-accent absolute top-0.5 left-0.5 grid size-6 place-items-center rounded-full border-2 border-ink",
-            "transition-transform duration-200 ease-brut",
-            isDark ? "translate-x-6 bg-mint" : "bg-yellow",
-            theme === null && "opacity-0",
-          )}
-        >
-          {isDark ? <Moon size={14} weight="bold" /> : <Sun size={14} weight="bold" />}
-        </span>
+      <span className="relative size-6" aria-hidden="true">
+        <Lamp size={24} weight="bold" />
+        {!isDark && theme !== null && (
+          <InkSvg name="lampRays" tone="pen" rough={false} className="absolute inset-0 size-6" />
+        )}
       </span>
     </button>
   );

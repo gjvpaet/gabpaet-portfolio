@@ -1,27 +1,32 @@
 import type { ReactNode } from "react";
 
+import { InkUnderline } from "@/components/ink/ink-underline";
 import { cn } from "@/lib/cn";
 
-// Spec 6.7: a left-aligned h2 with an optional line under it.
-// No eyebrows, no numbering, no side-floating explainer.
+// Spec 6.11: a left-aligned h2, optionally with a pen underline under part
+// of it, and an optional one-line intro below. No eyebrows, no numbering,
+// no side-floating explainer.
 export function SectionHeading({
   id,
   children,
   description,
+  underline = true,
   className,
 }: {
   /** Used by the section's aria-labelledby. */
   id: string;
   children: ReactNode;
   description?: ReactNode;
+  underline?: boolean;
   className?: string;
 }) {
   return (
-    <div className={cn("grid gap-3", className)}>
+    // The underline hangs 1rem below the heading box, hence the wider gap.
+    <div className={cn("grid", underline ? "gap-8" : "gap-4", className)}>
       <h2 id={id} className="type-h2">
-        {children}
+        {underline ? <InkUnderline>{children}</InkUnderline> : children}
       </h2>
-      {description ? <p className="max-w-[65ch] text-ink-muted">{description}</p> : null}
+      {description ? <p className="max-w-[65ch] text-ink-soft">{description}</p> : null}
     </div>
   );
 }

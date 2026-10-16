@@ -7,7 +7,7 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { buttonClasses } from "@/components/button";
 import { Monogram } from "@/components/monogram";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { LampToggle } from "@/components/lamp-toggle";
 import { cn } from "@/lib/cn";
 
 const SECTIONS = [
@@ -140,7 +140,7 @@ export function Nav({ shortName }: { shortName: string }) {
               </li>
             ))}
           </ul>
-          <ThemeToggle />
+          <LampToggle />
           <Link href={CONTACT.href} className={buttonClasses("secondary", undefined, "sm")}>
             {CONTACT.label}
           </Link>
@@ -148,7 +148,7 @@ export function Nav({ shortName }: { shortName: string }) {
 
         {/* Below lg: toggle + menu button */}
         <div className="flex items-center gap-2 lg:hidden">
-          <ThemeToggle />
+          <LampToggle />
           <button
             ref={menuButtonRef}
             type="button"
