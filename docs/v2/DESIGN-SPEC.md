@@ -329,7 +329,7 @@ Footer
   1. Hand note **"hi, I'm"** (`--pen`, rotated -3deg) with a small `InkArrow down-right` toward the name.
   2. **H1:** `profile.name` ("Gabriel Joshua Paet") at Display. It wraps naturally ("Gabriel / Joshua Paet" at 1280 and on phones).
   3. Title row: `profile.heroDraft` ("Full-stack ninja") in Hand `--ink-soft` with `InkStrike`, then **`profile.role`** ("Senior Programmer", Bricolage 650, 28px) with `InkCircle` in `--pen`.
-  4. Lead: **"I build AI agents, workflow automation, and the cloud infrastructure that runs them. 9 years shipping."** (17 words; years from `yearsShipping`, which `yearsSince("2017-05")` in `lib/dates.ts` works out at build time; the bio spells the same number with `numberWord`), `--ink-soft`, `max-w-[34ch]`.
+  4. Lead: **"I build web and mobile applications, workflow automation, and the cloud infrastructure that runs them. 9 years shipping."** (18 words; years from `yearsShipping`, which `yearsSince("2017-05")` in `lib/dates.ts` works out at build time; the bio spells the same number with `numberWord`), `--ink-soft`, `max-w-[34ch]`.
   5. Buttons: `primary` **"Résumé"** (`FileText`) → `/resume`; `secondary` **"See projects"** (`ArrowDown`) → `/#projects`.
 - Right column: `PaperCard` (rotate 1.4deg, tape pair) holding `NapkinSketch how-i-build`: a Hand title "how I like to build", then three `InkBox`es "rough idea" → "first version" → "people use it" (the last on `--wash`), a loop arrow back, and "then make it better. repeat." Stickers are taped around it (6.6). Illustration #1 (the hand with a pencil, cut out of its own napkin) sits on the card's lower right with its pencil just under "repeat.", as if it had written it; its arm runs off the card's bottom edge and fades out (a gradient mask). From `md` the card gets extra bottom padding to make room; hidden below `md`.
 - Under the card, Hand caption "click the paper, it leaves a mark", right-aligned on phones and left-aligned from `md` (clear of the hand's arm).
@@ -420,7 +420,7 @@ Unchanged from the 2026-10-12 spec (now in `content/projects.ts`): live URLs, To
 ### 10.1 `content/profile.ts` additions
 
 - `heroDraft: "Full-stack ninja"`
-- `heroLine`: "I build AI agents, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping."
+- `heroLine`: "I build web and mobile applications, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping."
 - `Role.homeLine: string` and `Role.mark: string` (the substring to highlight; it must occur in `homeLine`; dev-time assert).
 - `Role.note?: string`, 8 words or fewer. The placeholders `{promotion}` ("Programmer to Senior in 8 months") and `{tenure}` ("6 years, 8 months") are filled from `titles` by `roleNote()` in `lib/dates.ts`, which also formats the handwritten dates (`handRange`: "May 2026 → now"; `handYears`: "2015 → 2016").
 - `HOME_CHIP_COUNT` is 4, so each role's `stack` lists its home chips first.

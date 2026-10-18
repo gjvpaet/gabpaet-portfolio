@@ -75,7 +75,7 @@ export const profile = {
   /** Crossed out above the title in the hero (spec 5.2): the joke draft. */
   heroDraft: "Full-stack ninja",
 
-  heroLine: `I build AI agents, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping.`,
+  heroLine: `I build web and mobile applications, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping.`,
 
   // Personal: must not mention Lumora or the current role.
   bio: `I love building things that interest me, whether it's a tool that makes a tedious job disappear or a weekend idea that turns into something real. I'd rather see a thing all the way through, from the first rough version to something people actually use. ${numberWord(yearsShipping)} years of building web and mobile apps later, that's still the part I enjoy most.`,
