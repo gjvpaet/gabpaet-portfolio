@@ -44,6 +44,10 @@ export const ink = {
   underlineLink: mark("0 0 200 12", ["M2 7 C 50 3, 120 10, 198 4"], 3),
   underlineLinkAlt: mark("0 0 200 12", ["M2 6 C 60 9, 130 3, 198 7"], 3),
 
+  /** The scroll progress line along the nav's bottom edge, stretched to the
+      full width. A long, gentle wave so it reads as drawn, not ruled. */
+  progress: mark("0 0 1000 6", ["M2 3 C 260 1.6, 620 4.6, 998 2.6"], 3),
+
   /** Two quick lines through a crossed-out draft, loose enough to still read
       the joke. Stretched to fit. */
   strike: mark("0 0 200 30", ["M2 14 C 60 10, 140 17, 198 12", "M6 20 C 70 17, 128 22, 194 18"], 2.2),

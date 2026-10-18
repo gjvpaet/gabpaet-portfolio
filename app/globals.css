@@ -276,6 +276,25 @@ h3 {
   box-shadow: var(--shadow-lift);
 }
 
+/* Scroll progress (components/nav.tsx): the pen line draws across as the
+   page scrolls. A scroll-driven animation, so no scroll listener; where
+   those are unsupported, or the page cannot scroll, the line stays hidden. */
+.scroll-progress path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-progress path {
+    animation: scroll-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes scroll-progress {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 /* One layer of a traced illustration (components/illustration.tsx): the
    SVG in --art is the mask, the background colour is the ink. Inset to undo
    the paint box around it (-inset-x-3 -inset-y-6). */

@@ -253,7 +253,8 @@ Per-project sketches drawn in SVG with pen primitives plus `<text>` labels in Sh
 
 ### 6.8 `Nav` (client for the menu)
 
-- Sticky, 72px, `--paper` fill. A 2px ink rule appears once the hero is out of view (IntersectionObserver).
+- Sticky, 72px, `--paper` fill. No bottom rule while scrolling, so it never competes with the progress line; a 2px ink rule shows only while the phone menu sheet is open. (Until 2026-10-18 the rule appeared once the hero left the view.)
+- Scroll progress: a 3px `--pen` line (the `progress` wave in `lib/ink.ts`, stretched to the full width) draws along the bar's bottom edge from 0 at the top of the page to full at the bottom. Pure CSS: a scroll-driven animation (`animation-timeline: scroll(root block)`) on its `stroke-dashoffset`, behind `@supports`, so there is no scroll listener. Where unsupported (Firefox without the flag) or on a page that cannot scroll, the line stays hidden. Hidden in print.
 - Left: the "gp" mark linking to `/`, the same as the favicon: a 48px `--pen` `ring` (draws in on load, boils on hover) around "gp" in Shantell 700, 22px, `--ink`. `aria-label` "Gabriel Paet, home"; the focus ring is round. (It replaced the "Gabriel Paet" wordmark on 2026-10-18.)
 - Right on `lg+`: links **Experience / Projects / About / Contact** (16px, 500). The active section gets a 3px `--pen` drawn underline. Then `PencilButton`, `LampToggle` and `ButtonLink secondary sm` **"Résumé"** → `/resume`.
 - Below `lg`: the mark, pencil, lamp, menu button (`List` / `X`). The menu is the v2 sheet (focus trap, Esc, closes on navigation), restyled as taped-in paper, with the links in Bricolage 32px and the Résumé button.

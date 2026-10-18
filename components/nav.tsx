@@ -28,26 +28,10 @@ const RESUME = { href: "/resume", label: "Résumé" } as const;
 export function Nav({ shortName }: { shortName: string }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolledPastHero, setScrolledPastHero] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const menuId = useId();
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
-
-  // Bottom border appears once the hero leaves the viewport. Pages without a
-  // hero always show it.
-  useEffect(() => {
-    const hero = document.getElementById("hero");
-    if (!hero) {
-      setScrolledPastHero(true);
-      return;
-    }
-    const observer = new IntersectionObserver(([entry]) => setScrolledPastHero(!entry.isIntersecting), {
-      rootMargin: "-72px 0px 0px 0px",
-    });
-    observer.observe(hero);
-    return () => observer.disconnect();
-  }, [pathname]);
 
   // Underline the link for the section in the middle band of the viewport.
   useEffect(() => {
@@ -117,9 +101,20 @@ export function Nav({ shortName }: { shortName: string }) {
     <header
       className={cn(
         "sticky top-0 z-[var(--z-nav)] border-b-2 bg-paper transition-[border-color] duration-200 print:hidden",
-        scrolledPastHero || menuOpen ? "border-ink" : "border-transparent",
+        // No rule while scrolling (the progress line marks the edge); only
+        // the open menu sheet gets one.
+        menuOpen ? "border-ink" : "border-transparent",
       )}
     >
+      {/* Scroll progress: a pen line drawn along the bottom edge as the page
+          scrolls, driven by CSS alone (globals.css). */}
+      <InkSvg
+        name="progress"
+        stretch
+        draw={false}
+        rough={false}
+        className="scroll-progress absolute inset-x-0 -bottom-[2px] h-1.5 w-full"
+      />
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-5 md:h-18 md:px-10">
         {/* The "gp" mark, as in the favicon: a pen ring drawn round the
             handwritten initials. It boils on hover; the name is its label. */}
