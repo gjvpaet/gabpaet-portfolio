@@ -324,7 +324,7 @@ Footer
 
 - Left column (`lg`: 1.15fr):
   1. Hand note **"hi, I'm"** (`--pen`, rotated -3deg) with a small `InkArrow down-right` toward the name.
-  2. **H1:** `profile.name` ("Gabriel Joshua Paet") at Display. It wraps naturally (two lines from `lg`, three on phones).
+  2. **H1:** `profile.name` ("Gabriel Joshua Paet") at Display. It wraps naturally ("Gabriel / Joshua Paet" at 1280 and on phones).
   3. Title row: `profile.heroDraft` ("Full-stack ninja") in Hand `--ink-soft` with `InkStrike`, then **`profile.role`** ("Senior Programmer", Bricolage 650, 28px) with `InkCircle` in `--pen`.
   4. Lead: **"I build AI agents, workflow automation, and the cloud infrastructure that runs them. 9 years shipping."** (17 words; years interpolated from `yearsShipping`), `--ink-soft`, `max-w-[34ch]`.
   5. Buttons: `primary` **"Résumé"** (`FileText`) → `/resume`; `secondary` **"See projects"** (`ArrowDown`) → `/#projects`.
@@ -360,7 +360,7 @@ Computed notes come from a helper (`lib/dates.ts`) so they can never drift from 
 ### 7.4 About (`#about`)
 
 - `lg+` grid `minmax(0,1fr) | 260px`, stacked below.
-- Left: H2 **"About"**, then the bio lead (`profile.bio`, first sentence) at Lead size with **"I love building things that interest me"** highlighted, then the rest of the bio in Body `--ink-soft`. **Never mentions Lumora or the current role.** Bio VERIFY.
+- Left: H2 **"About"**, then the bio lead (`profile.bio`, first sentence) at Lead size with `profile.bioMark` ("I love building things that interest me") highlighted, then the rest of the bio in Body `--ink-soft`. **Never mentions Lumora or the current role.** Bio VERIFY.
 - Right: illustration #3 (desk lamp over a notebook), then a pinned `--note` card (rotate 2.5deg): Hand "always view problems as an opportunity." and a smaller Hand line "my motto, for what it's worth".
 
 ### 7.5 Contact (`#contact`)
@@ -488,7 +488,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 5. [x] Restyle the primitives: Button, Chip, ScreenshotFrame, SectionHeading, CopyEmailButton, Footer; `LampToggle` replaces ThemeToggle. Also added `DrawnLink` (`components/drawn-link.tsx`, the pen-underlined text link that boils on hover). The lamp's light is two pen strokes (`lampRays` in `lib/ink.ts`) left of Phosphor `Lamp`'s stem. `StatusChip` is kept, restyled as a wash pill, only until the hero rebuild drops it (step 8).
 6. [x] Content: `profile.ts` additions (10.1), `projects.ts` additions (8.2), `lib/dates.ts` for the computed notes. New drafts carry `// VERIFY`.
 7. [x] Nav (pencil + lamp + Résumé), mobile menu restyle. Pencil state lives in `lib/pencil.ts` (a tiny shared store; `PencilButton` toggles it, the layer arrives in step 10). The GP monogram component is gone.
-8. [ ] Home sections in order: Hero (with `how-i-build` napkin and stickers), Experience, Projects (Tong Masters napkin), About, Contact.
+8. [x] Home sections in order: Hero (with `how-i-build` napkin and stickers), Experience, Projects (Tong Masters napkin), About, Contact.
 9. [ ] Motion: draw-in, reveal, boil, lift; reduced-motion pass.
 10. [ ] Easter eggs: ink marks, `PencilLayer`, hidden margin note, `SplashSignature` (placeholder signature).
 11. [ ] Case studies: notebook spread, `WhiteboardDiagram`, v1 napkin, annotated hard problems, to-do list.

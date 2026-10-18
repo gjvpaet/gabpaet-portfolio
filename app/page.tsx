@@ -10,11 +10,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// Spec 7: one scroll, each section a different layout family
-// (split, timeline, bento, column + panel, full-width block).
+// Spec 7: one scroll, each section a different layout family (split hero,
+// margin-note rows, napkin vs shipped, lead + pinned note, giant type).
 export default function HomePage() {
   return (
-    <main id="main" className="mx-auto max-w-[1200px] px-4 md:px-8">
+    <main id="main" className="mx-auto max-w-[1200px] px-5 md:px-10">
       <Hero />
       <Experience />
       <Projects />

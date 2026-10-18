@@ -91,6 +91,12 @@ export const ink = {
     3,
   ),
 
+  /** Tong Masters napkin (components/napkins/tong-masters.tsx), drawn on a
+      440 x 320 sheet: a pointer from the "3 players" label to the top seat,
+      and one from the caption up to the stock pile. */
+  napkinTmSeats: mark("0 0 440 320", ["M120 116 C 140 108, 180 92, 198 84"], 1.8),
+  napkinTmStock: mark("0 0 440 320", ["M152 292 C 176 270, 196 240, 208 212", "M200 220 L208 211 L214 222"], 1.8),
+
   /** The lamp's light, drawn under the shade of Phosphor's Lamp icon in
       light mode (LampToggle). Same 24px box as the icon; left of the stem,
       clear of the pull cord on the right. */

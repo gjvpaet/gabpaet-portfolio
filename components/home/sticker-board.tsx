@@ -1,30 +1,30 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { useRef, useSyncExternalStore } from "react";
+import { useRef, useSyncExternalStore, type ReactNode } from "react";
 import { siClaude, siDocker, siNextdotjs, siNodedotjs, siPostgresql, type SimpleIcon } from "simple-icons";
 
 import { BrandIcon } from "@/components/brand-icon";
-import { stickerClasses, type StickerFill } from "@/components/sticker";
+import { StickerTape, stickerClasses } from "@/components/sticker";
 import { cn } from "@/lib/cn";
 import { z } from "@/lib/z";
 
 type StickerSpec = {
   key: string;
-  fill: StickerFill;
   rotate: number;
-  /** Desktop position on the board, in % of its width/height. */
+  /** md+ position around the napkin card, in % of the card's width/height. */
   at: { left: number; top: number };
 } & ({ icon: SimpleIcon } | { keycap: true });
 
-// Spec 6.4: neighbours never share a fill.
+// Spec 6.6: taped around the napkin card's corners and right edge, clear of
+// its handwriting.
 const STICKERS: StickerSpec[] = [
-  { key: "claude", icon: siClaude, fill: "mint", rotate: -8, at: { left: 4, top: 6 } },
-  { key: "next", icon: siNextdotjs, fill: "surface", rotate: 6, at: { left: 40, top: 0 } },
-  { key: "keycap", keycap: true, fill: "ink", rotate: -4, at: { left: 72, top: 12 } },
-  { key: "node", icon: siNodedotjs, fill: "yellow", rotate: 10, at: { left: 12, top: 44 } },
-  { key: "postgres", icon: siPostgresql, fill: "surface", rotate: -6, at: { left: 46, top: 38 } },
-  { key: "docker", icon: siDocker, fill: "mint", rotate: 4, at: { left: 70, top: 64 } },
+  { key: "claude", icon: siClaude, rotate: -8, at: { left: -12, top: -16 } },
+  { key: "next", icon: siNextdotjs, rotate: 6, at: { left: 83, top: -15 } },
+  { key: "keycap", keycap: true, rotate: -4, at: { left: 97, top: 24 } },
+  { key: "node", icon: siNodedotjs, rotate: 10, at: { left: 94, top: 62 } },
+  { key: "postgres", icon: siPostgresql, rotate: -6, at: { left: -12, top: 66 } },
+  { key: "docker", icon: siDocker, rotate: 4, at: { left: 8, top: 94 } },
 ];
 
 const FINE_POINTER = "(pointer: fine)";
@@ -35,11 +35,12 @@ function subscribeFinePointer(onChange: () => void) {
   return () => mq.removeEventListener("change", onChange);
 }
 
-// Spec 5 + 6.4. Desktop (md+): a loose cluster on a bounded board, draggable
-// with a mouse or trackpad and springing home on release. Touch screens and
-// reduced motion get static stickers, so dragging never fights scrolling.
-export function StickerBoard({ tools }: { tools: string }) {
-  const boardRef = useRef<HTMLDivElement>(null);
+// Spec 5.2 + 6.6. From md the stickers sit around `children` (the napkin
+// card), draggable with a mouse or trackpad and springing home on release.
+// Below md they are a static row above the card. Touch screens and reduced
+// motion get static stickers, so dragging never fights scrolling.
+export function StickerBoard({ tools, children }: { tools: string; children: ReactNode }) {
+  const boundsRef = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const finePointer = useSyncExternalStore(
     subscribeFinePointer,
@@ -49,39 +50,48 @@ export function StickerBoard({ tools }: { tools: string }) {
   const canDrag = finePointer && !reduce;
 
   return (
-    <div ref={boardRef} className="relative flex flex-wrap gap-4 md:block md:h-[420px]">
+    <div className="relative grid gap-10 md:block">
+      {/* Drag bounds: the card plus a margin all round. */}
+      <div ref={boundsRef} aria-hidden="true" className="pointer-events-none absolute -inset-14 hidden md:block" />
       <p className="sr-only">{tools}</p>
-      {STICKERS.map((s, i) => (
-        <motion.span
-          key={s.key}
-          aria-hidden="true"
-          drag={canDrag}
-          dragConstraints={boardRef}
-          dragElastic={0.2}
-          dragSnapToOrigin
-          dragTransition={{ bounceStiffness: 300, bounceDamping: 20 }}
-          whileDrag={{ scale: 1.06, rotate: 0, zIndex: z.stickerDragging }}
-          style={{
-            rotate: s.rotate,
-            zIndex: z.sticker,
-            // Board position (md+) and entrance stagger, read by CSS.
-            ...({ "--left": `${s.at.left}%`, "--top": `${s.at.top}%`, "--i": i } as Record<string, string | number>),
-          }}
-          className={stickerClasses(
-            s.fill,
-            cn(
-              "sticker-drop select-none md:absolute md:top-[var(--top)] md:left-[var(--left)]",
-              canDrag && "sticker-grab",
-            ),
-          )}
-        >
-          {"icon" in s ? (
-            <BrandIcon icon={s.icon} decorative className="pointer-events-none size-8 md:size-11" />
-          ) : (
-            <span className="pointer-events-none font-hand text-xl font-semibold md:text-[1.75rem]">&gt;_</span>
-          )}
-        </motion.span>
-      ))}
+      <div className="flex flex-wrap gap-4 md:contents">
+        {STICKERS.map((s, i) => (
+          <motion.span
+            key={s.key}
+            aria-hidden="true"
+            drag={canDrag}
+            dragConstraints={boundsRef}
+            dragElastic={0.2}
+            dragSnapToOrigin
+            dragTransition={{ bounceStiffness: 300, bounceDamping: 20 }}
+            whileDrag={{ scale: 1.06, rotate: 0, zIndex: z.stickerDragging }}
+            style={{
+              rotate: s.rotate,
+              zIndex: z.sticker,
+              // Position (md+) and entrance stagger, read by CSS.
+              ...({ "--left": `${s.at.left}%`, "--top": `${s.at.top}%`, "--i": i } as Record<string, string | number>),
+            }}
+            className={stickerClasses(
+              cn(
+                "sticker-drop select-none md:absolute md:top-(--top) md:left-(--left)",
+                canDrag && "sticker-grab",
+              ),
+            )}
+          >
+            <StickerTape />
+            {"icon" in s ? (
+              <BrandIcon
+                icon={s.icon}
+                decorative
+                className="pointer-events-none size-7 [filter:url(#ink-sticker)] md:size-9"
+              />
+            ) : (
+              <span className="type-hand pointer-events-none text-2xl font-semibold md:text-[1.875rem]">&gt;_</span>
+            )}
+          </motion.span>
+        ))}
+      </div>
+      {children}
     </div>
   );
 }

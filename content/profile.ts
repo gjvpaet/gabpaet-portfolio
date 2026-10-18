@@ -76,9 +76,10 @@ export const profile = {
   // VERIFY (voice): personal, and must not mention Lumora or the current role.
   bio: "I love building things that interest me, whether it's a tool that makes a tedious job disappear or a weekend idea that turns into something real. Tong Masters started that way: I wanted an online Tong-its game so friends and family could play together, so I built one. I'd rather see a thing all the way through, from the first rough version to something people actually use. Nine years of building web and mobile apps later, that's still the part I enjoy most.",
 
-  motto: "Always view problems as an opportunity.",
+  /** The phrase in `bio` the About lead highlights (spec 7.4). Must occur in it. */
+  bioMark: "I love building things that interest me",
 
-  contactLine: "Not actively looking, but always happy to talk about AI, automation or web work.",
+  motto: "Always view problems as an opportunity.",
 
   skills: [
     {
@@ -178,8 +179,11 @@ export const profile = {
 
 export type Profile = typeof profile;
 
-// A highlighter `mark` that is not in its `homeLine` would silently render
+// A highlighter phrase that is not in its sentence would silently render
 // nothing; fail the dev server and the build instead.
+if (!profile.bio.includes(profile.bioMark)) {
+  throw new Error(`content/profile.ts: bioMark "${profile.bioMark}" is not in bio`);
+}
 for (const role of profile.roles) {
   if (role.mark && !role.homeLine.includes(role.mark)) {
     throw new Error(`content/profile.ts: mark "${role.mark}" is not in ${role.company}'s homeLine`);

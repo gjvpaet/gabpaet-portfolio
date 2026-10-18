@@ -1,4 +1,3 @@
-import { ChatCircleDots } from "@phosphor-icons/react/ssr";
 import type { ReactNode } from "react";
 
 import { cn } from "@/lib/cn";
@@ -26,22 +25,5 @@ export function ChipList({ items, className }: { items: readonly string[]; class
         </li>
       ))}
     </ul>
-  );
-}
-
-// LEGACY: the brutalist hero's availability chip. The sketch hero drops it
-// (the status moves to a contact margin note); delete in build step 8.
-export function StatusChip({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex h-[34px] w-fit items-center gap-2 rounded-pill bg-wash px-3.5",
-        "text-sm font-semibold",
-        className,
-      )}
-    >
-      <ChatCircleDots aria-hidden="true" size={18} weight="bold" />
-      {children}
-    </span>
   );
 }

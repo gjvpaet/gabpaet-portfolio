@@ -1,41 +1,34 @@
 import type { ReactNode } from "react";
 
+import { Tape } from "@/components/ink/tape";
 import { cn } from "@/lib/cn";
 
-export type StickerFill = "mint" | "yellow" | "surface" | "ink";
+// Spec 6.6: a scrap of paper taped to the page, holding one hand-traced
+// logo. 60px on phones, 80px from md.
+export function stickerClasses(className?: string): string {
+  return cn("paper relative grid size-15 place-items-center text-ink md:size-20", className);
+}
 
-const FILLS: Record<StickerFill, string> = {
-  mint: "tone-accent bg-mint",
-  yellow: "tone-accent bg-yellow",
-  surface: "bg-surface text-ink",
-  ink: "bg-ink text-bg",
-};
-
-// Spec 6.4: an outlined tile with a hard shadow. 64px on phones, 88px from md.
-export function stickerClasses(fill: StickerFill, className?: string): string {
-  return cn(
-    "grid size-16 place-items-center rounded-control border-3 border-ink shadow-brut-md md:size-[88px] md:shadow-brut-lg",
-    FILLS[fill],
-    className,
-  );
+/** The strip of tape across a sticker's top edge. */
+export function StickerTape() {
+  return <Tape className="-top-2.5 left-1/2 h-5 w-12 -ml-6 md:w-14 md:-ml-7" style={{ rotate: "4deg" }} />;
 }
 
 // Static sticker (404 page). The hero's draggable ones live in
 // components/home/sticker-board.tsx and share stickerClasses.
 export function Sticker({
-  fill,
   rotate,
   children,
   className,
 }: {
-  fill: StickerFill;
   /** Resting tilt in degrees. */
   rotate: number;
   children: ReactNode;
   className?: string;
 }) {
   return (
-    <span aria-hidden="true" style={{ rotate: `${rotate}deg` }} className={stickerClasses(fill, className)}>
+    <span aria-hidden="true" style={{ rotate: `${rotate}deg` }} className={stickerClasses(className)}>
+      <StickerTape />
       {children}
     </span>
   );

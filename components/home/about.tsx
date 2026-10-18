@@ -1,31 +1,41 @@
-import { Card } from "@/components/card";
-import { ChipList } from "@/components/chip";
+import { Highlight } from "@/components/ink/highlight";
+import { Tape } from "@/components/ink/tape";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { profile } from "@/content/profile";
 
-// Spec 7.4: bio column (5 cols) + skills panel (7 cols).
+// The bio's first sentence becomes the lead, with `bioMark` highlighted; the
+// rest follows as body copy.
+function splitBio() {
+  const end = profile.bio.indexOf(". ") + 1;
+  const lead = profile.bio.slice(0, end);
+  const [before, after] = lead.split(profile.bioMark);
+  return { before, after, rest: profile.bio.slice(end).trim() };
+}
+
+// Spec 7.4: a lead paragraph and a pinned lavender note. Personal; never
+// mentions the current employer.
 export function About() {
+  const { before, after, rest } = splitBio();
+
   return (
     <section id="about" aria-labelledby="about-h" className="py-16 md:py-24">
-      {/* Stacked below lg, so the bio never runs in a narrow column. */}
-      <div className="grid items-start gap-10 lg:grid-cols-12">
-        <Reveal className="grid gap-6 lg:col-span-5">
+      <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-14">
+        <Reveal>
           <SectionHeading id="about-h">About</SectionHeading>
-          <p className="max-w-[65ch]">{profile.bio}</p>
-          <p className="type-h3">
-            <mark className="bg-yellow px-1.5 text-on-accent [box-decoration-break:clone]">{profile.motto}</mark>
+          <p className="mt-8 max-w-[36ch] text-[clamp(1.375rem,2.3vw,1.75rem)] leading-[1.45] tracking-[-0.01em]">
+            {before}
+            <Highlight>{profile.bioMark}</Highlight>
+            {after}
           </p>
+          <p className="mt-6 max-w-[60ch] text-ink-soft">{rest}</p>
         </Reveal>
-        <Reveal index={1} className="lg:col-span-7">
-          <Card className="grid gap-6">
-            {profile.skills.map((group) => (
-              <div key={group.label} className="grid gap-3">
-                <h3 className="font-bold">{group.label}</h3>
-                <ChipList items={group.items} />
-              </div>
-            ))}
-          </Card>
+        <Reveal index={1} as="aside" aria-label="Motto" className="lg:pt-24">
+          <div className="relative rotate-[2.5deg] rounded-paper bg-note px-5 pt-6 pb-6 text-on-note shadow-lift print:rotate-0">
+            <Tape className="-top-3 left-1/2 h-6.5 w-20 -ml-10" style={{ rotate: "-4deg" }} />
+            <p className="type-hand-lg">{profile.motto}</p>
+            <p className="type-hand mt-3">my motto, for what it&apos;s worth</p>
+          </div>
         </Reveal>
       </div>
     </section>

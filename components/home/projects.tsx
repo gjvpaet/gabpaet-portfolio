@@ -1,86 +1,85 @@
-import { ArrowUpRight } from "@phosphor-icons/react/ssr";
-import Link from "next/link";
-
-import { ChipList } from "@/components/chip";
+import { DrawnLink } from "@/components/drawn-link";
+import { TongMastersNapkin } from "@/components/napkins/tong-masters";
+import { PaperCard } from "@/components/paper-card";
 import { Reveal } from "@/components/reveal";
 import { ScreenshotFrame } from "@/components/screenshot-frame";
 import { SectionHeading } from "@/components/section-heading";
 import { projects, type Project } from "@/content/projects";
-import { cn } from "@/lib/cn";
 
-const TILE_CHIP_COUNT = 4;
+// The featured project, told as a two-up: the napkin it started on, and the
+// thing that shipped.
+function NapkinVsShipped({ project }: { project: Project }) {
+  const desktop = project.screenshots.find((s) => s.kind === "desktop");
 
-// Stand-in until build step 9 adds real screenshots to content/projects.ts.
-// Same frame and ratio, so the layout does not move when they land.
-function ShotPlaceholder() {
   return (
-    <div
-      aria-hidden="true"
-      className="grid aspect-[16/10] max-w-full place-items-center rounded-card border-3 border-ink bg-surface text-ink-muted shadow-brut-md [background-image:repeating-linear-gradient(135deg,transparent_0_10px,color-mix(in_srgb,var(--ink)_8%,transparent)_10px_11px)]"
-    >
-      <span className="type-meta">Screenshot</span>
+    <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+      <Reveal as="figure">
+        <PaperCard rotate={-1.8} tape="top" className="px-5.5 pt-6 pb-4">
+          <TongMastersNapkin />
+        </PaperCard>
+        <figcaption className="type-hand mt-6 text-pen">the napkin</figcaption>
+      </Reveal>
+
+      <Reveal index={1} className="min-w-0">
+        {desktop ? (
+          <ScreenshotFrame shot={desktop} rotate={0.8} sizes="(min-width: 1024px) 620px, 100vw" />
+        ) : null}
+        <p className="type-hand mt-8 text-pen">the thing that shipped</p>
+        <h3 className="type-h3 mt-2">{project.name}</h3>
+        <p className="mt-2 max-w-[46ch] text-ink-soft">{project.summary}</p>
+        <div className="mt-3 flex flex-wrap gap-x-6">
+          <DrawnLink href={`/projects/${project.slug}`} aria-label={`Read the ${project.name} case study`}>
+            Read the case study
+          </DrawnLink>
+          <DrawnLink href={project.liveUrl} tone="ink" aria-label={`Play ${project.name}`}>
+            Play it
+          </DrawnLink>
+        </div>
+      </Reveal>
     </div>
   );
 }
 
-function ProjectTile({ project }: { project: Project }) {
-  const desktop = project.screenshots.find((s) => s.kind === "desktop");
-
+// Smaller projects: one line each under a rule.
+function ProjectRow({ project }: { project: Project }) {
   return (
-    <Link
-      href={`/projects/${project.slug}`}
-      aria-label={`${project.name} case study`}
-      className={cn(
-        "grid h-full overflow-hidden rounded-card border-3 border-ink bg-surface no-underline",
-        // Both tiles share a row height. The featured tile is the taller one; the
-        // small tile gives its spare height to the media area, not the text.
-        project.featured ? "press-lg grid-rows-[auto_1fr]" : "press grid-rows-[1fr_auto]",
-      )}
-    >
-      <div
-        className={cn(
-          "flex flex-col justify-end border-b-3 border-ink px-6 pt-6 md:px-7 md:pt-7",
-          project.featured ? "bg-yellow" : "bg-bg",
-        )}
-      >
-        {/* Overlaps the bottom edge of the media area by 24px. */}
-        <div className={cn("-mb-6", project.featured && "-rotate-2")}>
-          {desktop ? (
-            <ScreenshotFrame
-              shot={desktop}
-              sizes={project.featured ? "(min-width: 768px) 700px, 100vw" : "(min-width: 768px) 340px, 100vw"}
-            />
-          ) : (
-            <ShotPlaceholder />
-          )}
-        </div>
+    <Reveal className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 border-t-2 border-ink pt-6">
+      <p className="max-w-[60ch]">
+        <strong className="font-bold">{project.name}.</strong> <span className="text-ink-soft">{project.summary}</span>
+      </p>
+      <div className="flex flex-wrap gap-x-6">
+        <DrawnLink href={`/projects/${project.slug}`} aria-label={`Read the ${project.name} case study`}>
+          Read the case study
+        </DrawnLink>
+        <DrawnLink href={project.liveUrl} tone="ink" aria-label={`Visit ${project.name}`}>
+          Visit {project.slug === "portfolio-v1" ? "v1" : "the site"}
+        </DrawnLink>
       </div>
-      <div className="grid content-start gap-3 px-6 pt-10 pb-6 md:px-7 md:pb-7">
-        <h3 className="type-h3">{project.name}</h3>
-        <p className="type-body-sm text-ink-muted">{project.summary}</p>
-        <ChipList items={project.stack.slice(0, TILE_CHIP_COUNT)} />
-        <span className="type-button mt-1 inline-flex items-center gap-1.5">
-          Case study
-          <ArrowUpRight aria-hidden="true" size={18} weight="bold" />
-        </span>
-      </div>
-    </Link>
+    </Reveal>
   );
 }
 
-// Spec 7.3: a two-cell bento, Tong Masters featured.
+// Spec 7.3: from napkin to production.
 export function Projects() {
+  const featured = projects.filter((p) => p.featured);
+  const rest = projects.filter((p) => !p.featured);
+
   return (
     <section id="projects" aria-labelledby="projects-h" className="py-16 md:py-24">
       <Reveal>
-        <SectionHeading id="projects-h">Projects</SectionHeading>
+        <SectionHeading
+          id="projects-h"
+          description="Every project starts as a scribble. Here's the scribble, and here's what shipped."
+        >
+          From napkin to production
+        </SectionHeading>
       </Reveal>
-      {/* Stacked below lg: at tablet width the 4-column tile is too narrow. */}
-      <div className="mt-10 grid gap-6 md:mt-12 lg:grid-cols-12">
-        {projects.map((project, i) => (
-          <Reveal key={project.slug} index={i} className={project.featured ? "lg:col-span-8" : "lg:col-span-4"}>
-            <ProjectTile project={project} />
-          </Reveal>
+      <div className="mt-14 grid gap-18">
+        {featured.map((project) => (
+          <NapkinVsShipped key={project.slug} project={project} />
+        ))}
+        {rest.map((project) => (
+          <ProjectRow key={project.slug} project={project} />
         ))}
       </div>
     </section>

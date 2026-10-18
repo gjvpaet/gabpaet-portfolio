@@ -32,7 +32,8 @@ export function MarginNote({
       {(arrow === "up-right" || arrow === "down-right") && (
         <InkArrow dir={arrow} delay={delay} className={arrow === "up-right" ? "-mt-2" : "mt-1"} />
       )}
-      <span className="max-w-[24ch]">{children}</span>
+      {/* Only the margin column is narrow; notes elsewhere stay on one line. */}
+      <span className={arrow === "left" ? "max-w-[24ch]" : undefined}>{children}</span>
     </p>
   );
 }
