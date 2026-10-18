@@ -20,7 +20,7 @@ const rise = (i: number) => ({ "--i": i }) as CSSProperties;
 export function Hero() {
   return (
     <HeroPaper>
-      <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-14">
+      <div className="grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-end lg:gap-14">
         <div className="min-w-0">
           <div className="rise mb-1.5 flex items-end gap-1.5" style={rise(0)}>
             <p className="type-hand-lg -rotate-3 text-pen">hi, I&apos;m</p>
@@ -51,7 +51,7 @@ export function Hero() {
         </div>
 
         {/* lg:pr-10 leaves room for the stickers taped over the right edge. */}
-        <div className="mx-auto w-full max-w-[500px] md:pt-6 md:pb-10 lg:pt-0 lg:pr-10 xl:pr-0">
+        <div className="mx-auto w-full max-w-[500px] md:pt-6 md:pb-10 lg:pt-12 lg:pb-0 lg:pr-10 xl:pr-0">
           <StickerBoard tools="Tools I use daily: Claude, Next.js, Node.js, PostgreSQL and Docker.">
             <PaperCard rotate={1.4} tape="top" className="ink-boil px-6 pt-9 pb-6 sm:px-8.5 sm:pt-10 sm:pb-7 md:pb-24">
               <HowIBuildNapkin delay={0.9} />
@@ -63,7 +63,7 @@ export function Hero() {
               />
             </PaperCard>
           </StickerBoard>
-          <p className="type-hand mt-8 -rotate-2 text-right text-pen md:mt-20 md:text-left">click the paper, it leaves a mark</p>
+          <p className="type-hand mt-8 -rotate-2 text-right text-pen md:mt-20 md:text-left lg:mb-1.5">click the paper, it leaves a mark</p>
         </div>
       </div>
     </HeroPaper>

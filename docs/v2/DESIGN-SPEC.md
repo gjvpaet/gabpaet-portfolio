@@ -331,6 +331,7 @@ Footer
   5. Buttons: `primary` **"Résumé"** (`FileText`) → `/resume`; `secondary` **"See projects"** (`ArrowDown`) → `/#projects`.
 - Right column: `PaperCard` (rotate 1.4deg, tape pair) holding `NapkinSketch how-i-build`: a Hand title "how I like to build", then three `InkBox`es "rough idea" → "first version" → "people use it" (the last on `--wash`), a loop arrow back, and "then make it better. repeat." Stickers are taped around it (6.6). Illustration #1 (the hand with a pencil, cut out of its own napkin) sits on the card's lower right with its pencil just under "repeat.", as if it had written it; its arm runs off the card's bottom edge and fades out (a gradient mask). From `md` the card gets extra bottom padding to make room; hidden below `md`.
 - Under the card, Hand caption "click the paper, it leaves a mark", right-aligned on phones and left-aligned from `md` (clear of the hand's arm).
+- From `lg` the two columns are bottom-aligned, so the caption lines up with the buttons, and the right column has `pt-12` so the top stickers clear the sticky nav.
 - Fits the first viewport at 1280×720 and 375×812 with buttons visible. Phones: single column, card below the buttons, stickers a static row.
 
 ### 7.2 Experience (`#experience`)
