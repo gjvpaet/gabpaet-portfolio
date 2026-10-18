@@ -22,7 +22,7 @@ Global git config on this machine has a broken `gpg.format`; commit with `GIT_CO
 
 ## Stack
 
-Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`), `motion` (import from `motion/react`), `@phosphor-icons/react` (always `weight="bold"`, UI icons only), `simple-icons` (sticker logos only), `perfect-freehand` (pencil doodles and the placeholder signature), Vercel Analytics + Speed Insights. Fonts: Bricolage Grotesque (structure) and Shantell Sans (handwriting) via `next/font`.
+Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`), `motion` (import from `motion/react`), `@phosphor-icons/react` (always `weight="bold"`, UI icons only), `simple-icons` (sticker logos only), `perfect-freehand` (pencil doodles), Vercel Analytics + Speed Insights. Fonts: Bricolage Grotesque (structure) and Shantell Sans (handwriting) via `next/font`.
 
 ## The two-layer rule
 
@@ -40,6 +40,7 @@ Everything belongs to one layer (spec section 1):
 - **Components:** server components import Phosphor from `@phosphor-icons/react/ssr`; client components (`"use client"`) from `@phosphor-icons/react`.
 - **z-index:** only the values in `lib/z.ts` (mirrored as `--z-*` in `globals.css`).
 - **Content:** `content/profile.ts` and `content/projects.ts` are the single source of facts for the home page, `/resume`, JSON-LD, metadata and OG images. Never hardcode those facts elsewhere. Draft strings carry a `// VERIFY` comment until Gabriel confirms them. Computed notes ("Programmer to Senior in 8 months") come from `lib/dates.ts`, never typed by hand.
+- **Signature:** `lib/signature.ts` is generated from `assets/signature.png` by `scripts/trace-signature.py` (Pillow, numpy); never edit the paths by hand. Stroke order is set in the script (spec 10.4).
 - **Illustrations:** traced SVGs in `public/illustrations/` (`<name>-ink`, optional `-pen` and `-fill` layers), rendered as CSS masks by `components/illustration.tsx` so they re-ink with the theme (spec 6.14, 10.3). Sources are in `assets/illustrations/`; retrace with `scripts/trace-illustrations.py` (needs Pillow, numpy, potrace), and keep the viewBox sizes in the component in step with its output. Layouts must work without them.
 - **Canonical URLs:** set per page via `metadata.alternates.canonical`, never in the root layout.
 - **Resume PDF:** `public/gabriel-paet-resume.pdf` is a printout of `/resume`. After any change to `content/profile.ts` or `content/projects.ts`, regenerate it from a production build (`portfolio-prod` preview config, port 3300), never the dev server. Then rebuild before checking it locally: `next start` only serves `public/` files that existed at build time. Print styles live at the bottom of `globals.css`; every pen component, illustration and the grain hide on paper with `print:hidden`.

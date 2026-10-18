@@ -560,13 +560,21 @@ html.splash .splash-sheet[data-phase="lift"] {
   transform: translateY(-104%) rotate(-2deg);
   box-shadow: var(--shadow-lift);
 }
-.splash-name {
-  font-size: clamp(3rem, 9vw, 6.5rem);
-  font-weight: 600;
-  line-height: 1.2;
-  padding-inline: 0.1em;
-  clip-path: inset(0 100% 0 0);
-  animation: ink-wipe 0.8s var(--ease-draw) 0.15s forwards;
+.splash-signature {
+  width: min(78vw, 520px);
+  height: auto;
+  overflow: visible;
+}
+/* Each stroke draws in turn: --d and --dur come from the component, eased
+   like a pen that speeds up and settles. */
+.splash-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ink-draw var(--dur) cubic-bezier(0.45, 0, 0.55, 1) var(--d) forwards;
 }
 @media (prefers-reduced-motion: reduce) {
   html.splash .splash-sheet {
