@@ -50,7 +50,7 @@ export function Hero() {
 
         <div className="mx-auto w-full max-w-[500px] md:pt-6 md:pb-10 lg:pt-0">
           <StickerBoard tools="Tools I use daily: Claude, Next.js, Node.js, PostgreSQL and Docker.">
-            <PaperCard rotate={1.4} tape="top" className="px-6 pt-9 pb-6 sm:px-8.5 sm:pt-10 sm:pb-7">
+            <PaperCard rotate={1.4} tape="top" className="ink-boil px-6 pt-9 pb-6 sm:px-8.5 sm:pt-10 sm:pb-7">
               <HowIBuildNapkin delay={0.9} />
             </PaperCard>
           </StickerBoard>

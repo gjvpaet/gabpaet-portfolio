@@ -73,7 +73,7 @@ export function StickerBoard({ tools, children }: { tools: string; children: Rea
             }}
             className={stickerClasses(
               cn(
-                "sticker-drop select-none md:absolute md:top-(--top) md:left-(--left)",
+                "sticker-drop ink-boil select-none md:absolute md:top-(--top) md:left-(--left)",
                 canDrag && "sticker-grab",
               ),
             )}
@@ -83,7 +83,7 @@ export function StickerBoard({ tools, children }: { tools: string; children: Rea
               <BrandIcon
                 icon={s.icon}
                 decorative
-                className="pointer-events-none size-7 [filter:url(#ink-sticker)] md:size-9"
+                className="sticker-logo pointer-events-none size-7 md:size-9"
               />
             ) : (
               <span className="type-hand pointer-events-none text-2xl font-semibold md:text-[1.875rem]">&gt;_</span>

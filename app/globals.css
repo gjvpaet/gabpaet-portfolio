@@ -415,9 +415,40 @@ h3 {
     animation-delay: calc(var(--d, 0s) + 1s);
   }
 
-  /* Boil: interactive pen marks come alive only while hovered or focused. */
+  /* Boil: interactive pen marks come alive only while hovered or focused,
+     cycling three seeded filters at about 10fps. A mark that also draws in
+     keeps ink-draw in its animation list: dropping it would snap the stroke
+     back to its hidden start. Listing it again by name does not restart it. */
   .ink-boil:is(:hover, :focus-visible) :is(.ink-a, .ink-b, .ink-c) {
     animation: ink-boil 0.3s steps(1) infinite;
+  }
+  .ink-boil:is(:hover, :focus-visible) .ink-draw:is(.ink-a, .ink-b, .ink-c) {
+    animation:
+      ink-draw 0.9s var(--ease-draw) forwards,
+      ink-boil 0.3s steps(1) infinite;
+    animation-delay: var(--d, 0s), 0s;
+  }
+
+  /* Sticker logos boil too, with their gentler filters. */
+  .ink-boil:is(:hover, :focus-visible) .sticker-logo {
+    animation: sticker-boil 0.3s steps(1) infinite;
+  }
+}
+
+/* Resting wobble for sticker logos (filters in components/ink/ink-filters.tsx). */
+.sticker-logo {
+  filter: url(#ink-sticker);
+}
+
+@keyframes sticker-boil {
+  0% {
+    filter: url(#ink-sticker);
+  }
+  33% {
+    filter: url(#ink-sticker-b);
+  }
+  66% {
+    filter: url(#ink-sticker-c);
   }
 }
 
@@ -564,5 +595,11 @@ h3 {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* No lift either: killing the transition alone would still jump the
+     element on hover. Unlayered, so it beats the utilities. */
+  :is(.lift, .press, .press-lg):is(:hover, :active) {
+    transform: none;
   }
 }

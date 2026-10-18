@@ -7,6 +7,12 @@ const FILTERS = [
   { id: "ink-c", baseFrequency: 0.04, seed: 23 },
 ] as const;
 
+const STICKER_FILTERS = [
+  { id: "ink-sticker", seed: 7 },
+  { id: "ink-sticker-b", seed: 17 },
+  { id: "ink-sticker-c", seed: 29 },
+] as const;
+
 export function InkFilters() {
   return (
     <svg
@@ -23,11 +29,14 @@ export function InkFilters() {
             <feDisplacementMap in="SourceGraphic" scale={3} />
           </filter>
         ))}
-        {/* Sticker logos: same wobble, gentler, so brand marks stay recognisable. */}
-        <filter id="ink-sticker" x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence type="fractalNoise" baseFrequency={0.04} numOctaves={2} seed={7} />
-          <feDisplacementMap in="SourceGraphic" scale={1.5} />
-        </filter>
+        {/* Sticker logos: same wobble, gentler, so brand marks stay
+            recognisable. Three seeds, so they can boil like the pen marks. */}
+        {STICKER_FILTERS.map((f) => (
+          <filter key={f.id} id={f.id} x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency={0.04} numOctaves={2} seed={f.seed} />
+            <feDisplacementMap in="SourceGraphic" scale={1.5} />
+          </filter>
+        ))}
       </defs>
     </svg>
   );

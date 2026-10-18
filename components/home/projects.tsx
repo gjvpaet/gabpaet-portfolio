@@ -14,7 +14,7 @@ function NapkinVsShipped({ project }: { project: Project }) {
   return (
     <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
       <Reveal as="figure">
-        <PaperCard rotate={-1.8} tape="top" className="px-5.5 pt-6 pb-4">
+        <PaperCard rotate={-1.8} tape="top" className="ink-boil px-5.5 pt-6 pb-4">
           <TongMastersNapkin />
         </PaperCard>
         <figcaption className="type-hand mt-6 text-pen">the napkin</figcaption>

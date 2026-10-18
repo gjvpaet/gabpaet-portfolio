@@ -489,7 +489,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 6. [x] Content: `profile.ts` additions (10.1), `projects.ts` additions (8.2), `lib/dates.ts` for the computed notes. New drafts carry `// VERIFY`.
 7. [x] Nav (pencil + lamp + Résumé), mobile menu restyle. Pencil state lives in `lib/pencil.ts` (a tiny shared store; `PencilButton` toggles it, the layer arrives in step 10). The GP monogram component is gone.
 8. [x] Home sections in order: Hero (with `how-i-build` napkin and stickers), Experience, Projects (Tong Masters napkin), About, Contact.
-9. [ ] Motion: draw-in, reveal, boil, lift; reduced-motion pass.
+9. [x] Motion: draw-in, reveal, boil, lift; reduced-motion pass. Boil runs on drawn links, both napkin cards and the stickers (their logos cycle three gentler filters, `#ink-sticker`, `-b`, `-c`). Checked headless in both motion modes (2026-10-18): normally every mark finishes drawn and stays drawn while boiling, links/napkins/stickers boil on hover, buttons lift, below-fold reveals wait, stickers drag; under reduced motion nothing animates, marks are fully drawn, reveals are visible, buttons do not lift and stickers do not drag.
 10. [ ] Easter eggs: ink marks, `PencilLayer`, hidden margin note, `SplashSignature` (placeholder signature).
 11. [ ] Case studies: notebook spread, `WhiteboardDiagram`, v1 napkin, annotated hard problems, to-do list.
 12. [ ] `/resume` restyle with screen-only margin notes; regenerate the PDF.

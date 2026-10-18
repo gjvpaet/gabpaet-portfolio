@@ -51,6 +51,7 @@ Everything belongs to one layer (spec section 1):
 - Never invent a one-off SVG path inline; add it to `lib/ink.ts`. SVG filters go on small pen paths only, never on text or whole sections.
 - The only shadow is the paper lift, on taped-in paper and screenshots. Structure lines are 2px `--ink`. Radius: paper 3px, controls and frames 12px, chips full.
 - Every animation honours `prefers-reduced-motion`; draw-ins and boil are gated explicitly in CSS (Motion's `reducedMotion` does not cover them). Nothing loops on its own; no scroll listeners, no marquee.
+- A boil rule that targets a mark which also draws in must keep `ink-draw` in its `animation` list (see `globals.css`). Replacing the list with `ink-boil` alone drops the draw's `forwards` fill and the stroke vanishes on hover.
 - The splash shows only on `/`, once per session, never with a hash, under reduced motion, without JS or in print, and lasts at most 1.2s.
 - No em dashes in visible copy. Copy marked VERIFY must not ship until Gabriel confirms it.
 - Share images and icons render through `lib/og.tsx` with static TTFs in `assets/fonts/` and hex values from `lib/tokens.ts`. Satori cannot use CSS variables, variable font axes or SVG filters.
