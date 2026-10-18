@@ -303,7 +303,7 @@ A short intro, not a loading screen.
 
 ### 6.16 `Footer`
 
-A 2px ink rule. Left: "© 2026 Gabriel Joshua Paet" (`--ink-soft`). Right: links **Résumé**, **GitHub**, **LinkedIn**, **v1 of this site**, each at least 44px tall. Stacks on phones. `print:hidden`.
+Above the rule, right-aligned, the sign-off (`components/footer-nap.tsx`): illustration #5 (asleep at the desk, Bella asleep beside the laptop; 260px, 340px from `md`) with a Hand note "that's all for today. / Bella agrees." to its left (above it on phones). Every page except `/resume`, which stays a clean document; hidden in print. Then a 2px ink rule. Left: "© 2026 Gabriel Joshua Paet" (`--ink-soft`). Right: links **Résumé**, **GitHub**, **LinkedIn**, **v1 of this site**, each at least 44px tall. Stacks on phones. `print:hidden`.
 
 ---
 
@@ -435,8 +435,9 @@ The named path library (circle, underline variants, arrow variants, strike, box 
   2. Case study: two hands fanning Tong-its cards, stock pile and a meld (4:3).
   3. About: a desk lamp over an open notebook (3:4).
   4. Contact and 404: a paper plane with a looping dotted path (3:2).
+  5. Footer (added after the first four): asleep at the desk over a laptop, coffee and notebook, Gabriel's dog Bella asleep beside it, a "z" in `--pen` (3:2 source, cropped to about 2.5:1).
 - Pipeline: PNG → threshold → `potrace` to SVG (fill-only, no strokes, optimised with SVGO, target < 30 KB each) → `public/illustrations/<name>-ink.svg` (+ optional `<name>-pen.svg` for one purple element). Reject any generation with wrong hands or stray text.
-- As built: the four sources live in `assets/illustrations/*.webp` and `scripts/trace-illustrations.py` retraces them (2x upscale, threshold 150, potrace `-t 6 -a 1 -O 0.8`, SVGO at integer precision). Its config holds the hand's cutout polygon, the pen polygons and the fill's closing line, in source pixels. Sizes: hand 8.9 + 1.2 KB, cards 30.2 KB, lamp 30.1 + 0.5 KB, plane 3.6 + 2.2 KB (about 14 KB gzipped for the largest). The hero hand drops the source's napkin and coffee mug, which would have doubled the real napkin card.
+- As built: the sources live in `assets/illustrations/*.webp` and `scripts/trace-illustrations.py` retraces them (2x upscale, threshold 150, potrace `-t 6 -a 1 -O 0.8`, SVGO at integer precision). Its config holds the hand's cutout polygon, the pen polygons and the fill's closing line, in source pixels. Sizes: hand 8.9 + 1.2 KB, cards 30.2 KB, lamp 30.1 + 0.5 KB, plane 3.6 + 2.2 KB, nap 26.7 + 0.6 KB (about 14 KB gzipped for the largest). The hero hand drops the source's napkin and coffee mug, which would have doubled the real napkin card.
 
 ### 10.4 Signature
 
