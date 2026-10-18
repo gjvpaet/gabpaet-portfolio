@@ -93,11 +93,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: tokens.light.paper },
-    { media: "(prefers-color-scheme: dark)", color: tokens.dark.paper },
-  ],
-  colorScheme: "light dark",
+  // Light by default whatever the OS prefers (lib/theme.ts); the night page
+  // sets its own color-scheme in globals.css.
+  themeColor: tokens.light.paper,
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

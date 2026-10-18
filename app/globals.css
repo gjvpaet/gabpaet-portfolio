@@ -46,26 +46,8 @@
   color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #1a1b19;
-    --sheet: #242622;
-    --ink: #ecede6;
-    --ink-soft: #a6a79c;
-    --pen: #b79cf0;
-    --btn: #b79cf0;
-    --on-btn: #1a1b19;
-    --wash: rgb(183 156 240 / 0.24);
-    --note: #3a2e52;
-    --on-note: #ecede6;
-    --tape: rgb(150 152 140 / 0.45);
-    --dot: rgb(236 237 230 / 0.1);
-    --lift: rgb(0 0 0 / 0.55);
-    --grain-opacity: 0.05;
-    color-scheme: dark;
-  }
-}
-
+/* Dark mode, the "night page", only when the lamp is switched off: light is
+   the default whatever the OS prefers. */
 :root[data-theme="dark"] {
   --paper: #1a1b19;
   --sheet: #242622;

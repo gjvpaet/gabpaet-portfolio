@@ -33,10 +33,10 @@ Everything belongs to one layer (spec section 1):
 
 ## Where things live
 
-- **Tokens:** `app/globals.css` defines every color, radius, shadow and z-index as CSS variables. Light values sit on `:root`; dark values are repeated in `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and `:root[data-theme="dark"]`. `@theme inline` exposes them to Tailwind. Type roles are `@utility` classes.
+- **Tokens:** `app/globals.css` defines every color, radius, shadow and z-index as CSS variables. Light values sit on `:root`; dark values sit on `:root[data-theme="dark"]` only (there is no `prefers-color-scheme` block: light is the default). `@theme inline` exposes them to Tailwind. Type roles are `@utility` classes.
 - **Hex mirror:** `lib/tokens.ts` repeats the hex values for `next/og` images and the viewport `themeColor`. Change it together with `globals.css`.
 - **Pen marks:** path data lives only in `lib/ink.ts`; components in `components/ink/`. The roughness filters (`#ink-a`, `#ink-b`, `#ink-c`) are rendered once in the root layout in a 0×0 `aria-hidden` SVG (not `display: none`, which breaks them in Firefox). Napkin sketches live in `components/napkins/`.
-- **Theme:** no stored value means "follow the OS" (pure CSS). The lamp toggle stores `"light" | "dark"` under `THEME_STORAGE_KEY` in `lib/theme.ts`; `THEME_INIT_SCRIPT` (same file, injected in `app/layout.tsx` `<head>`) applies it before first paint, and also decides the splash (`html.splash`).
+- **Theme:** light by default, whatever the OS prefers. The lamp toggle stores `"light" | "dark"` under `THEME_STORAGE_KEY` in `lib/theme.ts`; `THEME_INIT_SCRIPT` (same file, injected in `app/layout.tsx` `<head>`) applies it before first paint, and `SPLASH_INIT_SCRIPT` decides the splash (`html.splash`). The toggle also keeps `<meta name="theme-color">` in step. To test dark mode headless, set `data-theme="dark"` (or store the key); emulating a dark OS no longer changes anything.
 - **Components:** server components import Phosphor from `@phosphor-icons/react/ssr`; client components (`"use client"`) from `@phosphor-icons/react`.
 - **z-index:** only the values in `lib/z.ts` (mirrored as `--z-*` in `globals.css`).
 - **Content:** `content/profile.ts` and `content/projects.ts` are the single source of facts for the home page, `/resume`, JSON-LD, metadata and OG images. Never hardcode those facts elsewhere. Draft strings carry a `// VERIFY` comment until Gabriel confirms them. Computed notes ("Programmer to Senior in 8 months") come from `lib/dates.ts`, never typed by hand.

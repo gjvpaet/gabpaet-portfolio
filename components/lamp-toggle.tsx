@@ -1,39 +1,38 @@
 "use client";
 
 import { Lamp } from "@phosphor-icons/react";
-import { useSyncExternalStore } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 import { InkSvg } from "@/components/ink/ink-svg";
 import { cn } from "@/lib/cn";
 import { THEME_STORAGE_KEY, type Theme } from "@/lib/theme";
+import { tokens } from "@/lib/tokens";
 
-const DARK_QUERY = "(prefers-color-scheme: dark)";
-
-// The effective theme: an explicit data-theme wins, otherwise the OS setting.
+// Light unless the lamp has been switched off (data-theme="dark").
 function getTheme(): Theme {
-  const pinned = document.documentElement.getAttribute("data-theme");
-  if (pinned === "light" || pinned === "dark") return pinned;
-  return window.matchMedia(DARK_QUERY).matches ? "dark" : "light";
+  return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
 }
 
 function subscribe(onChange: () => void) {
-  const mq = window.matchMedia(DARK_QUERY);
-  mq.addEventListener("change", onChange);
   const observer = new MutationObserver(onChange);
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-  return () => {
-    mq.removeEventListener("change", onChange);
-    observer.disconnect();
-  };
+  return () => observer.disconnect();
 }
 
 // Spec 6.7: the theme switch is a desk lamp. Light mode is the lamp on (two
 // pen strokes of light under the shade); dark mode, the "night page", is the
-// lamp off. First visit follows the OS; a click pins a choice.
+// lamp off. Every visit starts light; a click switches and is remembered.
 export function LampToggle({ className }: { className?: string }) {
   // null during SSR and hydration, so server and client markup match.
   const theme = useSyncExternalStore<Theme | null>(subscribe, getTheme, () => null);
   const isDark = theme === "dark";
+
+  // Keep the browser chrome (a phone's address bar) the colour of the page.
+  useEffect(() => {
+    if (theme === null) return;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    meta?.setAttribute("content", isDark ? tokens.dark.paper : tokens.light.paper);
+  }, [theme, isDark]);
 
   function toggle() {
     const next: Theme = getTheme() === "dark" ? "light" : "dark";

@@ -71,7 +71,7 @@ Fonts via `next/font/google` (self-hosted, `display: "swap"`):
 
 ## 4. Design tokens
 
-All tokens are CSS custom properties on `:root` in `app/globals.css`, repeated for dark mode under `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])` and `:root[data-theme="dark"]`, and exposed to Tailwind via `@theme inline`. Hex values are mirrored in `lib/tokens.ts` for `next/og` and `themeColor`. **Change both together.**
+All tokens are CSS custom properties on `:root` in `app/globals.css`, repeated for dark mode under `:root[data-theme="dark"]` (light is the default whatever the OS prefers), and exposed to Tailwind via `@theme inline`. Hex values are mirrored in `lib/tokens.ts` for `next/og` and `themeColor`. **Change both together.**
 
 ### 4.1 Color
 
@@ -248,7 +248,7 @@ Per-project sketches drawn in SVG with pen primitives plus `<text>` labels in Sh
 
 - A 44×44 icon button: 2px ink border, 12px radius, `--sheet` fill, Phosphor `Lamp` (bold). In light mode two short pen "rays" under the shade are drawn; in dark mode they're gone (lamp off).
 - `role="switch"`, `aria-checked` = dark, `aria-label="Dark mode"`, `title` "Turn the lamp off" / "Turn the lamp on".
-- Behaviour unchanged from v2: no stored value follows the OS; a click stores `"light" | "dark"` under `THEME_STORAGE_KEY` (`gabpaet.theme.v2`) from `lib/theme.ts`; `THEME_INIT_SCRIPT` applies it before paint.
+- Light by default for every visitor, whatever the OS prefers (changed 2026-10-18; it used to follow the OS). A click stores `"light" | "dark"` under `THEME_STORAGE_KEY` (`gabpaet.theme.v2`) from `lib/theme.ts`; `THEME_INIT_SCRIPT` applies it before paint.
 - Switching themes crossfades `background-color` and `color` for 0.4s (reduced motion: instant).
 
 ### 6.8 `Nav` (client for the menu)
@@ -450,7 +450,7 @@ Gabriel's signature as a transparent PNG (`assets/signature.png`), traced by `sc
 ## 11. Dark mode: "night page"
 
 - Token swap only (4.1): charcoal paper, chalk-white ink, light violet pen. Illustrations re-ink through their masks. Screenshots are untouched; their frame and tape carry the theme.
-- The lamp toggle is the only control. Both themes are tested for every component.
+- The lamp toggle is the only control: the night page appears only when a visitor switches the lamp off, and stays for their later visits. The toggle also sets `<meta name="theme-color">` to the page's paper. Both themes are tested for every component.
 
 ## 12. Accessibility
 
