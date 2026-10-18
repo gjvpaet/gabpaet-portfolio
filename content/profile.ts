@@ -5,6 +5,8 @@
 // New draft strings carry a `// VERIFY` comment until Gabriel confirms or
 // rewrites them (`grep -rn VERIFY content/`). Everything here is confirmed.
 
+import { numberWord, yearsSince } from "@/lib/dates";
+
 /** "YYYY-MM" */
 export type YearMonth = `${number}-${number}`;
 
@@ -46,7 +48,9 @@ export const HOME_HIGHLIGHT_COUNT = 2;
 /** Chips per role on the home page (spec 6.9); /resume shows them all. */
 export const HOME_CHIP_COUNT = 4;
 
-const yearsShipping = 9; // first full-time role: 2017-05
+// Years since the first full-time role (Volenday Group, 2017-05), worked out
+// at build time so the hero, meta description and bio never go stale.
+const yearsShipping = yearsSince("2017-05");
 
 export const profile = {
   name: "Gabriel Joshua Paet",
@@ -74,7 +78,7 @@ export const profile = {
   heroLine: `I build AI agents, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping.`,
 
   // Personal: must not mention Lumora or the current role.
-  bio: "I love building things that interest me, whether it's a tool that makes a tedious job disappear or a weekend idea that turns into something real. I'd rather see a thing all the way through, from the first rough version to something people actually use. Nine years of building web and mobile apps later, that's still the part I enjoy most.",
+  bio: `I love building things that interest me, whether it's a tool that makes a tedious job disappear or a weekend idea that turns into something real. I'd rather see a thing all the way through, from the first rough version to something people actually use. ${numberWord(yearsShipping)} years of building web and mobile apps later, that's still the part I enjoy most.`,
 
   /** The phrase in `bio` the About lead highlights (spec 7.4). Must occur in it. */
   bioMark: "I love building things that interest me",

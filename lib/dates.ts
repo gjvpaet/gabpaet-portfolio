@@ -17,6 +17,28 @@ export function monthsBetween(from: YearMonth, to: YearMonth): number {
   return (b.year - a.year) * 12 + (b.month - a.month);
 }
 
+/** This month as "YYYY-MM". Pages are static, so this is the build's month. */
+export function thisMonth(): YearMonth {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}` as YearMonth;
+}
+
+/** Whole years from `from` to this month: 2017-05 gives 9 until 2027-05. */
+export function yearsSince(from: YearMonth): number {
+  return Math.floor(monthsBetween(from, thisMonth()) / 12);
+}
+
+const NUMBER_WORDS = [
+  "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+  "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty",
+];
+
+/** 9 → "Nine" for prose; digits past twenty. */
+export function numberWord(n: number): string {
+  const word = NUMBER_WORDS[n] ?? String(n);
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 /** 80 → "6 years, 8 months"; 8 → "8 months"; 12 → "1 year". */
 export function formatDuration(months: number): string {
   const years = Math.floor(months / 12);
