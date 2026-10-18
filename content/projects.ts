@@ -1,6 +1,6 @@
 // Side projects: home page bento tiles and /projects/[slug] case studies
 // (docs/v2/DESIGN-SPEC.md sections 7.3 and 8).
-// Strings marked `// VERIFY` are drafts awaiting Gabriel's confirmation.
+// New draft strings carry a `// VERIFY` comment until Gabriel confirms them.
 
 export type ProjectSlug = "tong-masters" | "portfolio-v1";
 
@@ -65,7 +65,6 @@ export const projects: Project[] = [
         height: 1688,
       },
     ],
-    // VERIFY
     whatItIs:
       "Tong-its is a Filipino rummy game usually played around a table with three people. Tong Masters puts it in the browser: open a room and play with friends, let bots fill the empty seats, or practice solo against bots. A guided tutorial teaches the rules hand by hand.",
     // A real request flow, left to right. The rules engine is a shared library
@@ -77,19 +76,16 @@ export const projects: Project[] = [
     ],
     hardProblems: [
       {
-        // VERIFY
         title: "Fair multiplayer with bots in the mix",
         body: "Each room runs on a Durable Object that owns the game state, so players only ever see their own hand. Bots take empty seats through the same server rules as people.",
         note: "nobody can peek at your hand",
       },
       {
-        // VERIFY
         title: "One rules engine, tested first",
         body: "The rules and the bot live in a pure TypeScript package written test-first with Vitest. The server, solo mode and the tutorial all run the same engine.",
         note: "the tests came before the table",
       },
       {
-        // VERIFY
         title: "Chips that are only for fun",
         body: "Virtual chips can never be bought or cashed out, by design. The server keeps the balances and a ledger, so nothing about a player's chips is trusted from the browser.",
         note: "no real money, ever",
@@ -98,12 +94,9 @@ export const projects: Project[] = [
     whatsNext: [
       { text: "Bots that fill empty seats", done: true },
       { text: "A guided tutorial that teaches the rules hand by hand", done: true },
-      // VERIFY
       { text: "Open it up to more players beyond friends and family" },
-      // VERIFY
       { text: "Add more Filipino card games once the format is right" },
     ],
-    // VERIFY
     playNote: "bring two friends",
   },
   {
@@ -129,7 +122,6 @@ export const projects: Project[] = [
         height: 1688,
       },
     ],
-    // VERIFY
     whatItIs:
       "The first version of gabpaet.dev presented every page as a file in a VS Code-style editor, with a file tree, tabs, a command palette and a status bar.",
     architecture: [
@@ -138,19 +130,16 @@ export const projects: Project[] = [
     ],
     hardProblems: [
       {
-        // VERIFY
         title: "One source of truth for navigation",
         body: "The sidebar, tabs, command palette, breadcrumb and sitemap all read one registry of files, so adding a page meant one entry instead of five.",
         note: "one entry instead of five",
       },
       {
-        // VERIFY
         title: "Theme switching without a flash",
         body: "Accent, density and theme choices were applied by a small script before React loaded, so the first paint already matched the visitor's settings.",
         note: "no flash on first paint",
       },
       {
-        // VERIFY
         title: "An editor layout on a phone",
         body: "The file tree became a slide-in drawer and the editor chrome shrank in three steps, so the IDE idea still worked on a small screen.",
         note: "the file tree became a drawer",

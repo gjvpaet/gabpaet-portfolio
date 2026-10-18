@@ -2,8 +2,8 @@
 // OG images (docs/v2/DESIGN-SPEC.md section 10). Never copy these values
 // into components; import them.
 //
-// Strings marked `// VERIFY` are drafts. Gabriel confirms or rewrites each
-// one before launch (build checklist step 14): `grep -rn VERIFY content/`.
+// New draft strings carry a `// VERIFY` comment until Gabriel confirms or
+// rewrites them (`grep -rn VERIFY content/`). Everything here is confirmed.
 
 /** "YYYY-MM" */
 export type YearMonth = `${number}-${number}`;
@@ -73,8 +73,8 @@ export const profile = {
 
   heroLine: `I build AI agents, workflow automation, and the cloud infrastructure that runs them. ${yearsShipping} years shipping.`,
 
-  // VERIFY (voice): personal, and must not mention Lumora or the current role.
-  bio: "I love building things that interest me, whether it's a tool that makes a tedious job disappear or a weekend idea that turns into something real. Tong Masters started that way: I wanted an online Tong-its game so friends and family could play together, so I built one. I'd rather see a thing all the way through, from the first rough version to something people actually use. Nine years of building web and mobile apps later, that's still the part I enjoy most.",
+  // Personal: must not mention Lumora or the current role.
+  bio: "I love building things that interest me, whether it's a tool that makes a tedious job disappear or a weekend idea that turns into something real. I'd rather see a thing all the way through, from the first rough version to something people actually use. Nine years of building web and mobile apps later, that's still the part I enjoy most.",
 
   /** The phrase in `bio` the About lead highlights (spec 7.4). Must occur in it. */
   bioMark: "I love building things that interest me",
@@ -104,15 +104,12 @@ export const profile = {
       mode: "Hybrid",
       location: "Philippines",
       current: true,
-      // VERIFY (second half, from the second highlight)
       homeLine:
         "Building Centra, Lumora's proprietary loan origination and servicing system, and automating manual operations with n8n and agent tooling.",
       mark: "Centra",
-      // VERIFY
       note: "Claude Code is in my daily workflow",
       highlights: [
         "Building Centra, Lumora's proprietary loan origination and servicing system.",
-        // VERIFY
         "Automating manual operations with n8n and agent tooling, including Claude Code in the daily workflow.",
       ],
       stack: [
@@ -128,15 +125,12 @@ export const profile = {
         { title: "Programmer", from: "2024-01", to: "2024-09" },
       ],
       mode: "Hybrid",
-      // VERIFY
       homeLine:
         "Shipped LLM features with LangChain, LangGraph, OpenAI, AWS Bedrock Agents and Vertex AI, across web and mobile apps.",
       mark: "LLM features",
       note: "{promotion}",
       highlights: [
-        // VERIFY
         "Shipped LLM features with LangChain, LangGraph, OpenAI, AWS Bedrock Agents and Vertex AI.",
-        // VERIFY
         "Built web and mobile apps across Next.js, React Native and Flutter.",
       ],
       stack: [
@@ -152,7 +146,6 @@ export const profile = {
       homeLine:
         "Built a React Native app in Danish and Norwegian with its REST API, then led the team as scrum master on a web app we moved to Azure.",
       mark: "led the team",
-      // VERIFY
       note: "my first full-time job. {tenure}",
       highlights: [
         "Built a React Native app with Danish and Norwegian language support, plus its REST API.",
