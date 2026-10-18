@@ -54,5 +54,5 @@ Everything belongs to one layer (spec section 1):
 - A boil rule that targets a mark which also draws in must keep `ink-draw` in its `animation` list (see `globals.css`). Replacing the list with `ink-boil` alone drops the draw's `forwards` fill and the stroke vanishes on hover.
 - The splash shows only on `/`, once per session, never with a hash, under reduced motion, without JS or in print, and lasts at most 1.2s.
 - No em dashes in visible copy. Copy marked VERIFY must not ship until Gabriel confirms it.
-- Share images and icons render through `lib/og.tsx` with static TTFs in `assets/fonts/` and hex values from `lib/tokens.ts`. Satori cannot use CSS variables, variable font axes or SVG filters.
+- Share images and icons render through `lib/og.tsx` with static TTFs in `assets/fonts/` and hex values from `lib/tokens.ts`. Satori cannot use CSS variables, variable font axes, SVG filters or repeating CSS gradients (the dot grid is an SVG pattern), and cannot size an SVG to its parent (give it numbers).
 - Old v1 URLs redirect (308) via `next.config.ts`, and section IDs (`#experience`, `#projects`, `#about`, `#contact`) are what those redirects land on; keep both when touching routes.

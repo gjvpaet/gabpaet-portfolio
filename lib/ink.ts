@@ -102,6 +102,19 @@ export const ink = {
   napkinV1Tree: mark("0 0 440 320", ["M70 292 C 74 286, 78 280, 80 272", "M73 279 L80 269 L87 278"], 1.8),
   napkinV1Palette: mark("0 0 440 320", ["M318 288 C 314 270, 300 250, 291 234", "M284 242 L290 231 L298 240"], 1.8),
 
+  /** Share images (lib/og.tsx, no SVG filters there, so the wobble is in the
+      path itself): a hand-drawn box, and a ring for the "gp" icon. */
+  ogBox: mark(
+    "0 0 200 48",
+    ["M4 5 C 60 2, 140 6, 196 3 C 198 18, 197 32, 196 44 C 140 47, 60 44, 5 46 C 3 32, 4 18, 4 5"],
+    2.4,
+  ),
+  ring: mark(
+    "0 0 100 100",
+    ["M52 7 C 79 6, 95 25, 94 50 C 93 77, 74 95, 48 94 C 22 93, 5 76, 6 50 C 7 27, 23 9, 58 9"],
+    7,
+  ),
+
   /** The lamp's light, drawn under the shade of Phosphor's Lamp icon in
       light mode (LampToggle). Same 24px box as the icon; left of the stem,
       clear of the pull cord on the right. */

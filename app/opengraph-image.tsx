@@ -8,8 +8,9 @@ export const contentType = "image/png";
 // Prerendered at build time as a static PNG (spec 13).
 export default function OpenGraphImage() {
   return renderShareCard({
+    note: "hi, I'm",
     title: profile.name,
-    subtitle: `${profile.role}, ${profile.location}`,
-    chip: profile.status,
+    circled: profile.role,
+    subtitle: profile.location,
   });
 }

@@ -28,14 +28,3 @@ export const tokens = {
     washOnPaper: "#403A4D",
   },
 } as const;
-
-/**
- * The neo-brutalist palette, still read by lib/og.tsx until the share images
- * are redrawn (build checklist step 13). Delete with it.
- */
-export const legacyTokens = {
-  light: { bg: "#F6F7F3", surface: "#FDFDFB", ink: "#1B1C1A", inkMuted: "#55584F" },
-  mint: "#2EE5B4",
-  yellow: "#FFD23F",
-  onAccent: "#1B1C1A",
-} as const;

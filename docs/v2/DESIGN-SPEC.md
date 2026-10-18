@@ -463,9 +463,9 @@ Unchanged from v2 and already built: `metadataBase`, title and description from 
 
 **Share images and icons (redo):**
 
-- `app/opengraph-image.tsx` (1200×630) through `lib/og.tsx`: `--paper` background with the dot grid drawn as a pattern; `profile.name` in Bricolage ExtraBold (about 96px, two lines); "Senior Programmer" below with a hand-drawn `--pen` ellipse around it (the `InkCircle` path, unfiltered: Satori has no SVG filters); a small `how-i-build` napkin doodle at the right, rotated 3deg, with a tape strip. Per-project images reuse it with the project name, summary and a Hand "case study" note.
-- `app/icon.tsx` (32×32): a handwritten "gp" in Shantell 700, `--ink` on `--paper`, inside a `--pen` hand-drawn circle. `app/apple-icon.tsx` (180×180): full-bleed `--paper` with the same mark, no border.
-- Fonts: static TTF instances fetched from Google Fonts' static instances (Satori cannot read variable axes): `BricolageGrotesque-ExtraBold.ttf` (opsz 96), `BricolageGrotesque-Medium.ttf`, `ShantellSans-SemiBold.ttf` (INFM 70, if the static API serves it; otherwise the default instance). All OFL, in `assets/fonts/`. Remove the Archivo and JetBrains Mono TTFs.
+- `app/opengraph-image.tsx` (1200×630) through `lib/og.tsx`: `--paper` with the dot grid as an SVG pattern (Satori ignores repeating CSS gradients); a Hand "hi, I'm" in pen; `profile.name` in Bricolage ExtraBold (100px, two lines); "Senior Programmer" circled in pen (the `circle` path, unfiltered: Satori has no SVG filters, and it is sized from the text because Satori cannot size an SVG to its parent); the location; and the how-I-build napkin taped at the right, rotated 3deg, its boxes drawn with the `ogBox` path. Per-project images reuse it with a "case study" note, the project name and its summary.
+- `app/icon.tsx` (32×32): a handwritten "gp" in Shantell 700, `--ink` on `--paper`, inside a `--pen` hand-drawn ring (the `ring` path, inset 4% so it never touches the edge). `app/apple-icon.tsx` (180×180): full-bleed `--paper` with the same mark.
+- Fonts: static TTF instances from Google Fonts' CSS2 API (Satori cannot read variable axes): `BricolageGrotesque-ExtraBold.ttf` (opsz 96, wght 800), `BricolageGrotesque-Medium.ttf` (opsz 24, wght 500), `ShantellSans-SemiBold.ttf` and `ShantellSans-Bold.ttf` (the API does not instance Shantell's custom INFM/BNCE axes, so these are the default, slightly neater, letterforms). All OFL, in `assets/fonts/`. The Archivo and JetBrains Mono TTFs are gone.
 
 ## 14. States and edge cases
 
@@ -493,7 +493,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 10. [x] Easter eggs: ink marks, `PencilLayer`, hidden margin note, `SplashSignature` (placeholder signature). Components: `components/home/hero-paper.tsx` (the hero section as markable paper), `components/pencil-layer.tsx` (rendered in the root layout, pencil state from `lib/pencil.ts`), `components/hidden-note.tsx` (on the Tong Masters "Play it" link, from `project.playNote`), `components/splash-signature.tsx` with its pre-paint decision in `lib/splash.ts`. Checked headless (2026-10-18): the splash shows on a first home visit and is gone by 1.6s, never on reload, `#hash` links, `/resume` or reduced motion, and a click lifts it within about 0.35s; clicks on empty hero paper leave marks that clear by 2.6s; the pencil draws, Erase clears, Esc puts it down; the hidden note appears only on hover or focus; no console errors and no sideways scroll.
 11. [x] Case studies: notebook spread, `WhiteboardDiagram`, v1 napkin, annotated hard problems, to-do list.
 12. [x] `/resume` restyle with screen-only margin notes; regenerate the PDF. Dates read "May 2017 to Jan 2024"; highlights are a plain bulleted list; all print lines (frames, chips, section rules) are 1px. PDF regenerated 2026-10-18 from the production build: 2 A4 pages, no pen marks on paper (checked with `pdftotext`). The skip link moved to the purple button style too.
-13. [ ] Share images, icon and apple icon (13); swap the fonts in `assets/fonts/`.
+13. [x] Share images, icon and apple icon (13); swap the fonts in `assets/fonts/`. `legacyTokens` is gone from `lib/tokens.ts`.
 14. [ ] 404 restyle.
 15. [ ] Illustrations: Gabriel generates #1 to #4; trace, add, place (10.3).
 16. [ ] Signature: Gabriel sends the photo; trace and swap in for the placeholder (10.4).
