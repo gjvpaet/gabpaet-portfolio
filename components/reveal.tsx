@@ -16,7 +16,7 @@ import {
 // content is simply visible. `index` staggers siblings by 60ms each.
 //
 // Wrap a card or tile rather than putting this on it: the reveal owns
-// `transition`, which would otherwise replace the element's press transition.
+// `transition`, which would otherwise replace the element's lift transition.
 export function Reveal({
   as: Tag = "div",
   index = 0,

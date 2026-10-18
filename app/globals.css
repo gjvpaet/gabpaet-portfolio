@@ -110,22 +110,6 @@
 
   --ease-out: var(--ease-out);
   --ease-draw: var(--ease-draw);
-
-  /* ---- Legacy aliases from the neo-brutalist build. Components still
-     using these are restyled in checklist steps 5 to 8; delete each alias
-     once nothing references it. ---- */
-  --color-bg: var(--paper);
-  --color-surface: var(--sheet);
-  --color-ink-muted: var(--ink-soft);
-  --color-mint: var(--note);
-  --color-yellow: var(--note);
-  --color-on-accent: var(--on-note);
-  --color-mint-text: var(--pen);
-  --radius-card: var(--r-control);
-  --shadow-brut-sm: none;
-  --shadow-brut-md: var(--shadow-lift);
-  --shadow-brut-lg: var(--shadow-lift);
-  --ease-brut: var(--ease-out);
 }
 
 /* =========================================================
@@ -148,6 +132,9 @@ html {
 }
 
 body {
+  /* Safety net: a sticker dragged or taped past the edge never makes the
+     page scroll sideways. clip (not hidden) keeps the sticky nav working. */
+  overflow-x: clip;
   background-color: var(--paper);
   background-image: radial-gradient(var(--dot) 1.1px, transparent 1.4px);
   background-size: 22px 22px;
@@ -233,12 +220,6 @@ h3 {
 
 @utility type-body {
   font-size: 1.125rem;
-  line-height: 1.55;
-}
-
-/* Legacy (brutalist cards); removed with them. */
-@utility type-body-sm {
-  font-size: 1rem;
   line-height: 1.55;
 }
 
@@ -331,51 +312,6 @@ h3 {
     opacity: 0.5;
     transform: none;
     cursor: not-allowed;
-  }
-}
-
-/* Legacy names for lift; press-lg also carries the paper lift. */
-@utility press {
-  transition: transform 0.25s var(--ease-out);
-
-  @media (hover: hover) {
-    &:hover {
-      transform: translateY(-2px) rotate(-0.6deg);
-    }
-  }
-  &:active {
-    transform: translateY(1px) scale(0.98);
-  }
-  &:disabled,
-  &[aria-disabled="true"] {
-    opacity: 0.5;
-    transform: none;
-    cursor: not-allowed;
-  }
-}
-
-@utility press-lg {
-  box-shadow: var(--shadow-lift);
-  transition: transform 0.25s var(--ease-out);
-
-  @media (hover: hover) {
-    &:hover {
-      transform: translateY(-2px) rotate(-0.6deg);
-    }
-  }
-  &:active {
-    transform: translateY(1px) scale(0.98);
-  }
-}
-
-/* Legacy: text on a filled (formerly mint/yellow) block. Fills now map to
-   the lavender note, so its text and children take the note ink. */
-@utility tone-accent {
-  color: var(--on-note);
-
-  & > * {
-    --ink: var(--on-note);
-    --ink-soft: var(--on-note);
   }
 }
 
@@ -688,7 +624,7 @@ html.splash .splash-sheet[data-phase="lift"] {
 
   /* No lift either: killing the transition alone would still jump the
      element on hover. Unlayered, so it beats the utilities. */
-  :is(.lift, .press, .press-lg):is(:hover, :active) {
+  .lift:is(:hover, :active) {
     transform: none;
   }
 }

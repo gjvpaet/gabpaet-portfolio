@@ -469,7 +469,7 @@ Unchanged from v2 and already built: `metadataBase`, title and description from 
 
 ## 14. States and edge cases
 
-- **404:** H1 "Page not found", line "That page moved or never existed.", `primary` "Back home", illustration #4 (the paper plane) with a Hand note "this one flew off".
+- **404:** a Hand note "this one flew off" with an `up-right` arrow, H1 "Page not found" at Display size, the line "That page moved or never existed.", `primary` "Back home". Illustration #4 (the paper plane) goes where the arrow points once it exists.
 - **No JS:** fully readable. Every mark is drawn, there's no splash, stickers are static, and the pencil button does nothing (acceptable; it is a toy).
 - **Illustrations missing:** the slots collapse; nothing else moves.
 - **Long text in handwriting:** never happens by rule (≤ 8 words).
@@ -494,7 +494,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 11. [x] Case studies: notebook spread, `WhiteboardDiagram`, v1 napkin, annotated hard problems, to-do list.
 12. [x] `/resume` restyle with screen-only margin notes; regenerate the PDF. Dates read "May 2017 to Jan 2024"; highlights are a plain bulleted list; all print lines (frames, chips, section rules) are 1px. PDF regenerated 2026-10-18 from the production build: 2 A4 pages, no pen marks on paper (checked with `pdftotext`). The skip link moved to the purple button style too.
 13. [x] Share images, icon and apple icon (13); swap the fonts in `assets/fonts/`. `legacyTokens` is gone from `lib/tokens.ts`.
-14. [ ] 404 restyle.
+14. [x] 404 restyle. Until illustration #4 lands, the Hand note's arrow points at open sky. The legacy color aliases and the `press`, `press-lg`, `tone-accent` and `type-body-sm` utilities are deleted (nothing used them any more), along with the static `Sticker`. Also fixed: at 1024 to 1100px the stickers taped over the napkin's right edge made the home page scroll sideways by about 30px; the hero's right column now keeps `lg:pr-10` until `xl`, and `body` has `overflow-x: clip` as a safety net for dragged stickers. Checked on the production build at 375 to 1440px: no sideways scroll on any page, stickers on screen.
 15. [ ] Illustrations: Gabriel generates #1 to #4; trace, add, place (10.3).
 16. [ ] Signature: Gabriel sends the photo; trace and swap in for the placeholder (10.4).
 17. [ ] Gabriel verifies every VERIFY string (`grep -rn VERIFY content/`), including those carried over from the brutalist build.

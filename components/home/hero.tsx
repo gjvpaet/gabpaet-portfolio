@@ -49,7 +49,8 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[500px] md:pt-6 md:pb-10 lg:pt-0">
+        {/* lg:pr-10 leaves room for the stickers taped over the right edge. */}
+        <div className="mx-auto w-full max-w-[500px] md:pt-6 md:pb-10 lg:pt-0 lg:pr-10 xl:pr-0">
           <StickerBoard tools="Tools I use daily: Claude, Next.js, Node.js, PostgreSQL and Docker.">
             <PaperCard rotate={1.4} tape="top" className="ink-boil px-6 pt-9 pb-6 sm:px-8.5 sm:pt-10 sm:pb-7">
               <HowIBuildNapkin delay={0.9} />
