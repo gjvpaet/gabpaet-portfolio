@@ -6,20 +6,25 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
 import { buttonClasses } from "@/components/button";
-import { Monogram } from "@/components/monogram";
+import { InkSvg } from "@/components/ink/ink-svg";
+import { InkUnderline } from "@/components/ink/ink-underline";
+import { Tape } from "@/components/ink/tape";
 import { LampToggle } from "@/components/lamp-toggle";
+import { PencilButton } from "@/components/pencil-button";
 import { cn } from "@/lib/cn";
 
 const SECTIONS = [
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "about", label: "About" },
+  { id: "contact", label: "Contact" },
 ] as const;
 
-const CONTACT = { href: "/#contact", label: "Get in touch" } as const;
+const RESUME = { href: "/resume", label: "Résumé" } as const;
 
-// Spec 6.5. Sticky bar; the full link row shows from lg (1024px) up, where it
-// fits on one line. Below that, a menu button opens a full-width sheet.
+// Spec 6.8. Sticky 72px bar on the paper. The full row (links, pencil, lamp,
+// Résumé) shows from lg (1024px) up, where it fits on one line. Below that:
+// name, pencil, lamp and a menu button that opens a taped-in paper sheet.
 export function Nav({ shortName }: { shortName: string }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -46,7 +51,7 @@ export function Nav({ shortName }: { shortName: string }) {
 
   // Underline the link for the section in the middle band of the viewport.
   useEffect(() => {
-    const targets = [...SECTIONS.map((s) => s.id), "contact"]
+    const targets = SECTIONS.map((s) => s.id)
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
     if (targets.length === 0) {
@@ -111,43 +116,68 @@ export function Nav({ shortName }: { shortName: string }) {
   return (
     <header
       className={cn(
-        "sticky top-0 z-[var(--z-nav)] border-b-3 bg-bg transition-[border-color] duration-200 print:hidden",
+        "sticky top-0 z-[var(--z-nav)] border-b-2 bg-paper transition-[border-color] duration-200 print:hidden",
         scrolledPastHero || menuOpen ? "border-ink" : "border-transparent",
       )}
     >
-      <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 md:h-[72px] md:px-8">
-        <Link href="/" className="flex min-h-11 items-center gap-3 rounded-control no-underline">
-          <Monogram />
-          <span className="whitespace-nowrap font-bold">{shortName}</span>
+      <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-5 md:h-18 md:px-10">
+        <Link href="/" className="flex min-h-11 items-center rounded-control no-underline">
+          <InkUnderline variant="short" className="text-xl font-bold whitespace-nowrap">
+            {shortName}
+          </InkUnderline>
         </Link>
 
         {/* lg and up: the full row */}
-        <nav aria-label="Primary" className="hidden items-center gap-6 lg:flex">
-          <ul className="flex items-center gap-6">
-            {SECTIONS.map((section) => (
-              <li key={section.id}>
-                <Link
-                  href={`/#${section.id}`}
-                  aria-current={activeId === section.id ? "true" : undefined}
-                  className={cn(
-                    // py-2.5 + 3px underline: a 44px tap target.
-                    "inline-block border-b-3 py-2.5 font-semibold no-underline transition-[border-color] duration-150",
-                    activeId === section.id ? "border-mint" : "border-transparent hover:border-mint",
-                  )}
-                >
-                  {section.label}
-                </Link>
-              </li>
-            ))}
+        <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
+          <ul className="flex items-center gap-7">
+            {SECTIONS.map((section) => {
+              const active = activeId === section.id;
+              return (
+                <li key={section.id}>
+                  <Link
+                    href={`/#${section.id}`}
+                    aria-current={active ? "true" : undefined}
+                    // min-h-11: a 44px tap target around the 16px label.
+                    className="group relative inline-flex min-h-11 items-center text-base font-medium no-underline"
+                  >
+                    {section.label}
+                    {/* Hover: a faint pencil line. In view: the pen draws one in. */}
+                    <InkSvg
+                      name="underlineLinkAlt"
+                      tone="soft"
+                      draw={false}
+                      rough="b"
+                      stretch
+                      className={cn(
+                        "absolute bottom-1.5 left-0 h-2 w-full opacity-0 transition-opacity duration-150",
+                        !active && "group-hover:opacity-100",
+                      )}
+                    />
+                    {active ? (
+                      <InkSvg
+                        name="underlineLink"
+                        strokeWidth={3}
+                        stretch
+                        className="absolute bottom-1.5 left-0 h-2 w-full"
+                      />
+                    ) : null}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
-          <LampToggle />
-          <Link href={CONTACT.href} className={buttonClasses("secondary", undefined, "sm")}>
-            {CONTACT.label}
-          </Link>
+          <div className="flex items-center gap-2.5">
+            <PencilButton />
+            <LampToggle />
+            <Link href={RESUME.href} className={buttonClasses("secondary", undefined, "sm")}>
+              {RESUME.label}
+            </Link>
+          </div>
         </nav>
 
-        {/* Below lg: toggle + menu button */}
+        {/* Below lg: pencil, lamp, menu button */}
         <div className="flex items-center gap-2 lg:hidden">
+          <PencilButton />
           <LampToggle />
           <button
             ref={menuButtonRef}
@@ -167,16 +197,19 @@ export function Nav({ shortName }: { shortName: string }) {
         ref={sheetRef}
         id={menuId}
         hidden={!menuOpen}
-        className="absolute inset-x-0 top-full z-[var(--z-mobile-menu)] border-b-3 border-ink bg-bg lg:hidden"
+        // Taped-in paper: the sheet hangs just under the bar, slightly tilted.
+        className="paper absolute inset-x-4 top-full z-[var(--z-mobile-menu)] mt-3 -rotate-[0.6deg] md:inset-x-8 lg:hidden"
       >
-        <nav aria-label="Primary" className="mx-auto grid max-w-[1200px] gap-6 px-4 pt-6 pb-8 md:px-8">
-          <ul className="grid gap-2">
+        <Tape className="-top-3 left-8 h-7 w-[92px]" style={{ rotate: "-6deg" }} />
+        <Tape className="-top-2.5 right-8 h-7 w-[84px]" style={{ rotate: "5deg" }} />
+        <nav aria-label="Primary" className="grid gap-6 px-6 pt-8 pb-7">
+          <ul className="grid gap-1">
             {SECTIONS.map((section) => (
               <li key={section.id}>
                 <Link
                   href={`/#${section.id}`}
                   onClick={() => setMenuOpen(false)}
-                  className="block py-1 text-[2rem] leading-tight font-extrabold no-underline"
+                  className="block py-1.5 text-[2rem] leading-tight font-bold tracking-[-0.02em] no-underline"
                 >
                   {section.label}
                 </Link>
@@ -184,11 +217,11 @@ export function Nav({ shortName }: { shortName: string }) {
             ))}
           </ul>
           <Link
-            href={CONTACT.href}
+            href={RESUME.href}
             onClick={() => setMenuOpen(false)}
-            className={buttonClasses("secondary", "w-fit")}
+            className={buttonClasses("primary", "w-fit")}
           >
-            {CONTACT.label}
+            {RESUME.label}
           </Link>
         </nav>
       </div>

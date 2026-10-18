@@ -487,7 +487,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 4. [x] `lib/ink.ts` + pen primitives (6.1) + `MarginNote`, `PaperCard`, `Highlight`, `Tape`. `InkSvg` (`components/ink/ink-svg.tsx`) renders any named mark; the wrappers are `InkCircle`, `InkUnderline`, `InkStrike`, `InkArrow`, `InkBox`. The strike is two loose lines rather than a zigzag, so the crossed-out joke stays readable.
 5. [x] Restyle the primitives: Button, Chip, ScreenshotFrame, SectionHeading, CopyEmailButton, Footer; `LampToggle` replaces ThemeToggle. Also added `DrawnLink` (`components/drawn-link.tsx`, the pen-underlined text link that boils on hover). The lamp's light is two pen strokes (`lampRays` in `lib/ink.ts`) left of Phosphor `Lamp`'s stem. `StatusChip` is kept, restyled as a wash pill, only until the hero rebuild drops it (step 8).
 6. [x] Content: `profile.ts` additions (10.1), `projects.ts` additions (8.2), `lib/dates.ts` for the computed notes. New drafts carry `// VERIFY`.
-7. [ ] Nav (pencil + lamp + Résumé), mobile menu restyle.
+7. [x] Nav (pencil + lamp + Résumé), mobile menu restyle. Pencil state lives in `lib/pencil.ts` (a tiny shared store; `PencilButton` toggles it, the layer arrives in step 10). The GP monogram component is gone.
 8. [ ] Home sections in order: Hero (with `how-i-build` napkin and stickers), Experience, Projects (Tong Masters napkin), About, Contact.
 9. [ ] Motion: draw-in, reveal, boil, lift; reduced-motion pass.
 10. [ ] Easter eggs: ink marks, `PencilLayer`, hidden margin note, `SplashSignature` (placeholder signature).
