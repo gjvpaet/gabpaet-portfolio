@@ -286,8 +286,8 @@ v2 behaviour (Clipboard API, select-text fallback "Press ⌘C to copy", `aria-li
 
 ### 6.14 `Illustration` (server)
 
-- Traced ink illustrations (section 10.3) are rendered as **CSS masks**: a `<span role="img" aria-label>` with `mask: url(/illustrations/<name>-ink.svg) center / contain no-repeat` and `background: var(--ink)`, so they re-ink in dark mode and stay cacheable. An optional second mask layer `<name>-pen.svg` paints one element in `--pen`.
-- Fixed aspect ratio box (no CLS), `loading`-equivalent: below-the-fold ones are lazy via `content-visibility: auto`.
+- Traced ink illustrations (section 10.3) are rendered as **CSS masks**: each layer is a span with `mask: url(/illustrations/<name>-<layer>.svg) center / contain no-repeat` and a token background, so they re-ink in dark mode and stay cacheable. Layers: `ink` (`--ink`, always), `pen` (`--pen`, one element: the lamp's rays, the plane's dotted path) and `fill` (`--sheet`, an opaque silhouette for art that overlaps something: the hero hand). The layers stack in one grid cell, so the root is a plain `div` that callers position freely.
+- Decorative (`aria-hidden`) unless given a `label`. Fixed aspect ratio from the shared viewBox (no CLS); below-the-fold ones are lazy via `content-visibility: auto`, which also defers fetching their masks.
 - **Every layout must work without its illustration.** Until the art arrives, the slot renders nothing.
 
 ### 6.15 `SplashSignature` (client)
@@ -329,8 +329,8 @@ Footer
   3. Title row: `profile.heroDraft` ("Full-stack ninja") in Hand `--ink-soft` with `InkStrike`, then **`profile.role`** ("Senior Programmer", Bricolage 650, 28px) with `InkCircle` in `--pen`.
   4. Lead: **"I build AI agents, workflow automation, and the cloud infrastructure that runs them. 9 years shipping."** (17 words; years interpolated from `yearsShipping`), `--ink-soft`, `max-w-[34ch]`.
   5. Buttons: `primary` **"Résumé"** (`FileText`) → `/resume`; `secondary` **"See projects"** (`ArrowDown`) → `/#projects`.
-- Right column: `PaperCard` (rotate 1.4deg, tape pair) holding `NapkinSketch how-i-build`: a Hand title "how I like to build", then three `InkBox`es "rough idea" → "first version" → "people use it" (the last on `--wash`), a loop arrow back, and "then make it better. repeat." Stickers are taped around it (6.6). Illustration #1 (the hand with a pencil) overlaps the card's bottom-right corner, as if drawing it; hidden below `md`.
-- Under the card, Hand caption "click the paper, it leaves a mark".
+- Right column: `PaperCard` (rotate 1.4deg, tape pair) holding `NapkinSketch how-i-build`: a Hand title "how I like to build", then three `InkBox`es "rough idea" → "first version" → "people use it" (the last on `--wash`), a loop arrow back, and "then make it better. repeat." Stickers are taped around it (6.6). Illustration #1 (the hand with a pencil, cut out of its own napkin) sits on the card's lower right with its pencil just under "repeat.", as if it had written it; its arm runs off the card's bottom edge and fades out (a gradient mask). From `md` the card gets extra bottom padding to make room; hidden below `md`.
+- Under the card, Hand caption "click the paper, it leaves a mark", right-aligned on phones and left-aligned from `md` (clear of the hand's arm).
 - Fits the first viewport at 1280×720 and 375×812 with buttons visible. Phones: single column, card below the buttons, stickers a static row.
 
 ### 7.2 Experience (`#experience`)
@@ -362,14 +362,14 @@ Computed notes come from a helper (`lib/dates.ts`) so they can never drift from 
 
 - `lg+` grid `minmax(0,1fr) | 260px`, stacked below.
 - Left: H2 **"About"**, then the bio lead (`profile.bio`, first sentence) at Lead size with `profile.bioMark` ("I love building things that interest me") highlighted, then the rest of the bio in Body `--ink-soft`. **Never mentions Lumora or the current role.** Bio VERIFY.
-- Right: illustration #3 (desk lamp over a notebook), then a pinned `--note` card (rotate 2.5deg): Hand "always view problems as an opportunity." and a smaller Hand line "my motto, for what it's worth".
+- Right: illustration #3 (desk lamp over a notebook, rays in `--pen`; 200px on phones, the column's width from `lg`), then a pinned `--note` card (rotate 2.5deg): Hand "always view problems as an opportunity." and a smaller Hand line "my motto, for what it's worth".
 
 ### 7.5 Contact (`#contact`)
 
 - H2 **"Say hi."** at the contact Display size.
 - `hello@gabpaet.dev` (`mailto:`), 42px Bricolage 650, with a 5px `--pen` `InkUnderline`; next to it `CopyEmailButton`, then `secondary` buttons LinkedIn and GitHub.
 - `MarginNote` with an `InkArrow up-right`: **"not actively looking, open to a chat"** (from `profile.status`).
-- Illustration #4 (paper plane with a looping dotted path) at the right on `lg+`.
+- Illustration #4 (paper plane with a looping dotted path in `--pen`) at the top right on `lg+`, beside "Say hi.", `min(40vw, 440px)` wide.
 
 ---
 
@@ -434,6 +434,7 @@ The named path library (circle, underline variants, arrow variants, strike, box 
   3. About: a desk lamp over an open notebook (3:4).
   4. Contact and 404: a paper plane with a looping dotted path (3:2).
 - Pipeline: PNG → threshold → `potrace` to SVG (fill-only, no strokes, optimised with SVGO, target < 30 KB each) → `public/illustrations/<name>-ink.svg` (+ optional `<name>-pen.svg` for one purple element). Reject any generation with wrong hands or stray text.
+- As built: the four sources live in `assets/illustrations/*.webp` and `scripts/trace-illustrations.py` retraces them (2x upscale, threshold 150, potrace `-t 6 -a 1 -O 0.8`, SVGO at integer precision). Its config holds the hand's cutout polygon, the pen polygons and the fill's closing line, in source pixels. Sizes: hand 8.9 + 1.2 KB, cards 30.2 KB, lamp 30.1 + 0.5 KB, plane 3.6 + 2.2 KB (about 14 KB gzipped for the largest). The hero hand drops the source's napkin and coffee mug, which would have doubled the real napkin card.
 
 ### 10.4 Signature
 
@@ -469,7 +470,7 @@ Unchanged from v2 and already built: `metadataBase`, title and description from 
 
 ## 14. States and edge cases
 
-- **404:** a Hand note "this one flew off" with an `up-right` arrow, H1 "Page not found" at Display size, the line "That page moved or never existed.", `primary` "Back home". Illustration #4 (the paper plane) goes where the arrow points once it exists.
+- **404:** a Hand note "this one flew off" with an `up-right` arrow, H1 "Page not found" at Display size, the line "That page moved or never existed.", `primary` "Back home". Illustration #4 (the paper plane) flies off above the note, its dotted trail starting where the arrow points; hidden below `sm`.
 - **No JS:** fully readable. Every mark is drawn, there's no splash, stickers are static, and the pencil button does nothing (acceptable; it is a toy).
 - **Illustrations missing:** the slots collapse; nothing else moves.
 - **Long text in handwriting:** never happens by rule (≤ 8 words).
@@ -495,7 +496,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 12. [x] `/resume` restyle with screen-only margin notes; regenerate the PDF. Dates read "May 2017 to Jan 2024"; highlights are a plain bulleted list; all print lines (frames, chips, section rules) are 1px. PDF regenerated 2026-10-18 from the production build: 2 A4 pages, no pen marks on paper (checked with `pdftotext`). The skip link moved to the purple button style too.
 13. [x] Share images, icon and apple icon (13); swap the fonts in `assets/fonts/`. `legacyTokens` is gone from `lib/tokens.ts`.
 14. [x] 404 restyle. Until illustration #4 lands, the Hand note's arrow points at open sky. The legacy color aliases and the `press`, `press-lg`, `tone-accent` and `type-body-sm` utilities are deleted (nothing used them any more), along with the static `Sticker`. Also fixed: at 1024 to 1100px the stickers taped over the napkin's right edge made the home page scroll sideways by about 30px; the hero's right column now keeps `lg:pr-10` until `xl`, and `body` has `overflow-x: clip` as a safety net for dragged stickers. Checked on the production build at 375 to 1440px: no sideways scroll on any page, stickers on screen.
-15. [ ] Illustrations: Gabriel generates #1 to #4; trace, add, place (10.3).
+15. [x] Illustrations: Gabriel generates #1 to #4; trace, add, place (10.3). Traced with `scripts/trace-illustrations.py` and placed: hand on the hero card (`md+`), cards beside the Tong Masters title (`lg+`; Portfolio v1 keeps a plain header), lamp above the About note, plane beside "Say hi." (`lg+`) and over the 404 note (`sm+`). Checked in both themes at 375, 800, 1024 and 1280.
 16. [ ] Signature: Gabriel sends the photo; trace and swap in for the placeholder (10.4).
 17. [ ] Gabriel verifies every VERIFY string (`grep -rn VERIFY content/`), including those carried over from the brutalist build.
 18. [ ] QA on a production build: 4 pages × 375/768/1280 × light/dark; keyboard pass; 44px targets; reduced motion; splash rules (first visit only, skip, deep links, hash, no-JS); pencil on a phone (scroll lock and exit); print and PDF have no pen layer; contrast; Lighthouse (target mobile perf ≥ 90 with the splash on); redirects 308; zero em dashes.

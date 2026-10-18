@@ -6,6 +6,7 @@ import { InkArrow } from "@/components/ink/ink-arrow";
 import { InkCircle } from "@/components/ink/ink-circle";
 import { InkStrike } from "@/components/ink/ink-strike";
 import { HeroPaper } from "@/components/home/hero-paper";
+import { Illustration } from "@/components/illustration";
 import { StickerBoard } from "@/components/home/sticker-board";
 import { HowIBuildNapkin } from "@/components/napkins/how-i-build";
 import { PaperCard } from "@/components/paper-card";
@@ -52,11 +53,17 @@ export function Hero() {
         {/* lg:pr-10 leaves room for the stickers taped over the right edge. */}
         <div className="mx-auto w-full max-w-[500px] md:pt-6 md:pb-10 lg:pt-0 lg:pr-10 xl:pr-0">
           <StickerBoard tools="Tools I use daily: Claude, Next.js, Node.js, PostgreSQL and Docker.">
-            <PaperCard rotate={1.4} tape="top" className="ink-boil px-6 pt-9 pb-6 sm:px-8.5 sm:pt-10 sm:pb-7">
+            <PaperCard rotate={1.4} tape="top" className="ink-boil px-6 pt-9 pb-6 sm:px-8.5 sm:pt-10 sm:pb-7 md:pb-24">
               <HowIBuildNapkin delay={0.9} />
+              {/* Illustration #1: a hand still drawing the napkin. Its arm
+                  fades out off the card's corner. */}
+              <Illustration
+                name="hand"
+                className="pointer-events-none absolute top-[74%] left-[56%] hidden w-[38%] [mask-image:linear-gradient(160deg,#000_50%,transparent_80%)] md:block"
+              />
             </PaperCard>
           </StickerBoard>
-          <p className="type-hand mt-8 -rotate-2 text-right text-pen md:mt-4">click the paper, it leaves a mark</p>
+          <p className="type-hand mt-8 -rotate-2 text-right text-pen md:mt-20 md:text-left">click the paper, it leaves a mark</p>
         </div>
       </div>
     </HeroPaper>

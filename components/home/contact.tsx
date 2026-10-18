@@ -2,17 +2,20 @@ import { GithubLogo, LinkedinLogo } from "@phosphor-icons/react/ssr";
 
 import { ButtonLink } from "@/components/button";
 import { CopyEmailButton } from "@/components/copy-email-button";
+import { Illustration } from "@/components/illustration";
 import { InkUnderline } from "@/components/ink/ink-underline";
 import { MarginNote } from "@/components/margin-note";
 import { Reveal } from "@/components/reveal";
 import { profile } from "@/content/profile";
 
 // Spec 7.5: a giant "Say hi.", the address with a pen underline, the copy
-// and profile buttons, and the availability as a margin note. No form.
+// and profile buttons, and the availability as a margin note. No form. From
+// lg the paper plane (illustration #4) loops off beside the heading.
 export function Contact() {
   return (
     <section id="contact" aria-labelledby="contact-h" className="pt-16 pb-20 md:pt-24 md:pb-24">
-      <Reveal>
+      <Reveal className="relative">
+        <Illustration name="plane" className="absolute top-6 right-0 hidden w-[min(40vw,440px)] lg:block" />
         <h2 id="contact-h" className="type-display-xl">
           Say hi.
         </h2>

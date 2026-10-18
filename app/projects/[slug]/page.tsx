@@ -14,7 +14,8 @@ import { PaperCard } from "@/components/paper-card";
 import { Reveal } from "@/components/reveal";
 import { ScreenshotFrame } from "@/components/screenshot-frame";
 import { WhiteboardDiagram } from "@/components/whiteboard-diagram";
-import { getProject, projects, type Project } from "@/content/projects";
+import { Illustration, type IllustrationName } from "@/components/illustration";
+import { getProject, projects, type Project, type ProjectSlug } from "@/content/projects";
 
 type Params = { slug: string };
 
@@ -83,6 +84,12 @@ function TodoList({ items }: { items: Project["whatsNext"] }) {
   );
 }
 
+// Header art beside the title on lg+ (spec 8): Tong Masters gets the
+// hands fanning cards. Projects without one keep the plain header.
+const HEADER_ART: Partial<Record<ProjectSlug, IllustrationName>> = {
+  "tong-masters": "cards",
+};
+
 const CAPTION: Record<"desktop" | "phone", string> = {
   desktop: "on a big screen",
   phone: "and in your pocket",
@@ -97,26 +104,30 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
 
   const desktop = project.screenshots.find((s) => s.kind === "desktop");
   const phone = project.screenshots.find((s) => s.kind === "phone");
+  const headerArt = HEADER_ART[project.slug];
 
   return (
     <main id="main" className="mx-auto grid max-w-[1200px] gap-20 px-5 pt-8 pb-20 md:gap-24 md:px-10 md:pt-12 md:pb-28">
-      <header className="max-w-[820px]">
-        <DrawnLink href="/#projects" tone="ink" className="gap-1.5">
-          <ArrowLeft aria-hidden="true" size={16} weight="bold" />
-          All projects
-        </DrawnLink>
-        <h1 className="type-h2 mt-6">{project.name}</h1>
-        <p className="type-lead mt-5 max-w-[48ch] text-ink-soft">{project.summary}</p>
-        <div className="mt-8 flex flex-wrap gap-3.5">
-          <ButtonLink href={project.liveUrl} variant="primary" icon={<ArrowUpRight size={20} weight="bold" />}>
-            Live site
-          </ButtonLink>
-          {project.codeUrl ? (
-            <ButtonLink href={project.codeUrl} icon={<GithubLogo size={20} weight="bold" />}>
-              Code
+      <header className="grid items-center gap-x-12 lg:grid-cols-[minmax(0,1fr)_auto]">
+        <div className="max-w-[820px]">
+          <DrawnLink href="/#projects" tone="ink" className="gap-1.5">
+            <ArrowLeft aria-hidden="true" size={16} weight="bold" />
+            All projects
+          </DrawnLink>
+          <h1 className="type-h2 mt-6">{project.name}</h1>
+          <p className="type-lead mt-5 max-w-[48ch] text-ink-soft">{project.summary}</p>
+          <div className="mt-8 flex flex-wrap gap-3.5">
+            <ButtonLink href={project.liveUrl} variant="primary" icon={<ArrowUpRight size={20} weight="bold" />}>
+              Live site
             </ButtonLink>
-          ) : null}
+            {project.codeUrl ? (
+              <ButtonLink href={project.codeUrl} icon={<GithubLogo size={20} weight="bold" />}>
+                Code
+              </ButtonLink>
+            ) : null}
+          </div>
         </div>
+        {headerArt ? <Illustration name={headerArt} className="hidden w-[380px] lg:block xl:w-[440px]" /> : null}
       </header>
 
       {/* The napkin, then what it became. */}

@@ -2,6 +2,7 @@ import { House } from "@phosphor-icons/react/ssr";
 import type { Metadata } from "next";
 
 import { ButtonLink } from "@/components/button";
+import { Illustration } from "@/components/illustration";
 import { MarginNote } from "@/components/margin-note";
 
 export const metadata: Metadata = {
@@ -9,12 +10,13 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-// Spec 14. The paper-plane illustration (#4) lands beside this once it is
-// traced (build step 15); until then the note's arrow points at open sky.
+// Spec 14. The note's arrow points up at the paper plane (illustration #4)
+// that took the page with it.
 export default function NotFound() {
   return (
     <main id="main" className="mx-auto max-w-[1200px] px-5 py-24 md:px-10 md:py-32">
-      <div className="max-w-[640px]">
+      <div className="relative max-w-[640px]">
+        <Illustration name="plane" className="absolute -top-28 left-20 w-[300px] max-sm:hidden md:-top-32 md:w-[400px]" />
         <MarginNote arrow="up-right" className="-rotate-2">
           this one flew off
         </MarginNote>
