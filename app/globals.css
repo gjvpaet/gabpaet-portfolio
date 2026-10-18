@@ -1,705 +1,785 @@
 @import "tailwindcss";
 
 /* =========================================================
-   DESIGN TOKENS — copied verbatim from portfolio.html
+   Notebook design tokens. Source: docs/v2/DESIGN-SPEC.md section 4.
+   Hex values are mirrored in lib/tokens.ts; change both together.
+   Light is the base; dark ("night page") applies when the OS prefers
+   dark and the visitor has not pinned light, or when they pinned dark.
    ========================================================= */
 :root {
-  --bg:        #0d1b2a;
-  --side:      #0b1624;
-  --panel:     #11243a;
-  --hover:     rgba(255,255,255,0.04);
-  --border:    rgba(255,255,255,0.07);
-  --border-2:  rgba(255,255,255,0.12);
-  --accent:    #2ee5b4;
-  --accent-ink:#04211a;
-  /* Tinted selection fills derived from --accent so the accent picker
-     actually recolors the sidebar active row + gutter current line. */
-  --accent-bg:      color-mix(in oklab, var(--accent) 8%, transparent);
-  --accent-bg-soft: color-mix(in oklab, var(--accent) 6%, transparent);
-  /* Modal scrim + elevation. Tokenised so light theme can re-point them
-     without the JS layer touching anything. Used by command palette, the
-     mobile sidebar backdrop, and the tweaks panel / FAB. */
-  --scrim:      rgba(7, 13, 21, 0.55);
-  --shadow-md:  0 12px 40px rgba(0, 0, 0, 0.4);
-  --shadow-lg:  0 24px 70px rgba(0, 0, 0, 0.5);
-  --fg:        #dbe4f0;
-  --fg-bright: #ffffff;
-  --fg-dim:    #8595b3;
-  --fg-dim-2:  #7e8ea8;
-  --yellow:    #f2c14e;
-  --orange:    #ef8a5b;
-  --blue:      #6db4e0;
-  --pink:      #ec9bb3;
+  --paper: #f2f2ee;
+  --sheet: #fbfbf8;
+  --ink: #1d1d1b;
+  --ink-soft: #57574f;
+  --pen: #5a2d91;
+  --btn: #4b2380;
+  --on-btn: #fbfbf8;
+  --wash: rgb(124 77 200 / 0.2);
+  --note: #e6ddf3;
+  --on-note: #1d1d1b;
+  --tape: rgb(205 207 196 / 0.72);
+  --dot: rgb(29 29 27 / 0.13);
+  --lift: rgb(29 29 27 / 0.22);
+  --grain-opacity: 0.06;
 
-  /* syntax-highlight tokens (also overridable per-theme) */
-  --tk-kw:  #ff7eb6;
-  --tk-fn:  var(--yellow);
-  --tk-str: var(--orange);
-  --tk-num: #b5e853;
-  --tk-cmt: var(--fg-dim);
-  --tk-typ: var(--blue);
-  --tk-cls: var(--blue);
-  --tk-pun: var(--fg-dim);
-  --tk-var: var(--fg);
-  --tk-tag: var(--accent);
+  --r-paper: 3px;
+  --r-control: 12px;
+  --r-pill: 999px;
 
-  /* density vars — overwritten by Tweaks panel via JS */
-  --doc-fs:        14px;
-  --doc-lh:        1.85;
-  --doc-pad-y:     22px;
-  --doc-pad-x:     28px;
-  --side-item-pad: 5px;
-  --gutter-pad-y:  22px;
+  --line: 2px;
+  --line-thin: 1.5px;
+  --shadow-lift: 0 22px 44px -22px var(--lift), 0 2px 0 var(--lift);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Mirrors lib/z.ts */
+  --z-sticker: 10;
+  --z-sticker-dragging: 20;
+  --z-pencil: 30;
+  --z-nav: 40;
+  --z-mobile-menu: 50;
+  --z-toast: 60;
+  --z-grain: 65;
+  --z-splash: 70;
+
+  color-scheme: light;
 }
 
-/* ============ LIGHT THEME ============
-   Driven by `data-theme="light"` on <html> (set by TweaksProvider + FOUC).
-   --accent / --accent-ink are still chosen by JS using the AccentOption.lightC /
-   lightInk companions, since the swatch the user picked changes shade in light
-   mode for legibility on paper. */
-:root[data-theme="light"] {
-  --bg:        #f7f6f1;
-  --side:      #ecebe4;
-  --panel:     #ffffff;
-  --hover:     rgba(0,0,0,0.045);
-  --border:    rgba(0,0,0,0.08);
-  --border-2:  rgba(0,0,0,0.16);
-  --fg:        #1f2937;
-  --fg-bright: #0a0e1a;
-  --fg-dim:    #525e78;
-  --fg-dim-2:  #5d6679;
-
-  --yellow:    #b45309;
-  --orange:    #c2410c;
-  --blue:      #0369a1;
-  --pink:      #be185d;
-
-  --tk-kw:  #be185d;
-  --tk-fn:  #b45309;
-  --tk-str: #b91c1c;
-  --tk-num: #166534;
-  --tk-cmt: #6b7280;
-  --tk-typ: #0369a1;
-  --tk-cls: #0369a1;
-  --tk-pun: #64748b;
-  --tk-var: var(--fg);
-  --tk-tag: var(--accent);
-
-  /* Lighter, less inky shadow stack on paper — keeps the modal/FAB
-     feeling lifted without darkening the page. */
-  --scrim:      rgba(15, 23, 42, 0.35);
-  --shadow-md:  0 8px 24px rgba(15, 23, 42, 0.10);
-  --shadow-lg:  0 16px 48px rgba(15, 23, 42, 0.16);
+/* Dark mode, the "night page", only when the lamp is switched off: light is
+   the default whatever the OS prefers. */
+:root[data-theme="dark"] {
+  --paper: #1a1b19;
+  --sheet: #242622;
+  --ink: #ecede6;
+  --ink-soft: #a6a79c;
+  --pen: #b79cf0;
+  --btn: #b79cf0;
+  --on-btn: #1a1b19;
+  --wash: rgb(183 156 240 / 0.24);
+  --note: #3a2e52;
+  --on-note: #ecede6;
+  --tape: rgb(150 152 140 / 0.45);
+  --dot: rgb(236 237 230 / 0.1);
+  --lift: rgb(0 0 0 / 0.55);
+  --grain-opacity: 0.05;
+  color-scheme: dark;
 }
 
-/* Expose tokens as Tailwind utilities (text-fg, bg-side, border-border-2, etc.) */
+/* Expose tokens as Tailwind utilities: bg-paper, text-pen, bg-wash,
+   rounded-paper, shadow-lift, font-hand, ease-draw, etc. */
 @theme inline {
-  --color-bg: var(--bg);
-  --color-side: var(--side);
-  --color-panel: var(--panel);
-  --color-hover: var(--hover);
-  --color-border: var(--border);
-  --color-border-2: var(--border-2);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
-  --color-fg: var(--fg);
-  --color-fg-bright: var(--fg-bright);
-  --color-fg-dim: var(--fg-dim);
-  --color-fg-dim-2: var(--fg-dim-2);
-  --color-yellow: var(--yellow);
-  --color-orange: var(--orange);
-  --color-blue: var(--blue);
-  --color-pink: var(--pink);
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
-}
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-pen: var(--pen);
+  --color-btn: var(--btn);
+  --color-on-btn: var(--on-btn);
+  --color-wash: var(--wash);
+  --color-note: var(--note);
+  --color-on-note: var(--on-note);
+  --color-tape: var(--tape);
 
-* { box-sizing: border-box; }
-html, body {
-  height: 100%;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 13px;
-  -webkit-font-smoothing: antialiased;
-  overflow: hidden;
-}
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
-button { font: inherit; cursor: pointer; }
+  --font-sans: var(--font-bricolage), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-hand: var(--font-shantell), "Comic Neue", ui-rounded, cursive;
 
-/* Keyboard focus — accent ring on every interactive chrome element.
-   Mouse focus stays invisible (browser default for non-:focus-visible). */
-:focus { outline: none; }
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 3px;
+  --radius-paper: var(--r-paper);
+  --radius-control: var(--r-control);
+  --radius-pill: var(--r-pill);
+
+  --shadow-lift: var(--shadow-lift);
+
+  --ease-out: var(--ease-out);
+  --ease-draw: var(--ease-draw);
 }
 
 /* =========================================================
-   DOC BODY — verbatim from portfolio.html
+   Base: dot-grid paper (spec 4.1)
    ========================================================= */
-.doc {
-  padding: var(--doc-pad-y) var(--doc-pad-x) 32px var(--doc-pad-x);
-  overflow-y: auto;
-  line-height: var(--doc-lh);
-  font-size: var(--doc-fs);
-  background: var(--bg);
-  transition: padding .2s, font-size .2s, line-height .2s;
-}
-.doc::-webkit-scrollbar { width: 6px; }
-.doc::-webkit-scrollbar-thumb { background: var(--border-2); }
-
-.doc .h1 {
-  color: var(--fg-bright); font-size: 30px; font-weight: 700;
-  margin: 4px 0 4px; letter-spacing: -0.5px; line-height: 1.15;
-}
-.doc .h1 .hash { color: var(--accent); margin-right: 12px; font-weight: 500; }
-.doc .sub { color: var(--fg-dim); font-size: 13px; margin-bottom: 18px; }
-.doc .h2 {
-  color: var(--accent); font-size: 14px; margin: 26px 0 8px; font-weight: 600;
-  display: flex; align-items: center; gap: 8px;
-}
-.doc .h2 .hash { color: var(--fg-dim); margin-right: 4px; font-weight: 400; }
-.doc .h2 .annot { color: var(--fg-dim); font-weight: 400; font-size: 12px; margin-left: auto; }
-.doc .h2-rule {
-  flex: 1; height: 1px;
-  background: linear-gradient(90deg, var(--border) 0%, transparent 100%);
-  margin-left: 6px;
-}
-.doc p { color: var(--fg); margin-bottom: 4px; max-width: 760px; }
-.doc .em { color: var(--accent); }
-.doc .str { color: var(--orange); }
-.doc .com { color: var(--fg-dim); font-style: italic; }
-.doc .lnk { color: var(--blue); text-decoration: underline; }
-.doc ul { list-style: none; max-width: 760px; }
-.doc ul li {
-  padding: 1px 0;
-  color: var(--fg);
-}
-.doc ul li::before {
-  content: "—";
-  color: var(--accent);
-  margin-right: 8px;
-}
-.doc ul li b { color: var(--fg-bright); font-weight: 500; }
-
-.doc .grid {
-  display: grid;
-  grid-template-columns: 130px 1fr;
-  gap: 2px 18px;
-  max-width: 720px;
-  margin: 6px 0;
-}
-.doc .grid .k { color: var(--fg-dim); }
-.doc .grid .v { color: var(--fg); }
-.doc .grid .v .accent { color: var(--accent); }
-.doc .grid .v .str { color: var(--orange); }
-
-.doc .quote {
-  border-left: 2px solid var(--accent);
-  padding: 4px 0 4px 14px;
-  color: var(--fg-dim);
-  max-width: 720px;
-  margin: 8px 0 10px;
-}
-.doc .quote .em { color: var(--fg); }
-
-.doc .cb {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  padding: 12px 16px;
-  margin: 8px 0;
-  max-width: 760px;
-  font-size: 12.5px;
-  color: var(--fg);
-  white-space: pre-wrap;
-  line-height: 1.8;
+html {
+  background: var(--paper);
+  -webkit-text-size-adjust: 100%;
 }
 
-/* work / project rows */
-.doc .row-table {
-  max-width: 800px;
-  margin: 6px 0;
-}
-.doc .row-table .row {
-  display: grid;
-  grid-template-columns: 100px 1fr auto;
-  gap: 18px;
-  padding: 10px 0;
-  border-bottom: 1px dashed var(--border);
-  align-items: baseline;
-}
-.doc .row-table .row:last-child { border-bottom: 0; }
-.doc .row-table .year { color: var(--fg-dim); font-size: 12.5px; font-variant-numeric: tabular-nums; }
-.doc .row-table .body .title {
-  color: var(--fg-bright); font-weight: 500; margin-bottom: 2px;
-}
-.doc .row-table .body .title .at { color: var(--fg-dim); font-weight: 400; }
-.doc .row-table .body .title .at .co { color: var(--accent); }
-.doc .row-table .body .desc {
-  color: var(--fg-dim); font-size: 12.5px; line-height: 1.55;
-}
-.doc .row-table .stack {
-  display: flex; gap: 4px; flex-wrap: wrap;
-  justify-content: flex-end;
-  max-width: 220px;
-}
-.doc .stack-chip {
-  border: 1px solid var(--border-2);
-  padding: 0 7px;
-  font-size: 11px;
-  color: var(--fg-dim);
-  border-radius: 3px;
-  line-height: 1.7;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
-.doc .proj-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 14px;
-  padding: 9px 0;
-  border-bottom: 1px dashed var(--border);
-  align-items: baseline;
-  max-width: 800px;
+/* In-page targets land below the sticky nav (72px) with some air. */
+[id] {
+  scroll-margin-top: 5.5rem;
 }
-.doc .proj-row:last-child { border-bottom: 0; }
-.doc .proj-row .name {
-  color: var(--accent);
+
+body {
+  /* Safety net: a sticker dragged or taped past the edge never makes the
+     page scroll sideways. clip (not hidden) keeps the sticky nav working. */
+  overflow-x: clip;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 1.1px, transparent 1.4px);
+  background-size: 22px 22px;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Paper grain: one static noise tile on a fixed, click-through layer.
+   Never on scrolling containers, never animated, no blend mode (a blended
+   fixed layer would make every scroll repaint what is under it). */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection {
+  background: var(--wash);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 3px solid var(--pen);
+  outline-offset: 4px;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+/* =========================================================
+   Type roles (spec 4.2). Bricolage for structure, Shantell for the pen
+   layer. Colors are set where the roles are used.
+   ========================================================= */
+@utility type-display {
+  font-weight: 750;
+  font-variation-settings: "opsz" 96;
+  font-size: clamp(3.5rem, 7.4vw, 6.5rem);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+}
+
+/* "Say hi." */
+@utility type-display-xl {
+  font-weight: 800;
+  font-variation-settings: "opsz" 96;
+  font-size: clamp(4rem, 11vw, 10rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+}
+
+@utility type-h2 {
+  font-weight: 750;
+  font-variation-settings: "opsz" 72;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+@utility type-h3 {
+  font-weight: 700;
+  font-size: clamp(1.75rem, 2.6vw, 2.125rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+@utility type-lead {
+  font-weight: 400;
+  font-size: 1.3125rem;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+@utility type-body {
+  font-size: 1.125rem;
+  line-height: 1.55;
+}
+
+@utility type-meta {
   font-weight: 500;
-  cursor: pointer;
-}
-.doc .proj-row .name:hover { text-decoration: underline; }
-.doc .proj-row .name .arrow { color: var(--fg-dim); margin-right: 8px; }
-.doc .proj-row .blurb {
-  color: var(--fg); font-size: 13px; display: inline;
-}
-.doc .proj-row .blurb::before { content: " — "; color: var(--fg-dim); }
-.doc .proj-row .meta-r {
-  color: var(--fg-dim); font-size: 12px; white-space: nowrap;
+  font-size: 1.0625rem;
+  line-height: 1.4;
 }
 
-/* quick actions */
-.doc .qa-row { display: flex; gap: 10px; margin: 14px 0 4px; flex-wrap: wrap; }
-.qa {
-  display: inline-flex; align-items: center; gap: 7px;
-  border: 1px solid var(--border-2);
-  padding: 7px 14px;
-  border-radius: 5px;
-  color: var(--fg);
-  font-size: 12.5px;
-  cursor: pointer;
-  transition: all .15s;
-  background: transparent;
-  text-decoration: none;
+@utility type-button {
+  font-weight: 650;
+  font-size: 1.0625rem;
+  line-height: 1;
 }
-.qa:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
-.qa.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.qa.primary:hover { background: var(--fg-bright); color: var(--accent-ink); border-color: var(--fg-bright); }
-.qa svg { width: 13px; height: 13px; }
 
-.doc .contact-grid {
+@utility type-chip {
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+/* Handwriting. Never below 1.0625rem; 8 words or fewer per note. */
+@utility type-hand {
+  font-family: var(--font-hand);
+  font-weight: 400;
+  font-variation-settings: "INFM" 70;
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+
+@utility type-hand-lg {
+  font-family: var(--font-hand);
+  font-weight: 400;
+  font-variation-settings: "INFM" 70;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+@utility type-hand-title {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-variation-settings: "INFM" 70;
+  font-size: 1.6875rem;
+  line-height: 1.2;
+}
+
+/* =========================================================
+   Paper and tape (spec 4.4). The paper lift is the only shadow on the
+   site, and only taped-in paper and screenshots carry it.
+   ========================================================= */
+@utility paper {
+  background: var(--sheet);
+  border-radius: var(--r-paper);
+  box-shadow: var(--shadow-lift);
+}
+
+/* Scroll progress (components/nav.tsx): the pen line draws across as the
+   page scrolls. A scroll-driven animation, so no scroll listener; where
+   those are unsupported, or the page cannot scroll, the line stays hidden. */
+.scroll-progress path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-progress path {
+    animation: scroll-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+@keyframes scroll-progress {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* One layer of a traced illustration (components/illustration.tsx): the
+   SVG in --art is the mask, the background colour is the ink. Inset to undo
+   the paint box around it (-inset-x-3 -inset-y-6). */
+@utility illustration-layer {
+  position: absolute;
+  inset: 1.5rem 0.75rem;
+  -webkit-mask: var(--art) center / contain no-repeat;
+  mask: var(--art) center / contain no-repeat;
+}
+
+/* Hover easter egg: each illustration's purple pen layer plays once when the
+   pointer moves onto the art and ends on the finished drawing (fill
+   forwards), so nothing ever blinks out; hovering again replays it. The pen layer
+   is a mask, so a second gradient mask (moved by --art-reveal) uncovers it
+   or a transform moves it. */
+@property --art-reveal {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Lamp: the rays switch on, spreading out from the bulb. */
+  .illustration[data-art="lamp"]:hover .illustration-pen {
+    mask-image: var(--art), radial-gradient(30% 30% at 51% 22%, #000 var(--art-reveal), transparent calc(var(--art-reveal) + 12%));
+    mask-size: contain, 100% 100%;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-composite: intersect;
+    animation: art-rays 1.2s cubic-bezier(0.3, 0, 0.2, 1) both;
+  }
+  /* Plane: the dotted trail redraws from its tail, then the plane bobs. */
+  .illustration[data-art="plane"]:hover .illustration-pen {
+    mask-image: var(--art), linear-gradient(90deg, #000 var(--art-reveal), transparent calc(var(--art-reveal) + 3%));
+    mask-size: contain, 100% 100%;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-composite: intersect;
+    animation: art-trail 1.6s cubic-bezier(0.45, 0, 0.55, 1) both;
+  }
+  .illustration[data-art="plane"]:hover .illustration-ink {
+    transform-origin: 82% 45%;
+    animation: art-plane 1.6s ease-in-out both;
+  }
+  /* Nap: the z drifts up and fades, and a new one takes its place. */
+  .illustration[data-art="nap"]:hover .illustration-pen {
+    animation: art-z 1.4s ease-in-out both;
+  }
+}
+@keyframes art-rays {
+  0% {
+    --art-reveal: 8%;
+    opacity: 0.25;
+  }
+  8% {
+    opacity: 1;
+  }
+  12% {
+    opacity: 0.45;
+  }
+  18% {
+    opacity: 1;
+  }
+  70%,
+  100% {
+    --art-reveal: 105%;
+  }
+}
+@keyframes art-trail {
+  0% {
+    --art-reveal: 0%;
+  }
+  70%,
+  100% {
+    --art-reveal: 68%;
+  }
+}
+@keyframes art-plane {
+  0%,
+  62%,
+  100% {
+    transform: none;
+  }
+  82% {
+    transform: translate(1.5%, -5%) rotate(-3deg);
+  }
+}
+@keyframes art-z {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  40% {
+    transform: translate(1.5%, -16%);
+    opacity: 0;
+  }
+  41% {
+    transform: translate(-0.5%, 6%);
+    opacity: 0;
+  }
+  65%,
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@utility tape {
+  position: absolute;
+  background: var(--tape);
+  pointer-events: none;
+}
+
+/* Highlighter swipe behind a phrase (spec 6.1 Highlight). */
+@utility highlight {
+  background: var(--wash);
+  color: inherit;
+  padding: 0 0.3em;
+  border-radius: 3px 9px 4px 8px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* =========================================================
+   Lift (spec 5.1): hover rises with a slight tilt, press sinks. Hover only
+   on devices that really hover, so touch screens keep no stuck state.
+   ========================================================= */
+@utility lift {
+  transition: transform 0.25s var(--ease-out);
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-2px) rotate(-0.6deg);
+    }
+  }
+  &:active {
+    transform: translateY(1px) scale(0.98);
+  }
+  &:disabled,
+  &[aria-disabled="true"] {
+    opacity: 0.5;
+    transform: none;
+    cursor: not-allowed;
+  }
+}
+
+/* 404 to-do rows: the tick draws into the box while its link is hovered
+   or focused (instantly under reduced motion). */
+.todo-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.todo-link:is(:hover, :focus-visible) .todo-check path {
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .todo-check path {
+    transition: stroke-dashoffset 0.35s var(--ease-draw);
+  }
+}
+
+/* =========================================================
+   Pen layer (spec 4.4, 5.1). Filters #ink-a/b/c are defined once by
+   components/ink/ink-filters.tsx in the root layout. They go on small pen
+   paths only, never on text or a whole section.
+   ========================================================= */
+.ink-a {
+  filter: url(#ink-a);
+}
+.ink-b {
+  filter: url(#ink-b);
+}
+.ink-c {
+  filter: url(#ink-c);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Draw-in: paths carry pathLength="1". Fully drawn without JS, under
+     reduced motion and in print, because the hidden state only exists in
+     this block. */
+  .ink-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ink-draw 0.9s var(--ease-draw) forwards;
+    animation-delay: var(--d, 0s);
+  }
+
+  /* Below the fold, wait until the section's Reveal says it is in view. */
+  .js [data-reveal]:not([data-shown]) .ink-draw {
+    animation-play-state: paused;
+  }
+
+  /* While the splash signature plays, the hero's pen waits (a paused
+     animation's delay does not run either), then draws as the sheet lifts. */
+  html.splash-signing .ink-draw {
+    animation-play-state: paused;
+  }
+  /* The nav ring waits a little longer, so it draws as the signature lands
+     in it. */
+  html.splash header .ink-draw {
+    animation-delay: calc(var(--d, 0s) + 0.3s);
+  }
+
+  /* Boil: interactive pen marks come alive only while hovered or focused,
+     cycling three seeded filters at about 10fps. A mark that also draws in
+     keeps ink-draw in its animation list: dropping it would snap the stroke
+     back to its hidden start. Listing it again by name does not restart it. */
+  .ink-boil:is(:hover, :focus-visible) :is(.ink-a, .ink-b, .ink-c) {
+    animation: ink-boil 0.3s steps(1) infinite;
+  }
+  .ink-boil:is(:hover, :focus-visible) .ink-draw:is(.ink-a, .ink-b, .ink-c) {
+    animation:
+      ink-draw 0.9s var(--ease-draw) forwards,
+      ink-boil 0.3s steps(1) infinite;
+    animation-delay: var(--d, 0s), 0s;
+  }
+
+  /* Sticker logos boil too, with their gentler filters. */
+  .ink-boil:is(:hover, :focus-visible) .sticker-logo {
+    animation: sticker-boil 0.3s steps(1) infinite;
+  }
+}
+
+/* Resting wobble for sticker logos (filters in components/ink/ink-filters.tsx). */
+.sticker-logo {
+  filter: url(#ink-sticker);
+}
+
+@keyframes sticker-boil {
+  0% {
+    filter: url(#ink-sticker);
+  }
+  33% {
+    filter: url(#ink-sticker-b);
+  }
+  66% {
+    filter: url(#ink-sticker-c);
+  }
+}
+
+@keyframes ink-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ink-boil {
+  0% {
+    filter: url(#ink-a);
+  }
+  33% {
+    filter: url(#ink-b);
+  }
+  66% {
+    filter: url(#ink-c);
+  }
+}
+
+/* =========================================================
+   Entrance and reveal motion (spec 5.1). Unlayered on purpose so these
+   rules beat utilities. They animate the individual `translate`
+   property, never `transform`, so they compose with Motion's drag and
+   the lift hover/active transforms instead of fighting them.
+   ========================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero text: runs on first paint, no JS needed. --i staggers by 80ms. */
+  .rise {
+    animation: rise 0.5s var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 80ms);
+  }
+
+  /* Hero stickers drop in after the text, with a small overshoot. */
+  .sticker-drop {
+    animation: sticker-drop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: calc(320ms + var(--i, 0) * 50ms);
+  }
+
+  /* Scroll reveal. Only hidden once the pre-paint script has added .js to
+     <html>, so the page stays fully readable without JavaScript.
+     components/reveal.tsx sets data-shown when the element enters view. */
+  .js [data-reveal] {
+    opacity: 0;
+    translate: 0 16px;
+    transition:
+      opacity 0.5s var(--ease-out),
+      translate 0.5s var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 60ms);
+  }
+  .js [data-reveal][data-shown] {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* Theme switch (the desk lamp): paper and ink crossfade. */
+  body {
+    transition:
+      background-color 0.4s ease,
+      color 0.4s ease;
+  }
+}
+
+/* Starts at 1%, not 0: Chrome does not count a fully transparent paint as
+   the largest contentful paint, so a rise from 0 would push LCP back to the
+   end of the animation. 1% looks the same. */
+@keyframes rise {
+  from {
+    opacity: 0.01;
+    translate: 0 16px;
+  }
+}
+
+@keyframes sticker-drop {
+  from {
+    opacity: 0;
+    translate: 0 -40px;
+  }
+}
+
+/* =========================================================
+   Easter eggs (spec 5.2)
+   ========================================================= */
+
+/* Hero click marks: draw in fast, then fade. Under reduced motion they just
+   appear and go. */
+.ink-mark {
+  animation: ink-fade 0.7s ease-in 1.6s forwards;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ink-mark path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ink-draw 0.35s ease-out forwards;
+  }
+}
+@keyframes ink-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Hidden margin notes write themselves in on hover or keyboard focus. */
+.hidden-note {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.hidden-note-host:is(:hover, :focus-within) .hidden-note {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hidden-note-host:is(:hover, :focus-within) .hidden-note path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ink-draw 0.45s var(--ease-draw) forwards;
+  }
+  .hidden-note-host:is(:hover, :focus-within) .hidden-note > span {
+    animation: ink-wipe 0.5s var(--ease-draw) 0.15s both;
+  }
+}
+@keyframes ink-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Splash signature (spec 6.15). Only exists under html.splash, which the
+   pre-paint script in lib/splash.ts sets on a first home visit. */
+.splash-sheet {
+  display: none;
+}
+html.splash .splash-sheet {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px 28px;
-  font-size: 13px;
-  max-width: 720px;
-  margin: 8px 0 14px;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-splash);
+  place-items: center;
 }
-.doc .contact-grid .row {
-  display: flex; justify-content: space-between;
-  padding: 5px 0;
-  border-bottom: 1px dashed var(--border);
+/* The exit: the signature becomes the logo. The paper fades to the hero
+   while the signature shrinks and glides into the nav's "gp" mark (the
+   component measures --fly-x/y/s), fading as it lands; the mark's ring
+   draws in behind it. */
+html.splash .splash-sheet[data-phase="lift"] {
+  pointer-events: none;
 }
-.doc .contact-grid .row .k { color: var(--fg-dim); }
-.doc .contact-grid .row .v { color: var(--accent); }
-
-.doc .status-pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 4px 12px 4px 10px;
-  border: 1px solid var(--border-2);
-  border-radius: 999px;
-  font-size: 11.5px;
-  color: var(--fg);
-  margin-bottom: 18px;
+.splash-paper {
+  position: absolute;
+  inset: 0;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 1.1px, transparent 1.4px);
+  background-size: 22px 22px;
+  transition: opacity 0.45s ease-out;
 }
-.doc .status-pill .pulse {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent);
-  animation: pulse 2s ease-in-out infinite;
+[data-phase="lift"] > .splash-paper {
+  opacity: 0;
 }
-
-/* SYNTAX-HIGHLIGHTED CODE (used in .rs .ts .go .json .zshrc) */
-.doc pre.src {
-  padding: 0;
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.85;
-  white-space: pre;
-  color: var(--fg);
+.splash-signature {
+  position: relative;
+  width: min(78vw, 520px);
+  height: auto;
+  overflow: visible;
+  transition:
+    transform 0.65s cubic-bezier(0.65, 0, 0.25, 1),
+    opacity 0.2s ease-in 0.45s;
 }
-.tk-kw  { color: var(--tk-kw); }
-.tk-fn  { color: var(--tk-fn); }
-.tk-str { color: var(--tk-str); }
-.tk-num { color: var(--tk-num); }
-.tk-cmt { color: var(--tk-cmt); font-style: italic; }
-.tk-typ { color: var(--tk-typ); }
-.tk-cls { color: var(--tk-cls); }
-.tk-pun { color: var(--tk-pun); }
-.tk-var { color: var(--tk-var); }
-.tk-tag { color: var(--tk-tag); }
-
-/* caret */
-.caret-blink {
-  display: inline-block;
-  width: 2px; height: 14px;
-  background: var(--accent);
-  vertical-align: middle;
-  animation: blink 1.05s steps(2) infinite;
-  margin-left: 2px;
+[data-phase="lift"] > .splash-signature {
+  transform: translate(var(--fly-x, 0px), var(--fly-y, 0px)) scale(var(--fly-s, 1));
+  opacity: 0;
 }
-
-@keyframes blink { 50% { opacity: 0; } }
-@keyframes pulse { 50% { opacity: 0.3; } }
-
-/* Sidebar footer "currently @ lumora" indicator. Class-based so the
-   reduced-motion block below can target it; the colour stays on var(--orange). */
-.sidebar-pulse-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--orange);
-  box-shadow: 0 0 6px var(--orange);
-  animation: pulse 2s ease-in-out infinite;
+/* Each stroke draws in turn: --d and --dur come from the component, eased
+   like a pen that speeds up and settles. */
+.splash-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ink-draw var(--dur) cubic-bezier(0.45, 0, 0.55, 1) var(--d) forwards;
 }
-
-/* Honour the OS-level motion preference. Pulses and the caret blink go
-   still; transitions collapse to instant. The dots / caret are preserved
-   as static shapes so the status indication remains visible. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  html.splash .splash-sheet {
+    display: none;
+  }
+}
+
+/* A sticker being held. */
+.sticker-grab {
+  cursor: grab;
+}
+.sticker-grab:active {
+  cursor: grabbing;
+  box-shadow: 0 28px 48px -20px var(--lift), 0 2px 0 var(--lift);
+}
+
+/* =========================================================
+   Print (spec 9): built for /resume, safe for any page. Light tokens on
+   white whatever the theme; no pen layer, grain, dot grid, shadows or
+   rotation; 1px lines; A4 margins.
+   ========================================================= */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
+
+  /* :root x3 outranks both dark-theme selectors. */
+  :root:root:root {
+    --paper: #ffffff;
+    --sheet: #ffffff;
+    --ink: #1d1d1b;
+    --ink-soft: #57574f;
+    --pen: #5a2d91;
+    --wash: transparent;
+    --lift: transparent;
+    color-scheme: light;
+    font-size: 12.5px;
+  }
+
+  body {
+    background-image: none;
+  }
+  body::after {
+    display: none;
+  }
+
+  * {
+    box-shadow: none !important;
+  }
+  /* Every structure line is 1px on paper: frames, chips, section rules. */
+  .border-2,
+  .border-\[1\.5px\] {
+    border-width: 1px !important;
+  }
+  .border-b-2 {
+    border-bottom-width: 1px !important;
+  }
+  .border-t-2 {
+    border-top-width: 1px !important;
+  }
+
+  .js [data-reveal] {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+/* =========================================================
+   Motion: everything collapses under reduced motion (spec 5).
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .doc .status-pill .pulse,
-  .sidebar-pulse-dot,
-  .caret-blink {
-    animation: none !important;
-    opacity: 1 !important;
-  }
-}
 
-/* =========================================================
-   ICON LEGIBILITY — file icons in the sidebar / palette use
-   shape-fill colors that are tuned for the dark surface;
-   in light mode the same swatches darken (the --yellow/--blue/
-   --orange tokens shift above), so the glyph color flips to
-   white where contrast would otherwise collapse.
-   ========================================================= */
-:root[data-theme="light"] .file-icon-md,
-:root[data-theme="light"] .file-icon-rs,
-:root[data-theme="light"] .file-icon-json {
-  color: #fff;
-}
-:root[data-theme="light"] .file-icon-lock {
-  color: var(--bg);
-}
-
-/* =========================================================
-   RESPONSIVE — ported verbatim from portfolio.html.
-   The IDE chrome (shell grid, sidebar drawer, hamburger,
-   titlebar/breadcrumb/tabs/statusbar) collapses progressively:
-     ≤900px  — sidebar becomes a left-edge drawer, chrome tightens
-     ≤640px  — phone layout: stack key/value blocks, smaller gutter
-     ≤420px  — very narrow: hide gutter entirely
-   ========================================================= */
-
-/* Hamburger and backdrop default to hidden — the @media block below
-   reveals them, and the drawer animation kicks in at ≤900px. */
-.menu-toggle { display: none; }
-.sidebar-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: var(--scrim);
-  z-index: 40;
-}
-.sidebar-backdrop.open { display: block; }
-
-/* Tablet — sidebar becomes a drawer, chrome tightens */
-@media (max-width: 900px) {
-  .ide-shell {
-    grid-template-columns: 1fr !important;
+  /* No lift either: killing the transition alone would still jump the
+     element on hover. Unlayered, so it beats the utilities. */
+  .lift:is(:hover, :active) {
+    transform: none;
   }
-  .menu-toggle {
-    display: inline-flex !important;
-    background: transparent;
-    border: 0;
-    color: var(--fg-dim);
-    width: 28px;
-    height: 28px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    padding: 0;
-    margin-right: 2px;
-    flex-shrink: 0;
-  }
-  .menu-toggle:hover {
-    background: var(--hover);
-    color: var(--fg-bright);
-  }
-  .menu-toggle svg { width: 16px; height: 16px; }
-
-  .titlebar {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    gap: 8px !important;
-  }
-  .titlebar .path-label {
-    margin-left: 4px !important;
-    font-size: 11.5px !important;
-  }
-  .palette-trigger {
-    min-width: 0 !important;
-    flex: 0 1 220px;
-  }
-  .top-right .item:not(:first-child) { display: none !important; }
-
-  .sidebar {
-    position: fixed !important;
-    top: 38px;
-    left: 0;
-    bottom: 26px;
-    width: 280px;
-    max-width: 86vw;
-    z-index: 45;
-    transform: translateX(-100%);
-    transition: transform .22s ease;
-    box-shadow: 4px 0 24px rgba(0,0,0,0.4);
-  }
-  .sidebar.open { transform: translateX(0); }
-
-  .main {
-    grid-column: 1 !important;
-    grid-row: 2 !important;
-  }
-}
-
-/* Phone — denser still, hide line gutter, simplify status bar */
-@media (max-width: 640px) {
-  .titlebar {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
-    gap: 6px !important;
-    font-size: 11px !important;
-  }
-  .titlebar .dots { display: none !important; }
-  .titlebar .path-label { font-size: 11px !important; }
-
-  .palette-trigger {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    padding: 3px 8px !important;
-  }
-  .palette-trigger .palette-trigger-label {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 10.5px;
-  }
-  .palette-trigger kbd { display: none !important; }
-  .top-right { gap: 6px !important; }
-  .top-right .item { display: none !important; }
-  /* keep the theme toggle reachable */
-
-  .breadcrumb {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-    font-size: 10.5px !important;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-  .breadcrumb::-webkit-scrollbar { height: 0; }
-  .breadcrumb .breadcrumb-meta { display: none !important; }
-
-  .tab {
-    padding: 8px 10px !important;
-    font-size: 12px !important;
-  }
-
-  .content {
-    grid-template-columns: 32px 1fr !important;
-  }
-  .gutter { font-size: 10.5px !important; }
-  .gutter span { padding-right: 8px !important; }
-
-  .doc {
-    padding: 16px 16px 28px !important;
-    font-size: 13px !important;
-    line-height: 1.7 !important;
-  }
-  .doc .h1 { font-size: 22px; }
-  .doc .sub { font-size: 12px; margin-bottom: 14px; }
-
-  /* Stack key/value blocks */
-  .doc .grid {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-  .doc .grid .k {
-    margin-top: 6px;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .doc .grid .v { word-break: break-word; }
-
-  /* Work rows — stack year above body */
-  .doc .row-table .row {
-    grid-template-columns: 1fr !important;
-    gap: 4px;
-    padding: 14px 0;
-  }
-  .doc .row-table .year { font-size: 11.5px; }
-
-  /* Project rows — wrap nicely */
-  .doc .proj-row {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
-  .doc .proj-row .meta-r { font-size: 11px; }
-
-  /* Contact grid — single column */
-  .doc .contact-grid { grid-template-columns: 1fr; }
-
-  .doc pre.src {
-    font-size: 11.5px;
-    line-height: 1.7;
-    overflow-x: auto;
-  }
-
-  /* Quick-action buttons full width-ish */
-  .doc .qa-row { gap: 8px; }
-  .qa {
-    padding: 8px 12px;
-    font-size: 12px;
-    flex: 1 1 auto;
-    justify-content: center;
-  }
-
-  /* Statusbar — only show position + lang */
-  .statusbar {
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    gap: 10px !important;
-    font-size: 10.5px !important;
-  }
-  .statusbar > .statusbar-seg:nth-child(2),
-  .statusbar > .statusbar-seg:nth-child(3),
-  .statusbar > .statusbar-seg:nth-child(4) { display: none !important; }
-  .statusbar .statusbar-right { gap: 10px !important; }
-  .statusbar .statusbar-right > span:nth-child(2),
-  .statusbar .statusbar-right > span:nth-child(3),
-  .statusbar .statusbar-right > span:nth-child(5) { display: none !important; }
-
-  /* Tweaks panel — bottom sheet on mobile */
-  .tweaks-panel {
-    right: 10px !important;
-    left: 10px !important;
-    bottom: 36px !important;
-    width: auto !important;
-  }
-}
-
-/* Very narrow — hide gutter entirely */
-@media (max-width: 420px) {
-  .content { grid-template-columns: 1fr !important; }
-  .gutter { display: none !important; }
-  .doc { padding: 14px 14px 24px !important; }
-  .doc .h1 { font-size: 20px; }
-  .breadcrumb .breadcrumb-crumb:not(:last-child) { display: none !important; }
-  .breadcrumb .breadcrumb-sep { display: none !important; }
-}
-
-/* =========================================================
-   TOUCH ERGONOMICS
-   Detect input method, not just screen size: a tablet with a
-   Magic Keyboard reports `pointer: fine` and keeps the dense
-   desktop chrome; an iPad without one reports `pointer: coarse`
-   and gets thumb-friendly hit zones. The visual size of glyphs
-   stays close to the original — most fixes grow padding / min-
-   height to extend the tap area, not the icon.
-   ========================================================= */
-@media (pointer: coarse) {
-  /* Title-bar buttons */
-  .menu-toggle {
-    width: 44px !important;
-    height: 44px !important;
-  }
-  .menu-toggle svg { width: 18px; height: 18px; }
-  .theme-toggle {
-    width: 36px !important;
-    height: 36px !important;
-  }
-  .palette-trigger {
-    min-height: 36px;
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
-  }
-
-  /* Tabs — bump row height, expand close hit zone, and show
-     the × by default since there's no hover on touch. */
-  .tab { min-height: 44px; }
-  .tab-close {
-    min-width: 32px;
-    min-height: 32px;
-    margin-right: 6px !important;
-  }
-  .tab-close-dot { display: none !important; }
-  .tab-close-x   { display: inline !important; }
-
-  /* Sidebar rows + disclosure */
-  .sidebar a,
-  .sidebar > div > button {
-    min-height: 40px;
-  }
-
-  /* Tweaks panel */
-  .tweaks-trigger {
-    width: 44px !important;
-    height: 44px !important;
-    bottom: max(36px, calc(env(safe-area-inset-bottom, 0px) + 8px)) !important;
-  }
-  .tweaks-close {
-    width: 32px !important;
-    height: 32px !important;
-  }
-  .accent-swatch {
-    width: 36px !important;
-    height: 36px !important;
-  }
-  .segmented-btn { min-height: 36px; }
-
-  /* Command palette results */
-  .palette-result { min-height: 44px; }
-}
-
-/* =========================================================
-   SAFE-AREA INSETS
-   Relies on viewport-fit=cover (set in app/layout.tsx). The
-   status bar visually fills the home-indicator strip with the
-   accent so it reads as intentional chrome, and its text
-   content pads up to clear the indicator. Harmless on desktop:
-   the env() values resolve to 0.
-   ========================================================= */
-.statusbar {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-.ide-shell {
-  grid-template-rows: 38px 1fr calc(26px + env(safe-area-inset-bottom, 0px)) !important;
 }

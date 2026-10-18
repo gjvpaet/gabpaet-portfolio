@@ -1,36 +1,20 @@
 import type { MetadataRoute } from "next";
 
-import { FILES, FILE_ORDER } from "@/content/files";
+import { projects } from "@/content/projects";
 
-/**
- * Emits /sitemap.xml at build time. Source of truth is content/files.ts —
- * any FileEntry that isn't `hidden` is listed. The root path (/) is also
- * included since app/page.tsx redirects there to /about.
- */
+const BASE = "https://gabpaet.dev";
+
+// v2 routes (docs/v2/DESIGN-SPEC.md section 13).
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://gabpaet.dev";
   const now = new Date();
-
-  const routes: MetadataRoute.Sitemap = [
-    {
-      url: `${base}/`,
+  return [
+    { url: `${BASE}/`, lastModified: now, changeFrequency: "monthly", priority: 1 },
+    { url: `${BASE}/resume`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    ...projects.map((p) => ({
+      url: `${BASE}/projects/${p.slug}`,
       lastModified: now,
-      changeFrequency: "monthly",
-      priority: 1,
-    },
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
   ];
-
-  for (const id of FILE_ORDER) {
-    const file = FILES[id];
-    if (file.hidden) continue;
-    routes.push({
-      url: `${base}${file.route}`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      // /about is the de-facto landing page (root redirects to it).
-      priority: file.route === "/about" ? 0.9 : 0.7,
-    });
-  }
-
-  return routes;
 }

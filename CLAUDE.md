@@ -2,102 +2,58 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Status
+
+Branch `v2` is a from-scratch rebuild of gabpaet.dev, now being restyled into a **conceptual sketch / working-notebook** design. **`docs/v2/DESIGN-SPEC.md` is the design source of truth**: tokens, components, sections, copy, motion, easter eggs, SEO and the ordered build checklist (section 15, done items ticked). Read it before building anything. Visual references: the style sheet (https://claude.ai/artifact/EAyMLR1pzPucMff9nit5rg) and artboard A of the sketch canvas (https://claude.ai/artifact/YXFHmmRFcXkGyfeyvQ8jMK); the spec wins where they differ.
+
+The finished neo-brutalist build that preceded it is preserved on the git tag `v2-brutalist` (`4911a4a`). Most of its plumbing is reused as-is: content model, routes, redirects, SEO, resume PDF pipeline, theme logic, reveal observer, sticker drag, mobile menu, copy email. Its look (mint/yellow, Archivo, solid offset shadows, 3px outlines) is retired.
+
+v1 (the VS Code-themed site) is preserved on the git tag `v1` and stays live at `v1.gabpaet.dev`. Its code is gone from this branch; do not resurrect it here.
+
 ## Commands
 
-Package manager is **pnpm** (see `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `.npmrc`).
+Package manager is **pnpm**. It is not on PATH on this machine; use `corepack pnpm`.
 
-- `pnpm dev` — Next.js dev server
-- `pnpm build` — production build
-- `pnpm start` — serve the production build
-- `pnpm typecheck` — `tsc --noEmit` (the only static check; there is no lint or test setup)
+- `corepack pnpm dev` (or the `portfolio` preview config, port 3200)
+- `corepack pnpm build`
+- `corepack pnpm typecheck` (`tsc --noEmit`; there is no lint or test setup). If it reports missing `app/(ide)` modules, `.next/dev/types` is stale from an old v1 dev run: delete `.next/dev`. The Turbopack dev cache in `.next/dev` can also keep serving old CSS after `globals.css` changes (a production build is correct); stop the dev server, delete `.next/dev`, restart.
 
-The stack is **Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4** (Tailwind via `@tailwindcss/postcss`; no `tailwind.config.*` — theme tokens are declared inline in `app/globals.css` via `@theme inline`).
+Global git config on this machine has a broken `gpg.format`; commit with `GIT_CONFIG_GLOBAL=/dev/null git -c user.name="Gabriel Joshua Paet" -c user.email="gjvpaet@gmail.com" commit ...`. Never add Co-Authored-By trailers. Pushing needs Gabriel's credentials, so he pushes.
 
-## Architecture
+## Stack
 
-This is a personal portfolio themed as a VS-Code-like IDE. Every "page" is one **file** inside the editor metaphor. The interesting structural rule: **`content/files.ts` is the single source of truth** for which files exist, how the sidebar/tabs/palette/breadcrumb/gutter/status-bar describe them, and which React component renders the body.
+Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`), `motion` (import from `motion/react`), `@phosphor-icons/react` (always `weight="bold"`, UI icons only), `simple-icons` (sticker logos only), `perfect-freehand` (pencil doodles), Vercel Analytics + Speed Insights. Fonts: Bricolage Grotesque (structure) and Shantell Sans (handwriting) via `next/font`.
 
-### Adding or renaming a file requires three things in lockstep
+## The two-layer rule
 
-1. A body component under `content/` (e.g. `content/about.tsx`).
-2. A route under `app/(ide)/<slug>/page.tsx` that imports and renders that body.
-3. An entry in `FILES` in `content/files.ts` whose `route` matches step 2 exactly, plus inclusion in `FILE_ORDER` (and `DEFAULT_OPEN_TABS` if it should be pre-opened).
+Everything belongs to one layer (spec section 1):
 
-The `FileId` (display name like `package.json` or `projects/gabpaet-dev/page.tsx`) intentionally differs from the URL slug in two cases — Next.js can't route segments that collide with its own conventions:
+- **Structure:** type, grid, buttons, nav, screenshots and every fact. Bricolage, clean, never wobbles.
+- **Pen:** circles, underlines, arrows, strikes, margin notes, napkin sketches, stickers, illustrations. Shantell Sans for handwriting, `--pen` purple for marks. Commentary only: no fact may live only in the pen layer.
 
-- `package.json` → `/package`
-- `projects/gabpaet-dev/page.tsx` → `/projects/gabpaet-dev/page-tsx` (the literal `page.tsx` would be a route file, not a segment)
+## Where things live
 
-The whole IDE relies on `getFileByRoute(pathname)` (`lib/files.ts`) to map back from the live URL to the `FileEntry`, so the `route` field has to be the exact normalized pathname.
+- **Tokens:** `app/globals.css` defines every color, radius, shadow and z-index as CSS variables. Light values sit on `:root`; dark values sit on `:root[data-theme="dark"]` only (there is no `prefers-color-scheme` block: light is the default). `@theme inline` exposes them to Tailwind. Type roles are `@utility` classes.
+- **Hex mirror:** `lib/tokens.ts` repeats the hex values for `next/og` images and the viewport `themeColor`. Change it together with `globals.css`.
+- **Pen marks:** path data lives only in `lib/ink.ts`; components in `components/ink/`. The roughness filters (`#ink-a`, `#ink-b`, `#ink-c`) are rendered once in the root layout in a 0×0 `aria-hidden` SVG (not `display: none`, which breaks them in Firefox). Napkin sketches live in `components/napkins/`.
+- **Theme:** light by default, whatever the OS prefers. The lamp toggle stores `"light" | "dark"` under `THEME_STORAGE_KEY` in `lib/theme.ts`; `THEME_INIT_SCRIPT` (same file, injected in `app/layout.tsx` `<head>`) applies it before first paint, and `SPLASH_INIT_SCRIPT` decides the splash (`html.splash`). The toggle also keeps `<meta name="theme-color">` in step. To test dark mode headless, set `data-theme="dark"` (or store the key); emulating a dark OS no longer changes anything.
+- **Components:** server components import Phosphor from `@phosphor-icons/react/ssr`; client components (`"use client"`) from `@phosphor-icons/react`.
+- **z-index:** only the values in `lib/z.ts` (mirrored as `--z-*` in `globals.css`).
+- **Content:** `content/profile.ts` and `content/projects.ts` are the single source of facts for the home page, `/resume`, JSON-LD, metadata and OG images. Never hardcode those facts elsewhere. Draft strings carry a `// VERIFY` comment until Gabriel confirms them. Computed notes ("Programmer to Senior in 8 months") come from `lib/dates.ts`, never typed by hand.
+- **Signature:** `lib/signature.ts` is generated from `assets/signature.png` by `scripts/trace-signature.py` (Pillow, numpy); never edit the paths by hand. Stroke order is set in the script (spec 10.4).
+- **Illustrations:** traced SVGs in `public/illustrations/` (`<name>-ink`, optional `-pen` and `-fill` layers), rendered as CSS masks by `components/illustration.tsx` so they re-ink with the theme (spec 6.14, 10.3). Sources are in `assets/illustrations/`; retrace with `scripts/trace-illustrations.py` (needs Pillow, numpy, potrace), and keep the viewBox sizes in the component in step with its output. Layouts must work without them.
+- **Canonical URLs:** set per page via `metadata.alternates.canonical`, never in the root layout.
+- **Resume PDF:** `public/gabriel-paet-resume.pdf` is a printout of `/resume`. After any change to `content/profile.ts` or `content/projects.ts`, regenerate it from a production build (`portfolio-prod` preview config, port 3300), never the dev server. Then rebuild before checking it locally: `next start` only serves `public/` files that existed at build time. Print styles live at the bottom of `globals.css`; every pen component, illustration and the grain hide on paper with `print:hidden`.
 
-### Route group `(ide)` is the chrome
+## Rules that are easy to break
 
-`app/(ide)/layout.tsx` is a 3×2 CSS grid (title-bar / sidebar+main / status-bar) that wraps every IDE route. `app/page.tsx` just redirects `/` → `/about`. The chrome components (`components/ide/*`) are mostly client components driven by `usePathname()` — they don't take an "active file" prop, they look it up from the route. That's why all per-file metadata (`lang`, `lines`, `icon`, `path`) lives on `FileEntry` rather than in each page.
-
-### Four nested client providers wrap every IDE page
-
-`context/providers.tsx`: `TweaksProvider` → `PaletteProvider` → `SidebarProvider` → `TabsProvider`.
-
-- **TweaksProvider** — accent color + density + theme. Persists to `localStorage["portfolio.tweaks.v1"]`. Writes CSS custom properties on `document.documentElement` (`--accent`, `--accent-ink`, `--doc-fs`, `--doc-lh`, `--doc-pad-y`, `--doc-pad-x`, `--side-item-pad`, `--gutter-pad-y`) **and** sets `data-theme="dark|light"` on `<html>`, which switches the `:root[data-theme="light"]` token block in `globals.css`. When theme is light, the accent shifts to its darker `lightC` companion (and `accent-ink` to `lightInk`) for legibility on paper.
-- **PaletteProvider** — ⌘K / ⌘P / Ctrl+K / Ctrl+P / Esc global key handler + open/close state for the command palette modal.
-- **SidebarProvider** — drawer open/close for the mobile sidebar (≤900px). Hamburger in the title bar calls `toggle()`, backdrop calls `close()`, and a `useEffect([pathname])` auto-closes the drawer on any navigation. No-op on desktop — the sidebar is laid out by the IDE grid above 900px.
-- **TabsProvider** — open-tabs list. Persists to `localStorage["portfolio.tabs.v1"]`. The active tab is derived from the route, not stored; when the route changes to a file not already in `openTabs`, it appends; when the active tab is closed, it `router.push`es to the neighboring tab (or falls back to `about.md`).
-
-### FOUC-prevention script — keep in sync
-
-`app/layout.tsx` contains an inline `<Script strategy="beforeInteractive">` (`FOUC_SCRIPT`) that reads `portfolio.tweaks.v1` from localStorage, sets `data-theme` on `<html>`, and writes the accent/density CSS variables **before** React hydrates, to avoid a flash on first paint.
-
-This script duplicates four pieces of data that also live in `lib/tweaks.ts`:
-
-- The five accent records — each `{ ink, lightC, lightInk }` keyed by the dark-mode swatch hex (mirrors `ACCENT_OPTIONS`).
-- The density → `[fs, lh, padY, padX, side, gut]` tuple (`DENSITY_MAP`).
-- The storage key (`TWEAKS_STORAGE_KEY = "portfolio.tweaks.v1"`).
-- The theme branch logic — `data-theme="light|dark"` selection and the `isLight ? lightC : c` / `isLight ? lightInk : ink` accent flip.
-
-If you change accent colors (dark **or** light companions), density values, theme behavior, or the storage key, update **both** `lib/tweaks.ts` and `FOUC_SCRIPT` in `app/layout.tsx`, otherwise the pre-hydration paint will diverge from the React state.
-
-### Design tokens & "markdown-like" doc styles
-
-`app/globals.css` defines all design tokens as CSS custom properties on `:root`, with a sibling `:root[data-theme="light"]` block that re-points the same tokens to their light-mode values. The tokens are re-exposed as Tailwind colors via `@theme inline` (so utilities like `bg-side`, `text-fg-dim`, `border-border-2` work). Density-driven tokens (`--doc-fs`, `--doc-lh`, etc.) and the accent pair (`--accent`, `--accent-ink`) are rewritten at runtime by the tweaks provider.
-
-Syntax-highlight tokens (`--tk-kw`, `--tk-fn`, `--tk-str`, `--tk-num`, etc.) are themed the same way — `.tk-*` classes read from CSS variables, and the light-mode block re-points them to darker hues. Do **not** hardcode token colors in `.tk-*` rules.
-
-### Responsive layout
-
-`globals.css` ports three media-query breakpoints from `portfolio.html`:
-
-- `≤900px` — sidebar becomes a left-edge drawer (transformed off-screen, slides in when `.open` is added), hamburger appears in the title bar, chrome tightens.
-- `≤640px` — phone layout: tabs/breadcrumb/gutter shrink, work-rows / proj-rows / contact-grid / key-value grid collapse to one column, status bar hides extra segments, tweaks panel becomes a bottom sheet.
-- `≤420px` — gutter hidden entirely, breadcrumb shows only the last crumb.
-
-The chrome components carry semantic class names (`.titlebar`, `.sidebar`, `.main`, `.tabs`, `.tab`, `.breadcrumb`, `.gutter`, `.content`, `.statusbar`, `.menu-toggle`, `.sidebar-backdrop`, `.tweaks-panel`, `.palette-trigger`, `.top-right`) so the media-query overrides in `globals.css` can target them. The overrides use `!important` to beat the per-element Tailwind utilities — that's intentional, not a sign of a bug.
-
-The doc body uses a set of scoped CSS classes (`.doc .h1`, `.doc .h2`, `.doc .grid`, `.doc .quote`, `.doc .row-table`, `.doc .qa`, `.doc .stack-chip`, `.doc .cb`, `.tk-*` for syntax tokens, etc.) rather than MDX or a markdown processor. Content files in `content/` are plain React components that compose with these classes. The README still mentions an `.mdx` plan — it was the original proposal; the actual codebase uses `.tsx` content files.
-
-## SEO & analytics
-
-App Router file conventions in `app/` cover the entire SEO surface — no manual `<link>` tags needed:
-
-- **`app/sitemap.ts`** — emits `/sitemap.xml`, driven by `FILE_ORDER` so any non-hidden FileEntry shows up automatically. Adding a new file via the three-step rule above also adds it to the sitemap on next build.
-- **`app/robots.ts`** — emits `/robots.txt` (allow-all + sitemap pointer).
-- **`app/opengraph-image.tsx`** — renders a static 1200×630 PNG at build time via `next/og`'s `ImageResponse`. Mimics the IDE chrome (traffic-light dots, breadcrumb, mint accent footer) so social-shared links look on-brand. It's prerendered as a real PNG asset (no edge runtime, no cold start), so the route shows as `○ (Static)` in `next build`.
-- **`app/favicon.ico`** — picked up automatically.
-- **`app/layout.tsx`** — owns the rest:
-  - Per-page `metadata` gets composed via the `title.template` and inherits everything else.
-  - Two JSON-LD blocks (`Person` + `WebSite`, schema.org) live in `<head>` so Google can build a knowledge-panel-style result. Update these when work/role/links change.
-  - `Viewport.themeColor` is a two-entry array so the address-bar tint matches dark/light mode.
-  - `robots`, `formatDetection`, `alternates.canonical`, `authors`, `creator`, `keywords` are all set here.
-
-Analytics is **Vercel Web Analytics** + **Speed Insights**:
-
-- `@vercel/analytics/react` → `<Analytics />` in `<body>` (cookieless page-view tracking).
-- `@vercel/speed-insights/next` → `<SpeedInsights />` in `<body>` (Core Web Vitals).
-- Both are no-ops outside Vercel — they require **enabling Web Analytics** and **enabling Speed Insights** in the project's Vercel dashboard for data to actually start flowing. There's no env var to set; the components detect the deploy environment automatically.
-
-If you change accent or theme tokens, also revisit `app/opengraph-image.tsx` — it uses literal hex values (`#0d1b2a`, `#2ee5b4`, etc.) since `ImageResponse` doesn't read CSS variables, so it can drift from `globals.css` if you're not careful.
-
-## Reference files (read once, don't ship)
-
-- `portfolio.html` — original single-file HTML/CSS/JS prototype. It's the **design source of truth** (copy text and visuals from it verbatim), but it's not built or deployed. Don't link to it from the app.
-- `HANDOFF.md` — the original design-handoff brief. Architecturally accurate on intent and design tokens; outdated on stack version, MDX vs `.tsx`, and the proposed `(files)` route group name (actual is `(ide)`).
-- `README.md` — the user-facing project README. Lives alongside `HANDOFF.md`; describes the shipped codebase rather than the original brief.
+- One accent: purple, used as a pen. Dark purple never sits behind text; use `--wash` behind text.
+- Handwriting is 8 words or fewer per note, and never in nav, buttons, headings or body copy.
+- Never invent a one-off SVG path inline; add it to `lib/ink.ts`. SVG filters go on small pen paths only, never on text or whole sections. A perfectly straight horizontal or vertical line disappears under a filter (zero-height bounding box, so a zero-size filter region); give it a slight bow.
+- The only shadow is the paper lift, on taped-in paper and screenshots. Structure lines are 2px `--ink`. Radius: paper 3px, controls and frames 12px, chips full.
+- Every animation honours `prefers-reduced-motion`; draw-ins and boil are gated explicitly in CSS (Motion's `reducedMotion` does not cover them). Nothing loops on its own; no scroll listeners, no marquee.
+- A boil rule that targets a mark which also draws in must keep `ink-draw` in its `animation` list (see `globals.css`). Replacing the list with `ink-boil` alone drops the draw's `forwards` fill and the stroke vanishes on hover.
+- The splash shows only on `/`, once per session, never with a hash, under reduced motion, without JS or in print. It lifts only after the last signature stroke has finished (plus a short hold), never on a bare timer, so a slow first paint cannot cut the signature short; then the signature flies into the nav's "gp" mark as the paper fades; about 2.5s in all, and any input skips it. `html.splash` stays on `<html>` after the splash (it delays the nav ring's draw-in); do not remove it mid-draw.
+- No em dashes in visible copy. Copy marked VERIFY must not ship until Gabriel confirms it.
+- Share images and icons render through `lib/og.tsx` with static TTFs in `assets/fonts/` and hex values from `lib/tokens.ts`. Satori cannot use CSS variables, variable font axes, SVG filters or repeating CSS gradients (the dot grid is an SVG pattern), and cannot size an SVG to its parent (give it numbers).
+- Old v1 URLs redirect (308) via `next.config.ts`, and section IDs (`#experience`, `#projects`, `#about`, `#contact`) are what those redirects land on; keep both when touching routes.

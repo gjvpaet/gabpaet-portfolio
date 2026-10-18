@@ -1,33 +1,53 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono } from "next/font/google";
-import Script from "next/script";
+import { Bricolage_Grotesque, Shantell_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Footer } from "@/components/footer";
+import { InkFilters } from "@/components/ink/ink-filters";
+import { PencilLayer } from "@/components/pencil-layer";
+import { SplashSignature } from "@/components/splash-signature";
+import { Nav } from "@/components/nav";
+import { SkipLink } from "@/components/skip-link";
+import { profile } from "@/content/profile";
+import { SPLASH_INIT_SCRIPT } from "@/lib/splash";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
+import { tokens } from "@/lib/tokens";
 import "./globals.css";
 
-const SITE_URL = "https://gabpaet.dev";
-const SITE_TITLE = "Gabriel Joshua Paet — Senior Programmer · AI, DevOps, Web";
-const SITE_DESCRIPTION =
-  "Senior programmer with 9 years of experience. AI agents, workflow automation, DevOps, and full-stack web. Based in Pasay City, currently at Lumora Capital.";
+const SITE_TITLE = `${profile.name}, ${profile.role}`;
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+// Structure layer (spec 4.2). Variable on weight and optical size; display
+// type uses opsz 96. The width axis is left out on purpose: nothing uses
+// it, and it nearly doubles the file, which mobile LCP pays for.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  axes: ["opsz"],
+  display: "swap",
+});
+
+// Pen layer: handwriting for notes, dates and captions, with the INFM
+// (informality) axis set per role in globals.css. Preloaded: the hero's
+// "hi, I'm" is above the fold, so a late discovery would hold up first
+// paint. The BNCE axis is left out for size.
+const shantell = Shantell_Sans({
+  variable: "--font-shantell",
+  subsets: ["latin"],
+  axes: ["INFM"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(profile.site),
   title: {
     default: SITE_TITLE,
-    template: "%s — Gabriel Joshua Paet",
+    template: `%s | ${profile.name}`,
   },
-  description: SITE_DESCRIPTION,
+  description: profile.metaDescription,
   applicationName: "gabpaet.dev",
-  authors: [{ name: "Gabriel Joshua Paet", url: SITE_URL }],
-  creator: "Gabriel Joshua Paet",
-  publisher: "Gabriel Joshua Paet",
+  authors: [{ name: profile.name, url: profile.site }],
+  creator: profile.name,
+  publisher: profile.name,
   keywords: [
     "Gabriel Joshua Paet",
     "gabpaet",
@@ -39,22 +59,21 @@ export const metadata: Metadata = {
     "TypeScript",
     "AI engineer",
     "Philippines",
-    "Lumora Capital",
   ],
-  // App Router auto-includes /sitemap.xml + /robots.txt + /opengraph-image
-  // via the file conventions, so no need to list them here.
+  // sitemap.xml, robots.txt, opengraph-image, icon and apple-icon come from
+  // the app/ file conventions, so they are not listed here.
   openGraph: {
     type: "website",
-    url: SITE_URL,
+    url: "/",
     siteName: "gabpaet.dev",
     title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
+    description: profile.metaDescription,
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
+    description: profile.metaDescription,
   },
   robots: {
     index: true,
@@ -66,9 +85,6 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  alternates: {
-    canonical: "/",
-  },
   formatDetection: {
     telephone: false,
     email: false,
@@ -77,113 +93,61 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: dark)", color: "#0d1b2a" },
-    { media: "(prefers-color-scheme: light)", color: "#f7f6f1" },
-  ],
-  colorScheme: "dark light",
+  // Light by default whatever the OS prefers (lib/theme.ts); the night page
+  // sets its own color-scheme in globals.css.
+  themeColor: tokens.light.paper,
+  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
 };
 
-// schema.org/Person — gives Google enough structured data to build a
-// knowledge-panel-style result with name, role, location, and sameAs links.
+// schema.org Person + WebSite (spec 13), built from content/profile.ts so the
+// structured data can never disagree with the page.
+const currentRole = profile.roles.find((r) => r.current);
+
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  name: "Gabriel Joshua Paet",
+  name: profile.name,
   alternateName: "gabpaet",
-  url: SITE_URL,
-  jobTitle: "Senior Programmer",
-  worksFor: {
-    "@type": "Organization",
-    name: "Lumora Capital",
-  },
+  url: profile.site,
+  email: `mailto:${profile.email}`,
+  jobTitle: profile.role,
+  ...(currentRole ? { worksFor: { "@type": "Organization", name: currentRole.company } } : {}),
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Pasay City",
-    addressRegion: "NCR",
-    addressCountry: "PH",
+    addressLocality: profile.address.locality,
+    addressRegion: profile.address.region,
+    addressCountry: profile.address.country,
   },
-  sameAs: ["https://github.com/gjvpaet"],
-  knowsAbout: [
-    "Node.js",
-    "Next.js",
-    "React",
-    "React Native",
-    "TypeScript",
-    "PostgreSQL",
-    "LangChain",
-    "OpenAI API",
-    "AWS Bedrock Agents",
-    "Google Vertex AI",
-    "DevOps",
-    "Workflow automation",
-  ],
+  sameAs: [profile.links.github, profile.links.linkedin],
+  knowsAbout: profile.skills.flatMap((group) => group.items),
 };
 
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "gabpaet.dev",
-  url: SITE_URL,
-  author: { "@type": "Person", name: "Gabriel Joshua Paet" },
+  url: profile.site,
+  author: { "@type": "Person", name: profile.name },
   inLanguage: "en",
 };
 
-// Read saved tweaks from localStorage and write CSS variables BEFORE the body
-// renders, so a non-default accent / density / theme doesn't flash on first
-// paint. Mirrors lib/tweaks.ts + context/tweaks-provider.tsx — see CLAUDE.md
-// for the sync rules (accent companions, density tuples, storage key).
-const FOUC_SCRIPT = `
-(function(){
-  try {
-    var raw = localStorage.getItem('portfolio.tweaks.v1');
-    if (!raw) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      return;
-    }
-    var t = JSON.parse(raw);
-    // accent → { ink (dark mode), lightC, lightInk }
-    var ACCENTS = {
-      '#2ee5b4': { ink: '#04211a', lightC: '#0f9d77', lightInk: '#ffffff' },
-      '#f97070': { ink: '#2a0606', lightC: '#dc2626', lightInk: '#ffffff' },
-      '#7a9cff': { ink: '#08122b', lightC: '#3b5bdb', lightInk: '#ffffff' },
-      '#f2c14e': { ink: '#2a1d00', lightC: '#b45309', lightInk: '#ffffff' },
-      '#c084fc': { ink: '#1c0a30', lightC: '#8b5cf6', lightInk: '#ffffff' }
-    };
-    var DENSITY = {
-      compact:  ['12px','1.55','12px','20px','2px','12px'],
-      cozy:     ['14px','1.85','22px','28px','5px','22px'],
-      spacious: ['15.5px','2.1','32px','40px','8px','32px']
-    };
-    var html = document.documentElement;
-    var isLight = t.theme === 'light';
-    html.setAttribute('data-theme', isLight ? 'light' : 'dark');
-    var a = t.accent && ACCENTS[t.accent.toLowerCase()];
-    if (a) {
-      html.style.setProperty('--accent',     isLight ? a.lightC   : t.accent);
-      html.style.setProperty('--accent-ink', isLight ? a.lightInk : a.ink);
-    }
-    var d = DENSITY[t.density];
-    if (d) {
-      var r = html.style;
-      r.setProperty('--doc-fs', d[0]);
-      r.setProperty('--doc-lh', d[1]);
-      r.setProperty('--doc-pad-y', d[2]);
-      r.setProperty('--doc-pad-x', d[3]);
-      r.setProperty('--side-item-pad', d[4]);
-      r.setProperty('--gutter-pad-y', d[5]);
-    }
-  } catch (e) {}
-})();
-`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${bricolage.variable} ${shantell.variable}`}
+      suppressHydrationWarning
+    >
       <head>
+        {/* Before first paint: apply a saved light/dark choice, decide whether
+            the splash plays, and flag that JS runs so scroll reveals may
+            start hidden (see globals.css). */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: SPLASH_INIT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: 'document.documentElement.classList.add("js")' }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
@@ -194,10 +158,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <Script id="tweaks-fouc" strategy="beforeInteractive">
-          {FOUC_SCRIPT}
-        </Script>
+        <InkFilters />
+        <SplashSignature />
+        <SkipLink />
+        <Nav shortName={profile.shortName} />
         {children}
+        <Footer />
+        <PencilLayer />
         <Analytics />
         <SpeedInsights />
       </body>
