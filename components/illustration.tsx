@@ -26,10 +26,13 @@ const PAINT: Record<Layer, string> = {
 };
 
 // Spec 6.14. A div, so callers own its display and position; the layers
-// stack in one grid cell. Hovering art with a pen layer animates it
+// stack inside it. Hovering art with a pen layer animates it
 // (globals.css). Decorative unless given a label. Below-the-fold
 // art skips rendering (and so fetching its masks) until it nears the
-// viewport.
+// viewport. That `content-visibility` also clips painting to its box, so it
+// sits on a box larger than the art (12px each side, 24px above and below)
+// with the layers inset back to the art: the bobbing plane and the drifting
+// z stay whole, and the art at a 20px page gutter still fits on a phone.
 export function Illustration({
   name,
   label,
@@ -50,14 +53,16 @@ export function Illustration({
       className={cn("illustration print:hidden", className)}
       style={{ aspectRatio: `${art.w} / ${art.h}`, ...style }}
     >
-      <div className="grid size-full [content-visibility:auto]">
-        {art.layers.map((layer) => (
-          <span
-            key={layer}
-            className={cn("illustration-layer", `illustration-${layer}`, PAINT[layer])}
-            style={{ "--art": `url(/illustrations/${name}-${layer}.svg)` } as CSSProperties}
-          />
-        ))}
+      <div className="relative size-full">
+        <div className="absolute -inset-x-3 -inset-y-6 [content-visibility:auto]">
+          {art.layers.map((layer) => (
+            <span
+              key={layer}
+              className={cn("illustration-layer", `illustration-${layer}`, PAINT[layer])}
+              style={{ "--art": `url(/illustrations/${name}-${layer}.svg)` } as CSSProperties}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

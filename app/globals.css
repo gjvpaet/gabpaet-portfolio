@@ -277,15 +277,18 @@ h3 {
 }
 
 /* One layer of a traced illustration (components/illustration.tsx): the
-   SVG in --art is the mask, the background colour is the ink. */
+   SVG in --art is the mask, the background colour is the ink. Inset to undo
+   the paint box around it (-inset-x-3 -inset-y-6). */
 @utility illustration-layer {
-  grid-area: 1 / 1;
+  position: absolute;
+  inset: 1.5rem 0.75rem;
   -webkit-mask: var(--art) center / contain no-repeat;
   mask: var(--art) center / contain no-repeat;
 }
 
-/* Hover easter egg: each illustration's purple pen layer comes alive while
-   the pointer is over the art, and snaps back when it leaves. The pen layer
+/* Hover easter egg: each illustration's purple pen layer plays once when the
+   pointer moves onto the art and ends on the finished drawing (fill
+   forwards), so nothing ever blinks out; hovering again replays it. The pen layer
    is a mask, so a second gradient mask (moved by --art-reveal) uncovers it
    or a transform moves it. */
 @property --art-reveal {
@@ -301,7 +304,7 @@ h3 {
     mask-position: center;
     mask-repeat: no-repeat;
     mask-composite: intersect;
-    animation: art-rays 1.5s cubic-bezier(0.3, 0, 0.2, 1) infinite;
+    animation: art-rays 1.2s cubic-bezier(0.3, 0, 0.2, 1) both;
   }
   /* Plane: the dotted trail redraws from its tail, then the plane bobs. */
   .illustration[data-art="plane"]:hover .illustration-pen {
@@ -310,15 +313,15 @@ h3 {
     mask-position: center;
     mask-repeat: no-repeat;
     mask-composite: intersect;
-    animation: art-trail 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    animation: art-trail 1.6s cubic-bezier(0.45, 0, 0.55, 1) both;
   }
   .illustration[data-art="plane"]:hover .illustration-ink {
     transform-origin: 82% 45%;
-    animation: art-plane 1.8s ease-in-out infinite;
+    animation: art-plane 1.6s ease-in-out both;
   }
   /* Nap: the z drifts up and fades, and a new one takes its place. */
   .illustration[data-art="nap"]:hover .illustration-pen {
-    animation: art-z 1.6s ease-in infinite;
+    animation: art-z 1.4s ease-in-out both;
   }
 }
 @keyframes art-rays {
@@ -335,7 +338,7 @@ h3 {
   18% {
     opacity: 1;
   }
-  55%,
+  70%,
   100% {
     --art-reveal: 105%;
   }
@@ -344,18 +347,18 @@ h3 {
   0% {
     --art-reveal: 0%;
   }
-  65%,
+  70%,
   100% {
     --art-reveal: 68%;
   }
 }
 @keyframes art-plane {
   0%,
-  55%,
+  62%,
   100% {
     transform: none;
   }
-  78% {
+  82% {
     transform: translate(1.5%, -5%) rotate(-3deg);
   }
 }
@@ -364,14 +367,15 @@ h3 {
     transform: none;
     opacity: 1;
   }
-  70% {
+  40% {
     transform: translate(1.5%, -16%);
     opacity: 0;
   }
-  71% {
+  41% {
     transform: translate(-0.5%, 6%);
     opacity: 0;
   }
+  65%,
   100% {
     transform: none;
     opacity: 1;
