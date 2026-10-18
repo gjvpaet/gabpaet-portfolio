@@ -221,11 +221,14 @@ export async function renderIconMark({
   size,
   fontSize,
   ringStroke,
+  cutout = false,
 }: {
   size: number;
   fontSize: number;
   /** Ring stroke width in its 100-unit viewBox. */
   ringStroke: number;
+  /** Transparent outside the ring, with paper only inside it (the favicon). */
+  cutout?: boolean;
 }): Promise<ImageResponse> {
   return new ImageResponse(
     (
@@ -237,9 +240,24 @@ export async function renderIconMark({
           position: "relative",
           width: "100%",
           height: "100%",
-          background: t.paper,
+          background: cutout ? "transparent" : t.paper,
         }}
       >
+        {/* Paper inside the ring only. The ring's centreline sits about 0.405
+            of the size from the centre, so a 0.8 disc ends under its stroke. */}
+        {cutout ? (
+          <div
+            style={{
+              position: "absolute",
+              top: size * 0.1,
+              left: size * 0.1,
+              width: size * 0.8,
+              height: size * 0.8,
+              borderRadius: "50%",
+              background: t.paper,
+            }}
+          />
+        ) : null}
         {/* Inset a little, so the ring's overshoot never touches the edge. */}
         <div style={{ display: "flex", position: "absolute", top: size * 0.04, left: size * 0.04 }}>
           <Mark name="ring" width={size * 0.92} height={size * 0.92} color={t.pen} strokeWidth={ringStroke} />
