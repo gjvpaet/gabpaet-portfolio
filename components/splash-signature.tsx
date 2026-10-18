@@ -20,16 +20,20 @@ const STROKES = signature.strokes.reduce<Array<{ d: string; delay: number; durat
 }, []);
 
 // The splash (spec 6.15): a sheet of paper, the pen signs Gabriel's
-// signature (lib/signature.ts) stroke by stroke, holds it a beat, and the
-// sheet lifts away to the hero underneath. The lift waits for the last
+// signature (lib/signature.ts) stroke by stroke and holds it a beat. Then
+// the signature becomes the logo: the paper fades to the hero underneath
+// while the signature shrinks and glides into the nav's "gp" mark, whose
+// ring draws in as it lands. The lift waits for the last
 // stroke to finish (not a fixed timer, which cut the signature short when
-// the first paint was slow), with a fallback in case it never reports. A
+// the first paint was slow), with a fallback in case it never reports. The
+// exit is still called "lift" in code. A
 // short intro, not a loading screen: the page renders under it from the
 // first paint, and any input skips it.
 export function SplashSignature() {
   const [phase, setPhase] = useState<"sign" | "lift" | "gone">("sign");
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const lastStroke = useRef<SVGPathElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -38,20 +42,32 @@ export function SplashSignature() {
       return;
     }
 
+    // Where the signature flies: the centre of the nav's "gp" mark, scaled
+    // to about the ring's width. Without a mark it just fades in place.
+    const aim = () => {
+      const svg = svgRef.current;
+      const mark = document.querySelector('header a[href="/"]');
+      if (!svg || !mark) return;
+      const from = svg.getBoundingClientRect();
+      const to = mark.getBoundingClientRect();
+      if (!from.width || !to.width) return;
+      svg.style.setProperty("--fly-x", `${to.left + to.width / 2 - (from.left + from.width / 2)}px`);
+      svg.style.setProperty("--fly-y", `${to.top + to.height / 2 - (from.top + from.height / 2)}px`);
+      svg.style.setProperty("--fly-s", String((to.width * 1.1) / from.width));
+    };
+
     let lifted = false;
     const lift = () => {
       if (lifted) return;
       lifted = true;
       timers.current.forEach(clearTimeout);
+      aim();
       setPhase("lift");
-      // The hero's pen starts drawing as the sheet lifts.
+      // The hero's pen starts drawing as the paper fades. `splash` stays on
+      // <html>: it holds the nav ring's later start (globals.css), and
+      // removing it mid-draw would make the ring jump.
       html.classList.remove("splash-signing");
-      timers.current = [
-        setTimeout(() => {
-          setPhase("gone");
-          html.classList.remove("splash");
-        }, SPLASH_LIFT_MS),
-      ];
+      timers.current = [setTimeout(() => setPhase("gone"), SPLASH_LIFT_MS)];
       events.forEach((type) => window.removeEventListener(type, lift));
     };
     const events = ["pointerdown", "keydown", "wheel", "touchmove"] as const;
@@ -76,7 +92,8 @@ export function SplashSignature() {
 
   return (
     <div aria-hidden="true" data-phase={phase} className="splash-sheet print:hidden">
-      <svg viewBox={signature.viewBox} className="splash-signature text-pen" focusable="false">
+      <div className="splash-paper" />
+      <svg ref={svgRef} viewBox={signature.viewBox} className="splash-signature text-pen" focusable="false">
         {STROKES.map((s, i) => (
           <path
             key={s.d}

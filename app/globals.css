@@ -473,6 +473,11 @@ h3 {
   html.splash-signing .ink-draw {
     animation-play-state: paused;
   }
+  /* The nav ring waits a little longer, so it draws as the signature lands
+     in it. */
+  html.splash header .ink-draw {
+    animation-delay: calc(var(--d, 0s) + 0.3s);
+  }
 
   /* Boil: interactive pen marks come alive only while hovered or focused,
      cycling three seeded filters at about 10fps. A mark that also draws in
@@ -649,21 +654,37 @@ html.splash .splash-sheet {
   inset: 0;
   z-index: var(--z-splash);
   place-items: center;
+}
+/* The exit: the signature becomes the logo. The paper fades to the hero
+   while the signature shrinks and glides into the nav's "gp" mark (the
+   component measures --fly-x/y/s), fading as it lands; the mark's ring
+   draws in behind it. */
+html.splash .splash-sheet[data-phase="lift"] {
+  pointer-events: none;
+}
+.splash-paper {
+  position: absolute;
+  inset: 0;
   background-color: var(--paper);
   background-image: radial-gradient(var(--dot) 1.1px, transparent 1.4px);
   background-size: 22px 22px;
-  transition:
-    transform 0.3s ease-in,
-    box-shadow 0.3s ease-in;
+  transition: opacity 0.45s ease-out;
 }
-html.splash .splash-sheet[data-phase="lift"] {
-  transform: translateY(-104%) rotate(-2deg);
-  box-shadow: var(--shadow-lift);
+[data-phase="lift"] > .splash-paper {
+  opacity: 0;
 }
 .splash-signature {
+  position: relative;
   width: min(78vw, 520px);
   height: auto;
   overflow: visible;
+  transition:
+    transform 0.65s cubic-bezier(0.65, 0, 0.25, 1),
+    opacity 0.2s ease-in 0.45s;
+}
+[data-phase="lift"] > .splash-signature {
+  transform: translate(var(--fly-x, 0px), var(--fly-y, 0px)) scale(var(--fly-s, 1));
+  opacity: 0;
 }
 /* Each stroke draws in turn: --d and --dur come from the component, eased
    like a pen that speeds up and settles. */

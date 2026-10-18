@@ -10,7 +10,8 @@ export const SPLASH_STORAGE_KEY = "gabpaet.splash.v2";
     a slow first paint delays it rather than cutting the signature short. */
 export const SPLASH_SIGN_MS = 1500;
 export const SPLASH_HOLD_MS = 250;
-export const SPLASH_LIFT_MS = 300;
+/** The exit: the signature flying into the nav mark (globals.css). */
+export const SPLASH_LIFT_MS = 700;
 
 export const SPLASH_INIT_SCRIPT = `(function(){try{var d=document.documentElement,l=location;if(l.pathname!=="/"||l.hash||matchMedia("(prefers-reduced-motion: reduce)").matches)return;if(sessionStorage.getItem(${JSON.stringify(
   SPLASH_STORAGE_KEY,
