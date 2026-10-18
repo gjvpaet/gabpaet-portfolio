@@ -108,7 +108,7 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
 
   return (
     <main id="main" className="mx-auto grid max-w-[1200px] gap-20 px-5 pt-8 pb-20 md:gap-24 md:px-10 md:pt-12 md:pb-28">
-      <header className="grid items-center gap-x-12 lg:grid-cols-[minmax(0,1fr)_auto]">
+      <header className="grid items-end gap-x-12 lg:grid-cols-[minmax(0,1fr)_auto]">
         <div className="max-w-[820px]">
           <DrawnLink href="/#projects" tone="ink" className="gap-1.5">
             <ArrowLeft aria-hidden="true" size={16} weight="bold" />

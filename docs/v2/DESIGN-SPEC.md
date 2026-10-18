@@ -381,7 +381,7 @@ Computed notes come from a helper (`lib/dates.ts`) so they can never drift from 
 Static routes from `content/projects.ts`, a **notebook spread** from top to bottom:
 
 1. Drawn back link "All projects" → `/#projects`.
-2. H1 (H2 scale), summary, buttons `primary` **"Live site"** (`ArrowUpRight`) and, when public, `secondary` **"Code"** (`GithubLogo`). Tong Masters adds illustration #2 (hands fanning cards) to the right on `lg+`.
+2. H1 (H2 scale), summary, buttons `primary` **"Live site"** (`ArrowUpRight`) and, when public, `secondary` **"Code"** (`GithubLogo`). Tong Masters adds illustration #2 (hands fanning cards) to the right on `lg+`, bottom-aligned with the buttons.
 3. **The napkin and what it is**, side by side from `lg`: the project's `NapkinSketch` on a `PaperCard` (boils on hover, Hand caption "the napkin"), and **What it is** (2 to 3 sentences). No napkin margin notes until Gabriel has something true to say there.
 4. **How it's built:** stack chips, then `WhiteboardDiagram` (8.1).
 5. **What shipped:** desktop `ScreenshotFrame` plus the phone frame beside it from `md` (stacked below), taped in, with Hand captions "on a big screen" and "and in your pocket".
