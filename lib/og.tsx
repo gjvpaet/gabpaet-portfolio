@@ -221,14 +221,15 @@ export async function renderIconMark({
   size,
   fontSize,
   ringStroke,
-  cutout = false,
+  rounded = false,
 }: {
   size: number;
   fontSize: number;
   /** Ring stroke width in its 100-unit viewBox. */
   ringStroke: number;
-  /** Transparent outside the ring, with paper only inside it (the favicon). */
-  cutout?: boolean;
+  /** Paper on a rounded square, transparent only at the corners (the
+      favicon), instead of full-bleed paper. */
+  rounded?: boolean;
 }): Promise<ImageResponse> {
   return new ImageResponse(
     (
@@ -240,20 +241,19 @@ export async function renderIconMark({
           position: "relative",
           width: "100%",
           height: "100%",
-          background: cutout ? "transparent" : t.paper,
+          background: rounded ? "transparent" : t.paper,
         }}
       >
-        {/* Paper inside the ring only. The ring's centreline sits about 0.405
-            of the size from the centre, so a 0.8 disc ends under its stroke. */}
-        {cutout ? (
+        {/* A rounded paper tile, like an app icon in a browser tab. */}
+        {rounded ? (
           <div
             style={{
               position: "absolute",
-              top: size * 0.1,
-              left: size * 0.1,
-              width: size * 0.8,
-              height: size * 0.8,
-              borderRadius: "50%",
+              top: 0,
+              left: 0,
+              width: size,
+              height: size,
+              borderRadius: size * 0.22,
               background: t.paper,
             }}
           />
