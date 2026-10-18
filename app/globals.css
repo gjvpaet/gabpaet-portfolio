@@ -284,6 +284,100 @@ h3 {
   mask: var(--art) center / contain no-repeat;
 }
 
+/* Hover easter egg: each illustration's purple pen layer comes alive while
+   the pointer is over the art, and snaps back when it leaves. The pen layer
+   is a mask, so a second gradient mask (moved by --art-reveal) uncovers it
+   or a transform moves it. */
+@property --art-reveal {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Lamp: the rays switch on, spreading out from the bulb. */
+  .illustration[data-art="lamp"]:hover .illustration-pen {
+    mask-image: var(--art), radial-gradient(30% 30% at 51% 22%, #000 var(--art-reveal), transparent calc(var(--art-reveal) + 12%));
+    mask-size: contain, 100% 100%;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-composite: intersect;
+    animation: art-rays 1.5s cubic-bezier(0.3, 0, 0.2, 1) infinite;
+  }
+  /* Plane: the dotted trail redraws from its tail, then the plane bobs. */
+  .illustration[data-art="plane"]:hover .illustration-pen {
+    mask-image: var(--art), linear-gradient(90deg, #000 var(--art-reveal), transparent calc(var(--art-reveal) + 3%));
+    mask-size: contain, 100% 100%;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-composite: intersect;
+    animation: art-trail 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+  .illustration[data-art="plane"]:hover .illustration-ink {
+    transform-origin: 82% 45%;
+    animation: art-plane 1.8s ease-in-out infinite;
+  }
+  /* Nap: the z drifts up and fades, and a new one takes its place. */
+  .illustration[data-art="nap"]:hover .illustration-pen {
+    animation: art-z 1.6s ease-in infinite;
+  }
+}
+@keyframes art-rays {
+  0% {
+    --art-reveal: 8%;
+    opacity: 0.25;
+  }
+  8% {
+    opacity: 1;
+  }
+  12% {
+    opacity: 0.45;
+  }
+  18% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    --art-reveal: 105%;
+  }
+}
+@keyframes art-trail {
+  0% {
+    --art-reveal: 0%;
+  }
+  65%,
+  100% {
+    --art-reveal: 68%;
+  }
+}
+@keyframes art-plane {
+  0%,
+  55%,
+  100% {
+    transform: none;
+  }
+  78% {
+    transform: translate(1.5%, -5%) rotate(-3deg);
+  }
+}
+@keyframes art-z {
+  0% {
+    transform: none;
+    opacity: 1;
+  }
+  70% {
+    transform: translate(1.5%, -16%);
+    opacity: 0;
+  }
+  71% {
+    transform: translate(-0.5%, 6%);
+    opacity: 0;
+  }
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+
 @utility tape {
   position: absolute;
   background: var(--tape);

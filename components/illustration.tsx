@@ -26,7 +26,8 @@ const PAINT: Record<Layer, string> = {
 };
 
 // Spec 6.14. A div, so callers own its display and position; the layers
-// stack in one grid cell. Decorative unless given a label. Below-the-fold
+// stack in one grid cell. Hovering art with a pen layer animates it
+// (globals.css). Decorative unless given a label. Below-the-fold
 // art skips rendering (and so fetching its masks) until it nears the
 // viewport.
 export function Illustration({
@@ -45,14 +46,15 @@ export function Illustration({
   return (
     <div
       {...(label ? { role: "img", "aria-label": label } : { "aria-hidden": true })}
-      className={cn("print:hidden", className)}
+      data-art={name}
+      className={cn("illustration print:hidden", className)}
       style={{ aspectRatio: `${art.w} / ${art.h}`, ...style }}
     >
       <div className="grid size-full [content-visibility:auto]">
         {art.layers.map((layer) => (
           <span
             key={layer}
-            className={cn("illustration-layer", PAINT[layer])}
+            className={cn("illustration-layer", `illustration-${layer}`, PAINT[layer])}
             style={{ "--art": `url(/illustrations/${name}-${layer}.svg)` } as CSSProperties}
           />
         ))}

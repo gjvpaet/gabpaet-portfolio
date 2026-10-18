@@ -287,6 +287,7 @@ v2 behaviour (Clipboard API, select-text fallback "Press ⌘C to copy", `aria-li
 ### 6.14 `Illustration` (server)
 
 - Traced ink illustrations (section 10.3) are rendered as **CSS masks**: each layer is a span with `mask: url(/illustrations/<name>-<layer>.svg) center / contain no-repeat` and a token background, so they re-ink in dark mode and stay cacheable. Layers: `ink` (`--ink`, always), `pen` (`--pen`, one element: the lamp's rays, the plane's dotted path) and `fill` (`--sheet`, an opaque silhouette for art that overlaps something: the hero hand). The layers stack in one grid cell, so the root is a plain `div` that callers position freely.
+- Hover easter egg (pointer only; off under reduced motion): while the pointer is over the art, its `pen` layer loops, and it snaps back on leave. Lamp: the rays switch on with a flicker and spread out from the bulb. Plane: the dotted trail redraws from its tail, then the plane bobs. Nap: the "z" drifts up and fades and a new one appears. The pen layer is a mask, so the reveals intersect it with a gradient mask driven by the registered `--art-reveal` property; the z is a transform. Like the boil, it only runs while hovered, so "nothing loops on its own" holds.
 - Decorative (`aria-hidden`) unless given a `label`. Fixed aspect ratio from the shared viewBox (no CLS); below-the-fold ones are lazy via `content-visibility: auto`, which also defers fetching their masks.
 - **Every layout must work without its illustration.** Until the art arrives, the slot renders nothing.
 
