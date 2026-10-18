@@ -361,9 +361,10 @@ Computed notes come from a helper (`lib/dates.ts`) so they can never drift from 
 
 ### 7.4 About (`#about`)
 
-- `lg+` grid `minmax(0,1fr) | 260px`, stacked below.
+- `lg+` grid `minmax(0,1fr) | 300px`, stacked below.
 - Left: H2 **"About"**, then the bio lead (`profile.bio`, first sentence) at Lead size with `profile.bioMark` ("I love building things that interest me") highlighted, then the rest of the bio in Body `--ink-soft`. **Never mentions Lumora or the current role.** Bio VERIFY.
-- Right: illustration #3 (desk lamp over a notebook, rays in `--pen`; 200px on phones, the column's width from `lg`), then a pinned `--note` card (rotate 2.5deg): Hand "always view problems as an opportunity." and a smaller Hand line "my motto, for what it's worth".
+- Under the bio, in the left column: a pinned `--note` card (rotate -2deg, max 360px, indented 48px from `sm`): Hand "always view problems as an opportunity." and a smaller Hand line "my motto, for what it's worth".
+- Right: illustration #3 (desk lamp over a notebook, rays in `--pen`), level with the bio from `lg`; on phones 200px wide, right-aligned under the note.
 
 ### 7.5 Contact (`#contact`)
 
