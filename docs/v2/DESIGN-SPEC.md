@@ -254,9 +254,9 @@ Per-project sketches drawn in SVG with pen primitives plus `<text>` labels in Sh
 ### 6.8 `Nav` (client for the menu)
 
 - Sticky, 72px, `--paper` fill. A 2px ink rule appears once the hero is out of view (IntersectionObserver).
-- Left: "Gabriel Paet" (Bricolage 700, 20px) with a short `InkUnderline` in `--pen`, linking to `/`.
+- Left: the "gp" mark linking to `/`, the same as the favicon: a 48px `--pen` `ring` (draws in on load, boils on hover) around "gp" in Shantell 700, 22px, `--ink`. `aria-label` "Gabriel Paet, home"; the focus ring is round. (It replaced the "Gabriel Paet" wordmark on 2026-10-18.)
 - Right on `lg+`: links **Experience / Projects / About / Contact** (16px, 500). The active section gets a 3px `--pen` drawn underline. Then `PencilButton`, `LampToggle` and `ButtonLink secondary sm` **"Résumé"** → `/resume`.
-- Below `lg`: name, pencil, lamp, menu button (`List` / `X`). The menu is the v2 sheet (focus trap, Esc, closes on navigation), restyled as taped-in paper, with the links in Bricolage 32px and the Résumé button.
+- Below `lg`: the mark, pencil, lamp, menu button (`List` / `X`). The menu is the v2 sheet (focus trap, Esc, closes on navigation), restyled as taped-in paper, with the links in Bricolage 32px and the Résumé button.
 
 ### 6.9 `Chip`
 

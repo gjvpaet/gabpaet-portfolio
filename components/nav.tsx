@@ -7,7 +7,6 @@ import { useEffect, useId, useRef, useState } from "react";
 
 import { buttonClasses } from "@/components/button";
 import { InkSvg } from "@/components/ink/ink-svg";
-import { InkUnderline } from "@/components/ink/ink-underline";
 import { Tape } from "@/components/ink/tape";
 import { LampToggle } from "@/components/lamp-toggle";
 import { PencilButton } from "@/components/pencil-button";
@@ -24,7 +23,8 @@ const RESUME = { href: "/resume", label: "Résumé" } as const;
 
 // Spec 6.8. Sticky 72px bar on the paper. The full row (links, pencil, lamp,
 // Résumé) shows from lg (1024px) up, where it fits on one line. Below that:
-// name, pencil, lamp and a menu button that opens a taped-in paper sheet.
+// the "gp" mark, pencil, lamp and a menu button that opens a taped-in paper
+// sheet.
 export function Nav({ shortName }: { shortName: string }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -121,10 +121,17 @@ export function Nav({ shortName }: { shortName: string }) {
       )}
     >
       <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-5 md:h-18 md:px-10">
-        <Link href="/" className="flex min-h-11 items-center rounded-control no-underline">
-          <InkUnderline variant="short" className="text-xl font-bold whitespace-nowrap">
-            {shortName}
-          </InkUnderline>
+        {/* The "gp" mark, as in the favicon: a pen ring drawn round the
+            handwritten initials. It boils on hover; the name is its label. */}
+        <Link
+          href="/"
+          aria-label={`${shortName}, home`}
+          className="ink-boil relative flex size-12 shrink-0 items-center justify-center rounded-full no-underline"
+        >
+          <InkSvg name="ring" stretch delay={0.2} className="absolute inset-0 size-full" />
+          <span aria-hidden="true" className="font-hand -mt-1 text-[1.375rem] leading-none font-bold text-ink">
+            gp
+          </span>
         </Link>
 
         {/* lg and up: the full row */}
