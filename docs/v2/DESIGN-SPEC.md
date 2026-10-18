@@ -522,7 +522,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
       - Redirects: all 8 return 308. Em and en dashes: 0 on every page. No VERIFY text anywhere.
       - Lighthouse 12 (mobile / desktop): home 88/100/96/100 and 99/100/96/100; résumé 90/100/96/100 and 100/100/96/100; Tong Masters 89/100/96/100 and 100/100/96/100. CLS 0 everywhere. Home mobile moved 89 → 88, within run-to-run noise; the hero hand adds two small mask files above the fold. Best practices 96 is the local 404 on the Vercel scripts.
       - Still open: mobile performance on home and the case study, 1 to 2 points under 90 (same font lever as above).
-19. [ ] Merge `v2` → `main`.
+19. [x] Merge `v2` → `main`. Merged by Gabriel on 2026-10-18 (merge commit `7799ad9`); the neo-brutalist take stays on the `v2-brutalist` tag.
 
 ---
 
