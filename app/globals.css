@@ -655,12 +655,16 @@ html.splash .splash-sheet[data-phase="lift"] {
   * {
     box-shadow: none !important;
   }
-  .border-3,
-  .border-2 {
+  /* Every structure line is 1px on paper: frames, chips, section rules. */
+  .border-2,
+  .border-\[1\.5px\] {
     border-width: 1px !important;
   }
-  .border-b-3 {
+  .border-b-2 {
     border-bottom-width: 1px !important;
+  }
+  .border-t-2 {
+    border-top-width: 1px !important;
   }
 
   .js [data-reveal] {
