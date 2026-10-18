@@ -185,7 +185,6 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
 
       <Block id="whats-next" title="What's next">
         <TodoList items={project.whatsNext} />
-        {project.credits ? <p className="type-hand mt-12 text-pen">{project.credits}</p> : null}
       </Block>
     </main>
   );

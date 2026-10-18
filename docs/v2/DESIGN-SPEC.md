@@ -395,7 +395,7 @@ It replaces `ArchitectureDiagram`. Nodes are `InkBox`es with Bricolage 600 label
 
 ### 8.2 Content
 
-Unchanged from the 2026-10-12 spec (now in `content/projects.ts`): live URLs, Tong Masters' private repo (no Code button), architecture, credits ("Built with contributions from Koddi Evangelista."), and screenshots. New fields:
+Unchanged from the 2026-10-12 spec (now in `content/projects.ts`): live URLs, Tong Masters' private repo (no Code button), architecture and screenshots. (The credits line was removed on 2026-10-18 at Gabriel's request.) New fields:
 
 - `hardProblems[].note?: string` (VERIFY drafts).
 - `whatsNext: { text: string; done?: boolean }[]`. Tong Masters: two shipped items checked (bots that fill empty seats; the guided tutorial) and two open ones from the old "what's next" line (VERIFY). v1: `[{ text: "Retired in favour of v2, and kept live as a reference", done: true }]`.

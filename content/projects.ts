@@ -39,7 +39,6 @@ export type Project = {
   whatsNext: { text: string; done?: boolean }[];
   /** Hidden margin note on the home "Play it" link (spec 5.2), 8 words or fewer. */
   playNote?: string;
-  credits?: string;
 };
 
 export const projects: Project[] = [
@@ -106,7 +105,6 @@ export const projects: Project[] = [
     ],
     // VERIFY
     playNote: "bring two friends",
-    credits: "Built with contributions from Koddi Evangelista.",
   },
   {
     slug: "portfolio-v1",
