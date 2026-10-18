@@ -468,9 +468,10 @@ h3 {
     animation-play-state: paused;
   }
 
-  /* While the splash signature plays, the hero waits for the sheet to lift. */
-  html.splash .ink-draw {
-    animation-delay: calc(var(--d, 0s) + 1s);
+  /* While the splash signature plays, the hero's pen waits (a paused
+     animation's delay does not run either), then draws as the sheet lifts. */
+  html.splash-signing .ink-draw {
+    animation-play-state: paused;
   }
 
   /* Boil: interactive pen marks come alive only while hovered or focused,

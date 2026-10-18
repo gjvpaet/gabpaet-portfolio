@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 import { signature } from "@/lib/signature";
-import { SPLASH_LIFT_MS, SPLASH_SIGN_MS } from "@/lib/splash";
+import { SPLASH_HOLD_MS, SPLASH_LIFT_MS, SPLASH_SIGN_MS } from "@/lib/splash";
 
 /** The pen touches down this long after first paint (s). */
 const SIGN_START = 0.15;
@@ -20,13 +20,16 @@ const STROKES = signature.strokes.reduce<Array<{ d: string; delay: number; durat
 }, []);
 
 // The splash (spec 6.15): a sheet of paper, the pen signs Gabriel's
-// signature (lib/signature.ts) stroke by stroke, the sheet lifts away to the
-// hero underneath. A short intro, not a loading screen: the page renders
-// under it from the first paint, any input skips it, and it is gone from the
-// DOM after at most 1.25s.
+// signature (lib/signature.ts) stroke by stroke, holds it a beat, and the
+// sheet lifts away to the hero underneath. The lift waits for the last
+// stroke to finish (not a fixed timer, which cut the signature short when
+// the first paint was slow), with a fallback in case it never reports. A
+// short intro, not a loading screen: the page renders under it from the
+// first paint, and any input skips it.
 export function SplashSignature() {
   const [phase, setPhase] = useState<"sign" | "lift" | "gone">("sign");
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const lastStroke = useRef<SVGPathElement>(null);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -35,17 +38,33 @@ export function SplashSignature() {
       return;
     }
 
+    let lifted = false;
     const lift = () => {
+      if (lifted) return;
+      lifted = true;
       timers.current.forEach(clearTimeout);
       setPhase("lift");
-      timers.current = [setTimeout(() => setPhase("gone"), SPLASH_LIFT_MS)];
-      // The hero's pen waited for the sheet; let later visits draw on time.
-      setTimeout(() => html.classList.remove("splash"), 4500);
+      // The hero's pen starts drawing as the sheet lifts.
+      html.classList.remove("splash-signing");
+      timers.current = [
+        setTimeout(() => {
+          setPhase("gone");
+          html.classList.remove("splash");
+        }, SPLASH_LIFT_MS),
+      ];
       events.forEach((type) => window.removeEventListener(type, lift));
     };
     const events = ["pointerdown", "keydown", "wheel", "touchmove"] as const;
     events.forEach((type) => window.addEventListener(type, lift, { passive: true }));
-    timers.current = [setTimeout(lift, SPLASH_SIGN_MS)];
+
+    // Lift once the last stroke has drawn, plus a beat to see it whole.
+    // `finished` also resolves if it was done before this effect ran.
+    const animation = lastStroke.current?.getAnimations?.()[0];
+    animation?.finished.then(() => {
+      timers.current.push(setTimeout(lift, SPLASH_HOLD_MS));
+    }, () => {});
+    // Fallback: never hold the page longer than this.
+    timers.current.push(setTimeout(lift, SPLASH_SIGN_MS + SPLASH_HOLD_MS + 1500));
 
     return () => {
       timers.current.forEach(clearTimeout);
@@ -58,9 +77,10 @@ export function SplashSignature() {
   return (
     <div aria-hidden="true" data-phase={phase} className="splash-sheet print:hidden">
       <svg viewBox={signature.viewBox} className="splash-signature text-pen" focusable="false">
-        {STROKES.map((s) => (
+        {STROKES.map((s, i) => (
           <path
             key={s.d}
+            ref={i === STROKES.length - 1 ? lastStroke : undefined}
             d={s.d}
             pathLength={1}
             strokeWidth={signature.strokeWidth}
