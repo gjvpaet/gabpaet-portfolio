@@ -16,21 +16,24 @@ import "./globals.css";
 
 const SITE_TITLE = `${profile.name}, ${profile.role}`;
 
-// Structure layer (spec 4.2). Variable on weight, optical size and width;
-// display type uses opsz 96.
+// Structure layer (spec 4.2). Variable on weight and optical size; display
+// type uses opsz 96. The width axis is left out on purpose: nothing uses
+// it, and it nearly doubles the file, which mobile LCP pays for.
 const bricolage = Bricolage_Grotesque({
   variable: "--font-bricolage",
   subsets: ["latin"],
-  axes: ["opsz", "wdth"],
+  axes: ["opsz"],
   display: "swap",
 });
 
-// Pen layer: handwriting for notes, dates and captions. INFM (informality)
-// and BNCE (bounce) are set per role in globals.css.
+// Pen layer: handwriting for notes, dates and captions, with the INFM
+// (informality) axis set per role in globals.css. Preloaded: the hero's
+// "hi, I'm" is above the fold, so a late discovery would hold up first
+// paint. The BNCE axis is left out for size.
 const shantell = Shantell_Sans({
   variable: "--font-shantell",
   subsets: ["latin"],
-  axes: ["BNCE", "INFM"],
+  axes: ["INFM"],
   display: "swap",
 });
 

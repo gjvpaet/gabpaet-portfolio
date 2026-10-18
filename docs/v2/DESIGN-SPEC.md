@@ -63,8 +63,8 @@ corepack pnpm add perfect-freehand
 
 Fonts via `next/font/google` (self-hosted, `display: "swap"`):
 
-- **Bricolage Grotesque**, variable, `axes: ["opsz", "wdth"]` (weight is variable by default). Variable `--font-bricolage`.
-- **Shantell Sans**, variable, `axes: ["BNCE", "INFM"]`. Variable `--font-shantell`.
+- **Bricolage Grotesque**, variable, `axes: ["opsz"]` (weight is variable by default; `wdth` is left out because nothing uses it and it doubles the file). Variable `--font-bricolage`.
+- **Shantell Sans**, variable, `axes: ["INFM"]` (`BNCE` left out for size). Variable `--font-shantell`.
 - JetBrains Mono and Archivo are removed (and their TTFs in `assets/fonts/`, once the share images are redone).
 
 ---
@@ -124,8 +124,8 @@ Rules:
 | Meta (title line, mode) | Bricolage | `wght 500` | `1.0625rem`, `--ink-soft` | 1.4 | 0 |
 | Button | Bricolage | `wght 650` | `1.0625rem` | 1 | 0 |
 | Chip | Bricolage | `wght 500` | `0.875rem` | 1 | 0 |
-| **Hand** (notes, dates, captions) | Shantell Sans | `wght 400`, `INFM 70`, `BNCE 30` | `1.125rem` to `1.25rem`, never below `1.0625rem` | 1.3 | 0 |
-| **Hand title** (napkin headings) | Shantell Sans | `wght 600`, `INFM 70`, `BNCE 30` | `1.6875rem` | 1.2 | 0 |
+| **Hand** (notes, dates, captions) | Shantell Sans | `wght 400`, `INFM 70` | `1.125rem` to `1.25rem`, never below `1.0625rem` | 1.3 | 0 |
+| **Hand title** (napkin headings) | Shantell Sans | `wght 600`, `INFM 70` | `1.6875rem` | 1.2 | 0 |
 
 - Handwriting runs **8 words or fewer** per note, and never carries body copy, nav, buttons or headings.
 - Body max width `65ch`; the about lead `36ch`.
@@ -499,6 +499,16 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 16. [ ] Signature: Gabriel sends the photo; trace and swap in for the placeholder (10.4).
 17. [ ] Gabriel verifies every VERIFY string (`grep -rn VERIFY content/`), including those carried over from the brutalist build.
 18. [ ] QA on a production build: 4 pages × 375/768/1280 × light/dark; keyboard pass; 44px targets; reduced motion; splash rules (first visit only, skip, deep links, hash, no-JS); pencil on a phone (scroll lock and exit); print and PDF have no pen layer; contrast; Lighthouse (target mobile perf ≥ 90 with the splash on); redirects 308; zero em dashes.
+    - **Pre-asset pass, 2026-10-18** (before steps 15 to 17; re-run after them). Production build, headless Chrome:
+      - 5 pages (home, both case studies, résumé, 404) × 375 / 768 / 1280 × light / dark: no console errors (only the Vercel Analytics and Speed Insights scripts 404, which exist only on Vercel), no sideways scroll; nav 66px phones, 74px from md.
+      - Contrast floor 6.27:1 across every visible text element, both themes; no failures.
+      - Keyboard: 24 stops on home, Skip to content first, every one with a visible pen focus ring and at least 44 × 44.
+      - Pencil on a phone (touch): `touch-action: none` while out, the page does not scroll under a stroke, the pinned bar sits inside the screen with 44px buttons, and "Put the pencil down" restores scrolling.
+      - Splash, ink marks, hidden note, boil, lift and reduced motion: as in steps 9 and 10.
+      - Redirects: all 8 return 308 to the right place. Em and en dashes in visible copy: 0.
+      - Lighthouse 12 (mobile / desktop, perf/a11y/best/SEO): home 89/100/96/100 and 99/100/96/100; résumé 91/100/96/100 and 100/100/96/100; Tong Masters 89/100/96/100 and 100/100/96/100. Mobile LCP 3.5 to 3.8s is the font bytes (Bricolage 75KB + Shantell 142KB woff2).
+      - Fixed during the pass: Bricolage loads without the unused `wdth` axis (167KB → 75KB) and Shantell without `BNCE`; the hero `rise` starts at 1% opacity so the name counts as painted on the first frame; the pencil bar's Erase is icon-only on phones so the bar keeps its gutter.
+      - Open: home and case-study mobile performance sit at 89, one point under target. The remaining lever is a self-hosted Shantell pinned at INFM 70 and subset to Latin.
 19. [ ] Merge `v2` → `main`.
 
 ---

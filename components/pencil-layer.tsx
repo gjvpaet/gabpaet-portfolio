@@ -126,9 +126,15 @@ export function PencilLayer() {
           <Tape className="-top-3 left-1/2 h-6 w-16 -ml-8" style={{ rotate: "-3deg" }} />
           <p className="type-hand hidden whitespace-nowrap text-pen sm:block">pencil&apos;s out. draw anywhere.</p>
           {strokes.length > 0 ? (
-            <button type="button" onClick={() => setStrokes([])} className={buttonClasses("secondary", undefined, "sm")}>
+            // Icon-only on phones, so the bar keeps a 16px gutter at 375px.
+            <button
+              type="button"
+              onClick={() => setStrokes([])}
+              aria-label="Erase"
+              className={buttonClasses("secondary", "max-sm:w-11 max-sm:px-0", "sm")}
+            >
               <Eraser aria-hidden="true" size={20} weight="bold" />
-              <span>Erase</span>
+              <span className="max-sm:hidden">Erase</span>
             </button>
           ) : null}
           <button type="button" onClick={() => pencil.set(false)} className={buttonClasses("primary", undefined, "sm")}>

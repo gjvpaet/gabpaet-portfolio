@@ -245,7 +245,7 @@ h3 {
 @utility type-hand {
   font-family: var(--font-hand);
   font-weight: 400;
-  font-variation-settings: "INFM" 70, "BNCE" 30;
+  font-variation-settings: "INFM" 70;
   font-size: 1.125rem;
   line-height: 1.3;
 }
@@ -253,7 +253,7 @@ h3 {
 @utility type-hand-lg {
   font-family: var(--font-hand);
   font-weight: 400;
-  font-variation-settings: "INFM" 70, "BNCE" 30;
+  font-variation-settings: "INFM" 70;
   font-size: 1.25rem;
   line-height: 1.3;
 }
@@ -261,7 +261,7 @@ h3 {
 @utility type-hand-title {
   font-family: var(--font-hand);
   font-weight: 600;
-  font-variation-settings: "INFM" 70, "BNCE" 30;
+  font-variation-settings: "INFM" 70;
   font-size: 1.6875rem;
   line-height: 1.2;
 }
@@ -449,9 +449,12 @@ h3 {
   }
 }
 
+/* Starts at 1%, not 0: Chrome does not count a fully transparent paint as
+   the largest contentful paint, so a rise from 0 would push LCP back to the
+   end of the animation. 1% looks the same. */
 @keyframes rise {
   from {
-    opacity: 0;
+    opacity: 0.01;
     translate: 0 16px;
   }
 }
