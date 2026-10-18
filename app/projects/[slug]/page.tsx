@@ -1,16 +1,20 @@
 import { ArrowLeft, ArrowUpRight, GithubLogo } from "@phosphor-icons/react/ssr";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 
-import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { ButtonLink } from "@/components/button";
-import { Card } from "@/components/card";
 import { ChipList } from "@/components/chip";
+import { DrawnLink } from "@/components/drawn-link";
+import { InkBox } from "@/components/ink/ink-box";
+import { InkSvg } from "@/components/ink/ink-svg";
+import { MarginNote } from "@/components/margin-note";
+import { ProjectNapkin } from "@/components/napkins/project-napkin";
+import { PaperCard } from "@/components/paper-card";
 import { Reveal } from "@/components/reveal";
 import { ScreenshotFrame } from "@/components/screenshot-frame";
-import { getProject, projects } from "@/content/projects";
+import { WhiteboardDiagram } from "@/components/whiteboard-diagram";
+import { getProject, projects, type Project } from "@/content/projects";
 
 type Params = { slug: string };
 
@@ -33,18 +37,60 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-function Block({ id, title, children }: { id: string; title: string; children: ReactNode }) {
+// One block of the spread: a plain h2 and its content, revealed on scroll
+// (which also starts its pen marks drawing).
+function Block({
+  id,
+  title,
+  children,
+  className,
+}: {
+  id: string;
+  title: string;
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <Reveal as="section" aria-labelledby={id} className="grid gap-5">
+    <Reveal as="section" aria-labelledby={id} className={className}>
       <h2 id={id} className="type-h3">
         {title}
       </h2>
-      {children}
+      <div className="mt-6">{children}</div>
     </Reveal>
   );
 }
 
-// Spec 8: back link, title + buttons, screenshots, then four short blocks.
+// "What's next" as a to-do list with hand-drawn boxes. The tick is decoration;
+// the state is in the text for screen readers.
+function TodoList({ items }: { items: Project["whatsNext"] }) {
+  return (
+    <ul className="grid max-w-[65ch] gap-4">
+      {items.map((item, i) => (
+        <li key={item.text} className="grid grid-cols-[22px_minmax(0,1fr)] items-start gap-3.5">
+          <span className="relative mt-[3px] size-5" aria-hidden="true">
+            <InkBox rough={i % 2 ? "b" : "a"} delay={0.1 + i * 0.15} className="size-5" />
+            {item.done ? (
+              <InkSvg name="check" delay={0.35 + i * 0.15} rough={false} className="absolute -top-1 left-0.5 size-6" />
+            ) : null}
+          </span>
+          <span className={item.done ? "text-ink-soft" : undefined}>
+            {item.done ? <span className="sr-only">Done: </span> : null}
+            {item.text}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const CAPTION: Record<"desktop" | "phone", string> = {
+  desktop: "on a big screen",
+  phone: "and in your pocket",
+};
+
+// Spec 8: a notebook spread. The napkin it started on, what it is, how it's
+// built, the screenshots taped in, the hard problems with notes in the
+// margin, and what's next as a to-do list.
 export default async function ProjectPage({ params }: { params: Promise<Params> }) {
   const project = getProject((await params).slug);
   if (!project) notFound();
@@ -53,18 +99,15 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
   const phone = project.screenshots.find((s) => s.kind === "phone");
 
   return (
-    <main id="main" className="mx-auto grid max-w-[1200px] gap-14 px-4 pt-10 pb-16 md:gap-20 md:px-8 md:pt-14 md:pb-24">
-      <header className="grid gap-6">
-        <Link
-          href="/#projects"
-          className="type-body-sm inline-flex w-fit items-center gap-1.5 font-semibold underline decoration-2 underline-offset-4"
-        >
+    <main id="main" className="mx-auto grid max-w-[1200px] gap-20 px-5 pt-8 pb-20 md:gap-24 md:px-10 md:pt-12 md:pb-28">
+      <header className="max-w-[820px]">
+        <DrawnLink href="/#projects" tone="ink" className="gap-1.5">
           <ArrowLeft aria-hidden="true" size={16} weight="bold" />
           All projects
-        </Link>
-        <h1 className="type-h2">{project.name}</h1>
-        <p className="max-w-[60ch] text-[1.1875rem] leading-normal">{project.summary}</p>
-        <div className="flex flex-wrap gap-4">
+        </DrawnLink>
+        <h1 className="type-h2 mt-6">{project.name}</h1>
+        <p className="type-lead mt-5 max-w-[48ch] text-ink-soft">{project.summary}</p>
+        <div className="mt-8 flex flex-wrap gap-3.5">
           <ButtonLink href={project.liveUrl} variant="primary" icon={<ArrowUpRight size={20} weight="bold" />}>
             Live site
           </ButtonLink>
@@ -76,56 +119,63 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
         </div>
       </header>
 
-      {/* Desktop and phone frames share a height on md+: the phone column is
-          (10/16) * (9/19.5) ≈ 0.29 of the desktop column's width. */}
-      <div className="grid items-start gap-8 md:grid-cols-[100fr_29fr] md:gap-6">
-        {desktop ? (
-          <ScreenshotFrame shot={desktop} priority sizes="(min-width: 768px) 820px, 100vw" />
-        ) : null}
-        {phone ? (
-          <ScreenshotFrame
-            shot={phone}
-            sizes="(min-width: 768px) 240px, 260px"
-            className="w-full max-w-[260px] md:max-w-none"
-          />
-        ) : null}
-      </div>
-
-      <div className="grid max-w-[820px] gap-14 md:gap-16">
+      {/* The napkin, then what it became. */}
+      <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+        <Reveal as="figure">
+          <PaperCard rotate={-1.6} tape="top" className="ink-boil px-5.5 pt-6 pb-4">
+            <ProjectNapkin slug={project.slug} />
+          </PaperCard>
+          <figcaption className="type-hand mt-6 text-pen">the napkin</figcaption>
+        </Reveal>
         <Block id="what-it-is" title="What it is">
-          <p className="max-w-[65ch]">{project.whatItIs}</p>
+          <p className="max-w-[60ch]">{project.whatItIs}</p>
         </Block>
-
-        <Block id="how-its-built" title="How it's built">
-          <ChipList items={project.stack} />
-          <ArchitectureDiagram nodes={project.architecture} label={`${project.name} architecture`} />
-        </Block>
-
-        <Block id="hard-problems" title="Hard problems">
-          <div className="grid gap-5">
-            {project.hardProblems.map((problem) => (
-              <Card key={problem.title} as="article" className="grid gap-2">
-                <h3 className="font-bold">{problem.title}</h3>
-                <p className="type-body-sm">{problem.body}</p>
-              </Card>
-            ))}
-          </div>
-        </Block>
-
-        <Block id="whats-next" title="What's next">
-          {/* Plain list until the notebook spread (build step 11) draws the checkboxes. */}
-          <ul className="grid max-w-[65ch] gap-2">
-            {project.whatsNext.map((item) => (
-              <li key={item.text}>
-                {item.done ? <span className="sr-only">done: </span> : null}
-                <span className={item.done ? "text-ink-soft line-through" : undefined}>{item.text}</span>
-              </li>
-            ))}
-          </ul>
-        </Block>
-
-        {project.credits ? <p className="type-body-sm text-ink-muted">{project.credits}</p> : null}
       </div>
+
+      <Block id="how-its-built" title="How it's built">
+        <ChipList items={project.stack} />
+        <div className="mt-8">
+          <WhiteboardDiagram nodes={project.architecture} label={`${project.name} architecture`} />
+        </div>
+      </Block>
+
+      <Block id="what-shipped" title="What shipped">
+        {/* Desktop and phone frames share a height on md+: the phone column is
+            (10/16) * (9/19.5) ≈ 0.29 of the desktop column's width. */}
+        <div className="grid items-start gap-12 md:grid-cols-[100fr_29fr] md:gap-8">
+          {desktop ? (
+            <ScreenshotFrame shot={desktop} rotate={-0.6} caption={CAPTION.desktop} sizes="(min-width: 768px) 860px, 100vw" />
+          ) : null}
+          {phone ? (
+            <ScreenshotFrame
+              shot={phone}
+              rotate={1}
+              caption={CAPTION.phone}
+              sizes="(min-width: 768px) 250px, 260px"
+              className="w-full max-w-[260px] md:max-w-none"
+            />
+          ) : null}
+        </div>
+      </Block>
+
+      <Block id="hard-problems" title="Hard problems">
+        <ol className="grid gap-12">
+          {project.hardProblems.map((problem) => (
+            <li key={problem.title} className="grid gap-3 lg:grid-cols-[minmax(0,62ch)_230px] lg:gap-x-10">
+              <div className="max-w-[65ch]">
+                <h3 className="text-xl font-bold tracking-[-0.01em]">{problem.title}</h3>
+                <p className="mt-2 text-ink-soft">{problem.body}</p>
+              </div>
+              {problem.note ? <MarginNote className="lg:pt-1">{problem.note}</MarginNote> : null}
+            </li>
+          ))}
+        </ol>
+      </Block>
+
+      <Block id="whats-next" title="What's next">
+        <TodoList items={project.whatsNext} />
+        {project.credits ? <p className="type-hand mt-12 text-pen">{project.credits}</p> : null}
+      </Block>
     </main>
   );
 }

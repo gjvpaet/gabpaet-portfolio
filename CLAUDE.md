@@ -48,7 +48,7 @@ Everything belongs to one layer (spec section 1):
 
 - One accent: purple, used as a pen. Dark purple never sits behind text; use `--wash` behind text.
 - Handwriting is 8 words or fewer per note, and never in nav, buttons, headings or body copy.
-- Never invent a one-off SVG path inline; add it to `lib/ink.ts`. SVG filters go on small pen paths only, never on text or whole sections.
+- Never invent a one-off SVG path inline; add it to `lib/ink.ts`. SVG filters go on small pen paths only, never on text or whole sections. A perfectly straight horizontal or vertical line disappears under a filter (zero-height bounding box, so a zero-size filter region); give it a slight bow.
 - The only shadow is the paper lift, on taped-in paper and screenshots. Structure lines are 2px `--ink`. Radius: paper 3px, controls and frames 12px, chips full.
 - Every animation honours `prefers-reduced-motion`; draw-ins and boil are gated explicitly in CSS (Motion's `reducedMotion` does not cover them). Nothing loops on its own; no scroll listeners, no marquee.
 - A boil rule that targets a mark which also draws in must keep `ink-draw` in its `animation` list (see `globals.css`). Replacing the list with `ink-boil` alone drops the draw's `forwards` fill and the stroke vanishes on hover.

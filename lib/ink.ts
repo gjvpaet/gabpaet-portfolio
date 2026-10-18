@@ -97,6 +97,11 @@ export const ink = {
   napkinTmSeats: mark("0 0 440 320", ["M120 116 C 140 108, 180 92, 198 84"], 1.8),
   napkinTmStock: mark("0 0 440 320", ["M152 292 C 176 270, 196 240, 208 212", "M200 220 L208 211 L214 222"], 1.8),
 
+  /** Portfolio v1 napkin (components/napkins/portfolio-v1.tsx), same 440 x 320
+      sheet: pointers from the "file tree" and "⌘K palette" labels. */
+  napkinV1Tree: mark("0 0 440 320", ["M70 292 C 74 286, 78 280, 80 272", "M73 279 L80 269 L87 278"], 1.8),
+  napkinV1Palette: mark("0 0 440 320", ["M318 288 C 314 270, 300 250, 291 234", "M284 242 L290 231 L298 240"], 1.8),
+
   /** The lamp's light, drawn under the shade of Phosphor's Lamp icon in
       light mode (LampToggle). Same 24px box as the icon; left of the stem,
       clear of the pull cord on the right. */

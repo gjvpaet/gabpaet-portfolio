@@ -379,13 +379,12 @@ Static routes from `content/projects.ts`, a **notebook spread** from top to bott
 
 1. Drawn back link "All projects" → `/#projects`.
 2. H1 (H2 scale), summary, buttons `primary` **"Live site"** (`ArrowUpRight`) and, when public, `secondary` **"Code"** (`GithubLogo`). Tong Masters adds illustration #2 (hands fanning cards) to the right on `lg+`.
-3. **The napkin:** the project's `NapkinSketch` on a `PaperCard`, with 1 or 2 `MarginNote`s.
-4. **What it is:** 2 to 3 sentences.
-5. **How it's built:** stack chips, then `WhiteboardDiagram` (8.1).
-6. **What shipped:** desktop `ScreenshotFrame` full width plus the phone frame beside it on `lg+` (stacked below), taped in, with Hand captions.
-7. **Hard problems:** an annotated list. Each entry is an H3 and 2 sentences, with an optional `MarginNote` (`problem.note`, ≤ 8 words) in the margin column. Entries are separated by space, not boxes.
-8. **What's next:** a to-do list. Each item has a hand-drawn checkbox (an `InkBox` 20px, plus an `InkPath` check when `done`), and Body text. Real `<ul>`; the check state is in the text for screen readers ("done:").
-9. Credits line (Hand) when contributors exist.
+3. **The napkin and what it is**, side by side from `lg`: the project's `NapkinSketch` on a `PaperCard` (boils on hover, Hand caption "the napkin"), and **What it is** (2 to 3 sentences). No napkin margin notes until Gabriel has something true to say there.
+4. **How it's built:** stack chips, then `WhiteboardDiagram` (8.1).
+5. **What shipped:** desktop `ScreenshotFrame` plus the phone frame beside it from `md` (stacked below), taped in, with Hand captions "on a big screen" and "and in your pocket".
+6. **Hard problems:** an annotated list. Each entry is an H3 and 2 sentences, with an optional `MarginNote` (`problem.note`, ≤ 8 words) in the margin column. Entries are separated by space, not boxes.
+7. **What's next:** a to-do list. Each item has a hand-drawn checkbox (an `InkBox` 20px, plus an `InkPath` check when `done`), and Body text. Real `<ul>`; the check state is in the text for screen readers ("done:").
+8. Credits line (Hand) when contributors exist.
 
 ### 8.1 `WhiteboardDiagram`
 
@@ -492,7 +491,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 8. [x] Home sections in order: Hero (with `how-i-build` napkin and stickers), Experience, Projects (Tong Masters napkin), About, Contact.
 9. [x] Motion: draw-in, reveal, boil, lift; reduced-motion pass. Boil runs on drawn links, both napkin cards and the stickers (their logos cycle three gentler filters, `#ink-sticker`, `-b`, `-c`). Checked headless in both motion modes (2026-10-18): normally every mark finishes drawn and stays drawn while boiling, links/napkins/stickers boil on hover, buttons lift, below-fold reveals wait, stickers drag; under reduced motion nothing animates, marks are fully drawn, reveals are visible, buttons do not lift and stickers do not drag.
 10. [x] Easter eggs: ink marks, `PencilLayer`, hidden margin note, `SplashSignature` (placeholder signature). Components: `components/home/hero-paper.tsx` (the hero section as markable paper), `components/pencil-layer.tsx` (rendered in the root layout, pencil state from `lib/pencil.ts`), `components/hidden-note.tsx` (on the Tong Masters "Play it" link, from `project.playNote`), `components/splash-signature.tsx` with its pre-paint decision in `lib/splash.ts`. Checked headless (2026-10-18): the splash shows on a first home visit and is gone by 1.6s, never on reload, `#hash` links, `/resume` or reduced motion, and a click lifts it within about 0.35s; clicks on empty hero paper leave marks that clear by 2.6s; the pencil draws, Erase clears, Esc puts it down; the hidden note appears only on hover or focus; no console errors and no sideways scroll.
-11. [ ] Case studies: notebook spread, `WhiteboardDiagram`, v1 napkin, annotated hard problems, to-do list.
+11. [x] Case studies: notebook spread, `WhiteboardDiagram`, v1 napkin, annotated hard problems, to-do list.
 12. [ ] `/resume` restyle with screen-only margin notes; regenerate the PDF.
 13. [ ] Share images, icon and apple icon (13); swap the fonts in `assets/fonts/`.
 14. [ ] 404 restyle.
