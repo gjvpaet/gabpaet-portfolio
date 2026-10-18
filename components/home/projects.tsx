@@ -1,4 +1,5 @@
 import { DrawnLink } from "@/components/drawn-link";
+import { HiddenNote } from "@/components/hidden-note";
 import { TongMastersNapkin } from "@/components/napkins/tong-masters";
 import { PaperCard } from "@/components/paper-card";
 import { Reveal } from "@/components/reveal";
@@ -31,9 +32,17 @@ function NapkinVsShipped({ project }: { project: Project }) {
           <DrawnLink href={`/projects/${project.slug}`} aria-label={`Read the ${project.name} case study`}>
             Read the case study
           </DrawnLink>
-          <DrawnLink href={project.liveUrl} tone="ink" aria-label={`Play ${project.name}`}>
-            Play it
-          </DrawnLink>
+          {project.playNote ? (
+            <HiddenNote note={project.playNote}>
+              <DrawnLink href={project.liveUrl} tone="ink" aria-label={`Play ${project.name}`}>
+                Play it
+              </DrawnLink>
+            </HiddenNote>
+          ) : (
+            <DrawnLink href={project.liveUrl} tone="ink" aria-label={`Play ${project.name}`}>
+              Play it
+            </DrawnLink>
+          )}
         </div>
       </Reveal>
     </div>

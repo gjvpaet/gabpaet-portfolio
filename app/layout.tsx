@@ -4,9 +4,12 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Footer } from "@/components/footer";
 import { InkFilters } from "@/components/ink/ink-filters";
+import { PencilLayer } from "@/components/pencil-layer";
+import { SplashSignature } from "@/components/splash-signature";
 import { Nav } from "@/components/nav";
 import { SkipLink } from "@/components/skip-link";
 import { profile } from "@/content/profile";
+import { SPLASH_INIT_SCRIPT } from "@/lib/splash";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { tokens } from "@/lib/tokens";
 import "./globals.css";
@@ -137,9 +140,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <head>
-        {/* Before first paint: apply a saved light/dark choice, and flag that JS
-            runs so scroll reveals may start hidden (see globals.css). */}
+        {/* Before first paint: apply a saved light/dark choice, decide whether
+            the splash plays, and flag that JS runs so scroll reveals may
+            start hidden (see globals.css). */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <script dangerouslySetInnerHTML={{ __html: SPLASH_INIT_SCRIPT }} />
         <script dangerouslySetInnerHTML={{ __html: 'document.documentElement.classList.add("js")' }} />
         <script
           type="application/ld+json"
@@ -152,10 +157,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <InkFilters />
+        <SplashSignature />
         <SkipLink />
         <Nav shortName={profile.shortName} />
         {children}
         <Footer />
+        <PencilLayer />
         <Analytics />
         <SpeedInsights />
       </body>

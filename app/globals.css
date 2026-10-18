@@ -527,6 +527,91 @@ h3 {
   }
 }
 
+/* =========================================================
+   Easter eggs (spec 5.2)
+   ========================================================= */
+
+/* Hero click marks: draw in fast, then fade. Under reduced motion they just
+   appear and go. */
+.ink-mark {
+  animation: ink-fade 0.7s ease-in 1.6s forwards;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ink-mark path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ink-draw 0.35s ease-out forwards;
+  }
+}
+@keyframes ink-fade {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Hidden margin notes write themselves in on hover or keyboard focus. */
+.hidden-note {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.hidden-note-host:is(:hover, :focus-within) .hidden-note {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hidden-note-host:is(:hover, :focus-within) .hidden-note path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: ink-draw 0.45s var(--ease-draw) forwards;
+  }
+  .hidden-note-host:is(:hover, :focus-within) .hidden-note > span {
+    animation: ink-wipe 0.5s var(--ease-draw) 0.15s both;
+  }
+}
+@keyframes ink-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Splash signature (spec 6.15). Only exists under html.splash, which the
+   pre-paint script in lib/splash.ts sets on a first home visit. */
+.splash-sheet {
+  display: none;
+}
+html.splash .splash-sheet {
+  display: grid;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-splash);
+  place-items: center;
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 1.1px, transparent 1.4px);
+  background-size: 22px 22px;
+  transition:
+    transform 0.3s ease-in,
+    box-shadow 0.3s ease-in;
+}
+html.splash .splash-sheet[data-phase="lift"] {
+  transform: translateY(-104%) rotate(-2deg);
+  box-shadow: var(--shadow-lift);
+}
+.splash-name {
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  padding-inline: 0.1em;
+  clip-path: inset(0 100% 0 0);
+  animation: ink-wipe 0.8s var(--ease-draw) 0.15s forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.splash .splash-sheet {
+    display: none;
+  }
+}
+
 /* A sticker being held. */
 .sticker-grab {
   cursor: grab;

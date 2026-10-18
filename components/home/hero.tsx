@@ -5,6 +5,7 @@ import { ButtonLink } from "@/components/button";
 import { InkArrow } from "@/components/ink/ink-arrow";
 import { InkCircle } from "@/components/ink/ink-circle";
 import { InkStrike } from "@/components/ink/ink-strike";
+import { HeroPaper } from "@/components/home/hero-paper";
 import { StickerBoard } from "@/components/home/sticker-board";
 import { HowIBuildNapkin } from "@/components/napkins/how-i-build";
 import { PaperCard } from "@/components/paper-card";
@@ -17,7 +18,7 @@ const rise = (i: number) => ({ "--i": i }) as CSSProperties;
 // with taped logo stickers around it. The pen draws in after the text rises.
 export function Hero() {
   return (
-    <section id="hero" aria-labelledby="hero-name" className="pt-10 pb-20 md:pt-14 md:pb-28">
+    <HeroPaper>
       <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-14">
         <div className="min-w-0">
           <div className="rise mb-1.5 flex items-end gap-1.5" style={rise(0)}>
@@ -54,8 +55,9 @@ export function Hero() {
               <HowIBuildNapkin delay={0.9} />
             </PaperCard>
           </StickerBoard>
+          <p className="type-hand mt-8 -rotate-2 text-right text-pen md:mt-4">click the paper, it leaves a mark</p>
         </div>
       </div>
-    </section>
+    </HeroPaper>
   );
 }
