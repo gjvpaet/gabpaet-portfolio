@@ -472,7 +472,7 @@ Unchanged from v2 and already built: `metadataBase`, title and description from 
 
 ## 14. States and edge cases
 
-- **404:** a Hand note "this one flew off" with an `up-right` arrow, H1 "Page not found" at Display size, the line "That page moved or never existed.", `primary` "Back home". Illustration #4 (the paper plane) flies off above the note, its dotted trail starting where the arrow points; hidden below `sm`.
+- **404:** a Hand note "this one flew off" with an `up-right` arrow, H1 "Page not found" at Display size, the line "That page moved or never existed.", `primary` "Back home". Illustration #4 (the paper plane) flies off above the note, its dotted trail starting where the arrow points; hidden below `sm`. On the right from `lg` (below the button on phones), a taped `PaperCard` `<nav aria-label="Other pages">`: Hand title "or try one of these", then a to-do list of links (Experience, Projects, Résumé, Contact), each with a one-line description and an `InkBox`; hovering or focusing a row ticks its box (`.todo-check`, instant under reduced motion), so no part of the screen sits empty.
 - **No JS:** fully readable. Every mark is drawn, there's no splash, stickers are static, and the pencil button does nothing (acceptable; it is a toy).
 - **Illustrations missing:** the slots collapse; nothing else moves.
 - **Long text in handwriting:** never happens by rule (≤ 8 words).

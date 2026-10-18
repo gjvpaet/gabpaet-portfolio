@@ -323,6 +323,21 @@ h3 {
   }
 }
 
+/* 404 to-do rows: the tick draws into the box while its link is hovered
+   or focused (instantly under reduced motion). */
+.todo-check path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.todo-link:is(:hover, :focus-visible) .todo-check path {
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .todo-check path {
+    transition: stroke-dashoffset 0.35s var(--ease-draw);
+  }
+}
+
 /* =========================================================
    Pen layer (spec 4.4, 5.1). Filters #ink-a/b/c are defined once by
    components/ink/ink-filters.tsx in the root layout. They go on small pen
