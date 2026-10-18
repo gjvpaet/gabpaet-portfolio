@@ -70,7 +70,7 @@ export const profile = {
   resumePdf: "/gabriel-paet-resume.pdf",
 
   /** Search results and link previews. */
-  metaDescription: `Senior programmer with ${yearsShipping} years of experience in AI agents, workflow automation, DevOps and full-stack web. Based in Pasay City, Philippines.`,
+  metaDescription: `Senior programmer with ${yearsShipping} years building web and mobile applications, workflow automation and cloud infrastructure. Based in Pasay City, Philippines.`,
 
   /** Crossed out above the title in the hero (spec 5.2): the joke draft. */
   heroDraft: "Full-stack ninja",
