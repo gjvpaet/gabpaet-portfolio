@@ -5,9 +5,12 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { writtenName } from "@/lib/written-name";
 import { SPLASH_HOLD_MS, SPLASH_LIFT_MS, SPLASH_PORTRAIT, SPLASH_SIGN_MS } from "@/lib/splash";
 
-/** The pen touches down this long after first paint (s), once the portrait
-    has started shading in. */
-const SIGN_START = 0.3;
+// Both clocks start once the portrait's ink has loaded (s). The portrait
+// shades in first; the pen touches down only after it is fully drawn, plus a
+// short beat, so the eye goes to one thing at a time.
+const SHADE_START = 0.1;
+const SHADE_DRAW = 1.2;
+const SIGN_START = SHADE_START + SHADE_DRAW + 0.15;
 const SIGN_DRAW = SPLASH_SIGN_MS / 1000 - SIGN_START;
 const TOTAL_LENGTH = writtenName.strokes.reduce((sum, s) => sum + s.length, 0);
 
@@ -45,8 +48,9 @@ export function SplashName() {
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const lastStroke = useRef<SVGPathElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
-  // The hatching waits for the portrait's ink to load (it is preloaded
-  // before first paint), so it never shades in an empty page.
+  // The hatching and the pen wait for the portrait's ink to load (it is
+  // preloaded before first paint), so it never shades in an empty page and
+  // the name never starts before the portrait is drawn.
   const [inked, setInked] = useState(false);
 
   useEffect(() => {
@@ -111,13 +115,19 @@ export function SplashName() {
   if (phase === "gone") return null;
 
   return (
-    <div aria-hidden="true" data-phase={phase} className="splash-sheet print:hidden">
+    <div aria-hidden="true" data-phase={phase} data-inked={inked || undefined} className="splash-sheet print:hidden">
       <div className="splash-paper" />
       <div className="splash-art">
-        <svg viewBox={`0 0 ${PW} ${PH}`} data-inked={inked || undefined} className="splash-portrait text-ink" focusable="false">
+        <svg viewBox={`0 0 ${PW} ${PH}`} className="splash-portrait text-ink" focusable="false">
           <defs>
             <mask id="splash-hatch" maskUnits="userSpaceOnUse" x={-0.2 * PW} y={-0.2 * PH} width={1.4 * PW} height={1.4 * PH}>
-              <path d={`M${HATCH}`} pathLength={1} strokeWidth={0.16 * PW} className="splash-hatch" />
+              <path
+                d={`M${HATCH}`}
+                pathLength={1}
+                strokeWidth={0.16 * PW}
+                className="splash-hatch"
+                style={{ "--d": `${SHADE_START}s`, "--dur": `${SHADE_DRAW}s` } as CSSProperties}
+              />
             </mask>
             {/* The crop at mid-chest trails off instead of stopping hard. */}
             <linearGradient id="splash-fade-gradient" x1="0" y1="0" x2="0" y2="1">

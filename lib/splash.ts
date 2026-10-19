@@ -5,10 +5,12 @@
 // flashes and no-JS visitors never see it.
 export const SPLASH_STORAGE_KEY = "gabpaet.splash.v2";
 
-/** When the pen should finish, how long the finished name is held, and
-    the lift (ms). The lift waits for the last stroke to actually finish, so
-    a slow first paint delays it rather than cutting the writing short. */
-export const SPLASH_SIGN_MS = 2300;
+/** When the pen should finish (counted from when the portrait's ink loads:
+    1.3s of shading, a beat, then 2s of writing), how long the finished name
+    is held, and the lift (ms). The lift waits for the last stroke to
+    actually finish, so a slow first paint delays it rather than cutting the
+    writing short. */
+export const SPLASH_SIGN_MS = 3450;
 export const SPLASH_HOLD_MS = 250;
 /** Gabriel's sketched portrait, shaded in above the name: the traced ink
     (scripts/trace-illustrations.py) and its viewBox. */

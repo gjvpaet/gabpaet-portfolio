@@ -702,10 +702,7 @@ html.splash .splash-sheet[data-phase="lift"] {
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: ink-draw 1.35s cubic-bezier(0.4, 0, 0.6, 1) 0.1s forwards paused;
-}
-.splash-portrait[data-inked] .splash-hatch {
-  animation-play-state: running;
+  animation: ink-draw var(--dur) cubic-bezier(0.4, 0, 0.6, 1) var(--d) forwards paused;
 }
 .splash-name {
   position: relative;
@@ -721,7 +718,8 @@ html.splash .splash-sheet[data-phase="lift"] {
   opacity: 0;
 }
 /* Each stroke draws in turn: --d and --dur come from the component, eased
-   like a pen that speeds up and settles. */
+   like a pen that speeds up and settles. Like the hatching, they wait for the
+   portrait's ink (data-inked), so the name follows the finished portrait. */
 .splash-stroke {
   fill: none;
   stroke: currentColor;
@@ -729,7 +727,10 @@ html.splash .splash-sheet[data-phase="lift"] {
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: ink-draw var(--dur) cubic-bezier(0.45, 0, 0.55, 1) var(--d) forwards;
+  animation: ink-draw var(--dur) cubic-bezier(0.45, 0, 0.55, 1) var(--d) forwards paused;
+}
+.splash-sheet[data-inked] :is(.splash-hatch, .splash-stroke) {
+  animation-play-state: running;
 }
 @media (prefers-reduced-motion: reduce) {
   html.splash .splash-sheet {
