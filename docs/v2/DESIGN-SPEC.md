@@ -263,6 +263,7 @@ Per-project sketches drawn in SVG with pen primitives plus `<text>` labels in Sh
 - `role="switch"`, `aria-checked` = dark, `aria-label="Dark mode"`, `title` "Turn the lamp off" / "Turn the lamp on".
 - Light by default for every visitor, whatever the OS prefers (changed 2026-10-18; it used to follow the OS). A click stores `"light" | "dark"` under `THEME_STORAGE_KEY` (`gabpaet.theme.v2`) from `lib/theme.ts`; `THEME_INIT_SCRIPT` applies it before paint.
 - Switching themes crossfades `background-color` and `color` for 0.4s (reduced motion: instant).
+- **Sound** (`lib/lamp-sound.ts`, added 2026-10-19): a pull-cord switch, synthesized like the pencil sounds (shared plumbing in `lib/sound.ts`). A sharp click as the cord is pulled (1ms noise burst rung through bands at 3.2kHz, Q 8, and 5.4kHz, Q 6, over a short plastic tock; peak about -17dBFS), three tiny bead-chain ticks around 6.5kHz, then a lighter click at 2.6kHz 110ms later as the cord springs back. Switching off plays everything at 0.85 of the pitch. About 0.15s; played straight from the click.
 
 ### 6.8 `Nav` (client for the menu)
 

@@ -1,3 +1,5 @@
+import { audio, filter } from "@/lib/sound";
+
 // The pencil's scratch (spec 6.10), synthesized with Web Audio, so there is
 // no file to load and the sound follows the hand. Fitted, third-octave by
 // third-octave, to a recording of a pencil writing (within 0.8dB on average
@@ -11,55 +13,9 @@
 const LOUDNESS = 0.05;
 /** Pointer speed (px per ms) that counts as full speed. */
 const FULL_SPEED = 1.4;
-/** Butterworth (flat) response: Web Audio reads a low/high-pass Q in dB. */
-const FLAT_Q = -3.01;
-
 let ctx: AudioContext | null = null;
-let noise: AudioBuffer | null = null;
 let voice: { source: AudioBufferSourceNode; sheen: BiquadFilterNode; level: GainNode } | null = null;
 let restTimer: ReturnType<typeof setTimeout> | undefined;
-
-// Three seconds of white noise whose loudness wanders between 0.45 and 1.1
-// every 25 to 60ms, eased (cosine) from one level to the next.
-function makeNoise(context: AudioContext): AudioBuffer {
-  const rate = context.sampleRate;
-  const buffer = context.createBuffer(1, rate * 3, rate);
-  const data = buffer.getChannelData(0);
-  let from = 1;
-  let to = 1;
-  let start = 0;
-  let span = 1;
-  for (let i = 0; i < data.length; i++) {
-    if (i - start >= span) {
-      from = to;
-      to = 0.45 + Math.random() * 0.65;
-      start = i;
-      span = Math.round(rate * (0.025 + Math.random() * 0.035));
-    }
-    const t = (1 - Math.cos((Math.PI * (i - start)) / span)) / 2;
-    data[i] = (Math.random() * 2 - 1) * (from + (to - from) * t);
-  }
-  return buffer;
-}
-
-function filter(context: AudioContext, type: BiquadFilterType, frequency: number, q = FLAT_Q, gain = 0) {
-  const node = context.createBiquadFilter();
-  node.type = type;
-  node.frequency.value = frequency;
-  node.Q.value = q;
-  node.gain.value = gain;
-  return node;
-}
-
-// The shared context and noise, made on first use (always inside a user
-// gesture: a pointerdown or the Erase click).
-function audio(): { context: AudioContext; grain: AudioBuffer } | null {
-  if (typeof window === "undefined" || !("AudioContext" in window)) return null;
-  ctx ??= new AudioContext();
-  if (ctx.state === "suspended") void ctx.resume();
-  noise ??= makeNoise(ctx);
-  return { context: ctx, grain: noise };
-}
 
 /** The eraser: three rubs, back and forth, each a little lighter. */
 const RUBS = [1, 0.8, 0.55];
@@ -132,11 +88,13 @@ export const pencilSound = {
 
   /** Pencil touches the paper. */
   start() {
-    if (!audio() || !ctx || !noise) return;
+    const a = audio();
+    if (!a) return;
     pencilSound.stop();
+    ctx = a.context;
 
     const source = ctx.createBufferSource();
-    source.buffer = noise;
+    source.buffer = a.grain;
     source.loop = true;
     const level = ctx.createGain();
     level.gain.value = 0;

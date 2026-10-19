@@ -5,6 +5,7 @@ import { useEffect, useSyncExternalStore } from "react";
 
 import { InkSvg } from "@/components/ink/ink-svg";
 import { cn } from "@/lib/cn";
+import { lampSound } from "@/lib/lamp-sound";
 import { THEME_STORAGE_KEY, type Theme } from "@/lib/theme";
 import { tokens } from "@/lib/tokens";
 
@@ -36,6 +37,7 @@ export function LampToggle({ className }: { className?: string }) {
 
   function toggle() {
     const next: Theme = getTheme() === "dark" ? "light" : "dark";
+    lampSound.pull(next === "light");
     document.documentElement.setAttribute("data-theme", next);
     try {
       localStorage.setItem(THEME_STORAGE_KEY, next);
