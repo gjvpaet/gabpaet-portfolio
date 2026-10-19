@@ -67,7 +67,69 @@ const RUB_S = 0.11;
 const RUB_GAP_S = 0.025;
 const ERASE_LOUDNESS = 0.07;
 
+// One knock of wood on the desk: a click of noise rung through a narrow
+// band (the pencil's body) over a short low thump (the desk).
+function tap(context: AudioContext, grain: AudioBuffer, at: number, pitch: number, loudness: number) {
+  const level = context.createGain();
+  level.gain.setValueAtTime(0, at);
+  level.gain.linearRampToValueAtTime(loudness, at + 0.002);
+  level.gain.setTargetAtTime(0, at + 0.002, 0.012);
+  level.connect(context.destination);
+
+  const click = context.createBufferSource();
+  click.buffer = grain;
+  click.connect(filter(context, "bandpass", pitch, 5)).connect(level);
+  click.start(at, Math.random() * 2.5);
+  click.stop(at + 0.12);
+
+  const thump = context.createOscillator();
+  thump.frequency.setValueAtTime(pitch / 9, at);
+  thump.frequency.exponentialRampToValueAtTime(pitch / 14, at + 0.05);
+  const thumpLevel = context.createGain();
+  thumpLevel.gain.setValueAtTime(0, at);
+  thumpLevel.gain.linearRampToValueAtTime(loudness * 0.06, at + 0.003);
+  thumpLevel.gain.setTargetAtTime(0, at + 0.003, 0.015);
+  thump.connect(thumpLevel).connect(context.destination);
+  thump.start(at);
+  thump.stop(at + 0.12);
+}
+
+// A short brush of graphite: the pencil's high band, swelling and gone.
+function slide(context: AudioContext, grain: AudioBuffer, at: number, length: number, loudness: number) {
+  const level = context.createGain();
+  level.gain.setValueAtTime(0, at);
+  level.gain.linearRampToValueAtTime(loudness, at + length * 0.4);
+  level.gain.linearRampToValueAtTime(0, at + length);
+  level.connect(context.destination);
+  const source = context.createBufferSource();
+  source.buffer = grain;
+  source.connect(filter(context, "highpass", 2500)).connect(filter(context, "lowpass", 12000)).connect(level);
+  source.start(at, Math.random() * 2.5);
+  source.stop(at + length + 0.02);
+}
+
 export const pencilSound = {
+  /** Picking the pencil up: it slides off the desk, then a light, high tick
+      as it leaves the wood. About 0.1s. */
+  pickUp() {
+    const a = audio();
+    if (!a) return;
+    const at = a.context.currentTime + 0.01;
+    slide(a.context, a.grain, at, 0.07, 0.03);
+    tap(a.context, a.grain, at + 0.06, 2900, 0.7);
+  },
+
+  /** Putting it down: "tk-tok" as one end lands and then the other, then a
+      little rattle as it rolls to a stop. About 0.25s. */
+  putDown() {
+    const a = audio();
+    if (!a) return;
+    const at = a.context.currentTime + 0.01;
+    tap(a.context, a.grain, at, 2100, 0.5);
+    tap(a.context, a.grain, at + 0.065, 1700, 0.65);
+    [0.13, 0.17, 0.2].forEach((after, i) => tap(a.context, a.grain, at + after, 2500, 0.18 - i * 0.05));
+  },
+
   /** Pencil touches the paper. */
   start() {
     if (!audio() || !ctx || !noise) return;
