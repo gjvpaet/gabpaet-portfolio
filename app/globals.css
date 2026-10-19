@@ -674,16 +674,49 @@ html.splash .splash-sheet[data-phase="lift"] {
 [data-phase="lift"] > .splash-paper {
   opacity: 0;
 }
+.splash-art {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2svh;
+}
+/* The portrait, shaded in by the hatch mask (components/splash-name.tsx)
+   once its ink has loaded, and gone with the paper on the lift. */
+.splash-portrait {
+  width: min(66vw, 46svh, 420px);
+  height: auto;
+  overflow: visible;
+  transition:
+    opacity 0.35s ease-out,
+    translate 0.5s ease-out;
+}
+[data-phase="lift"] .splash-portrait {
+  opacity: 0;
+  translate: 0 -10px;
+}
+.splash-hatch {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ink-draw 1.35s cubic-bezier(0.4, 0, 0.6, 1) 0.1s forwards paused;
+}
+.splash-portrait[data-inked] .splash-hatch {
+  animation-play-state: running;
+}
 .splash-name {
   position: relative;
-  width: min(88vw, 640px);
+  width: min(84vw, 66svh, 600px);
   height: auto;
   overflow: visible;
   transition:
     transform 0.65s cubic-bezier(0.65, 0, 0.25, 1),
     opacity 0.2s ease-in 0.45s;
 }
-[data-phase="lift"] > .splash-name {
+[data-phase="lift"] .splash-name {
   transform: translate(var(--fly-x, 0px), var(--fly-y, 0px)) scale(var(--fly-s, 1));
   opacity: 0;
 }

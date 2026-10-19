@@ -12,7 +12,8 @@ optionally cut out with a polygon, split into layers and traced:
 - fill: an opaque silhouette (everything the outside can't reach), for art
         that overlaps something. `close` lines seal shapes the frame cuts off.
 
-Polygons are in the source image's pixels. All layers share one viewBox,
+Polygons are in the source image's pixels; `threshold` overrides the
+default for one drawing. All layers share one viewBox,
 cropped to the art plus a small margin; components/illustration.tsx must
 list the same width and height.
 """
@@ -54,6 +55,11 @@ ART = {
     "plane": {"pen": [[(0, 0), (820, 0), (820, 490), (856, 500), (856, 1024), (0, 1024)]]},
     # The "z" over the sleeper's head.
     "nap": {"pen": [[(710, 205), (785, 205), (785, 318), (710, 318)]]},
+    # Gabriel's sketched portrait for the splash. The source is only the top
+    # half of the drawing; this trims it to the hair down to mid-chest, and
+    # the splash fades out the cut edge.
+    # A lower threshold keeps the face's fine lines from thickening.
+    "portrait": {"keep": [(140, 80), (700, 80), (700, 620), (140, 620)], "threshold": 110},
 }
 
 
@@ -90,7 +96,7 @@ def silhouette(lines, close):
 def trace(name, cfg, tmp):
     image = Image.open(SRC / f"{name}.webp").convert("L")
     image = image.resize((image.width * UP, image.height * UP), Image.LANCZOS)
-    ink = np.array(image) < THRESHOLD
+    ink = np.array(image) < cfg.get("threshold", THRESHOLD)
     if "keep" in cfg:
         ink &= polygon_mask(image.size, [cfg["keep"]])
 

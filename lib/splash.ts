@@ -8,11 +8,16 @@ export const SPLASH_STORAGE_KEY = "gabpaet.splash.v2";
 /** When the pen should finish, how long the finished name is held, and
     the lift (ms). The lift waits for the last stroke to actually finish, so
     a slow first paint delays it rather than cutting the writing short. */
-export const SPLASH_SIGN_MS = 2000;
+export const SPLASH_SIGN_MS = 2300;
 export const SPLASH_HOLD_MS = 250;
+/** Gabriel's sketched portrait, shaded in above the name: the traced ink
+    (scripts/trace-illustrations.py) and its viewBox. */
+export const SPLASH_PORTRAIT = { src: "/illustrations/portrait-ink.svg", w: 1066, h: 1085 } as const;
 /** The exit: the name flying into the nav mark (globals.css). */
 export const SPLASH_LIFT_MS = 700;
 
 export const SPLASH_INIT_SCRIPT = `(function(){try{var d=document.documentElement,l=location;if(l.pathname!=="/"||l.hash||matchMedia("(prefers-reduced-motion: reduce)").matches)return;if(sessionStorage.getItem(${JSON.stringify(
   SPLASH_STORAGE_KEY,
-)}))return;sessionStorage.setItem(${JSON.stringify(SPLASH_STORAGE_KEY)},"1");d.classList.add("splash","splash-signing")}catch(e){}})();`;
+)}))return;sessionStorage.setItem(${JSON.stringify(SPLASH_STORAGE_KEY)},"1");d.classList.add("splash","splash-signing");var k=document.createElement("link");k.rel="preload";k.as="image";k.href=${JSON.stringify(
+  SPLASH_PORTRAIT.src,
+)};document.head.appendChild(k)}catch(e){}})();`;
