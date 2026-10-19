@@ -32,7 +32,8 @@ function classify(target: EventTarget | null): { state: State; caret?: number } 
 // The pen cursor (spec 5.3): on a mouse or trackpad the arrow becomes a
 // small --pen dot that eases after the pointer. Over a link or button it
 // draws the "gp" mark's ring around itself; over text it becomes a caret
-// sized to the type. Fields, stickers and the pencil keep the system cursor.
+// sized to the type. Fields, stickers and the pencil keep the system cursor
+// (while the pencil is out, everywhere).
 // Position is written straight to the element each frame, never to React.
 export function PenCursor() {
   const root = useRef<HTMLDivElement>(null);
@@ -73,10 +74,13 @@ export function PenCursor() {
       place();
     };
 
+    // While the pencil is out the whole page gets the system cursor back:
+    // the crosshair over the drawing layer, and a real pointer over its bar.
     const show = (on: boolean) => {
       shown = on;
-      html.classList.toggle("has-pen-cursor", on);
-      el.toggleAttribute("data-on", on && !pencil.get());
+      const pen = on && !pencil.get();
+      html.classList.toggle("has-pen-cursor", pen);
+      el.toggleAttribute("data-on", pen);
     };
 
     const setState = (target: EventTarget | null) => {
@@ -115,7 +119,7 @@ export function PenCursor() {
     const onDown = () => el.setAttribute("data-down", "");
     const onUp = () => el.removeAttribute("data-down");
     const onPencil = () => {
-      if (shown) el.toggleAttribute("data-on", !pencil.get());
+      if (shown) show(true);
     };
     const onFine = () => {
       if (!fine.matches) show(false);

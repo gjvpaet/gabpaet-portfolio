@@ -206,7 +206,7 @@ Added 2026-10-19 (option A of the cursor playground; inspired by aahil-khan.xyz,
 - **Over a link or button** (`a[href]`, `button`, `[role=button]`, `summary`, `label[for]`): the dot shrinks away and the "gp" mark's `ring` (`lib/ink.ts`, rough `#ink-a`, 40px) draws around the pointer in 0.35s, and undraws on the way out.
 - **Over text** (an element with words of its own): the dot becomes a 2px caret, its height 1.15 × the element's font size (14 to 56px).
 - **Pressing:** the dot scales to 0.7 and the ring to 0.88.
-- **System cursor instead:** fields, `select`, `contenteditable`, draggable stickers (`grab` / `grabbing`), disabled controls (`not-allowed`), while the pencil is out (its crosshair), and while the splash signs.
+- **System cursor instead:** fields, `select`, `contenteditable`, draggable stickers (`grab` / `grabbing`), disabled controls (`not-allowed`), while the pencil is out (on the whole page: the crosshair over the drawing layer and a normal pointer over its bar, so Erase and "Put the pencil down" stay visible; fixed 2026-10-19), and while the splash signs.
 - **Reduced motion:** the dot sits exactly on the pointer, and every state change is instant.
 - `z cursor`, `aria-hidden`, `pointer-events: none`, hidden in print.
 

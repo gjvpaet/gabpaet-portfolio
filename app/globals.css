@@ -707,8 +707,8 @@ html.splash .splash-sheet[data-phase="lift"] {
 /* Pen cursor (spec 5.3, components/pen-cursor.tsx). The component adds
    html.has-pen-cursor once a mouse moves, so touch, no-JS and keyboard visitors
    keep the system cursor. It stays native while the splash signs, over
-   fields, stickers and disabled controls, and wherever the pencil's inline
-   crosshair applies. */
+   fields, stickers and disabled controls, and on the whole page while the
+   pencil is out (the component drops the class). */
 html.has-pen-cursor:not(.splash-signing),
 html.has-pen-cursor:not(.splash-signing) * {
   cursor: none;
