@@ -326,6 +326,16 @@ A short intro, not a loading screen.
 
 Above the rule, right-aligned, the sign-off (`components/footer-nap.tsx`): illustration #5 (asleep at the desk, Bella asleep beside the laptop; 260px, 340px from `md`) with a Hand note "that's all for today. / Bella agrees." to its left (above it on phones). Every page except `/resume`, which stays a clean document; hidden in print. Then a 2px ink rule. Left: "© 2026 Gabriel Joshua Paet" (`--ink-soft`). Right: links **Résumé**, **GitHub**, **LinkedIn**, **v1 of this site**, each at least 44px tall. Stacks on phones. `print:hidden`.
 
+
+### 6.17 `BackToTop` (client)
+
+Added 2026-10-19, after aahil-khan.xyz. Rendered in the root layout.
+
+- A 44×44 icon button like the nav's (2px ink border, 12px radius, `--sheet` fill, `lift`), Phosphor `ArrowUp` (bold), `aria-label` and `title` "Back to top", in the bottom-right corner (`clamp(1rem, 3vw, 2rem)` from the edges, clear of the home indicator).
+- **When:** once the first screen has scrolled away. An IntersectionObserver watches a one-screen-tall marker at the top of the document (no scroll listener). It fades in and rises 10px (0.26s); while hidden it is `aria-hidden`, out of the tab order and click-through. Hidden while the pencil is out, since the pencil bar owns the bottom of the screen.
+- **Placement:** `position: fixed` in the screen's corner all the way down (an earlier take parked it above the footer at the end of the page, which read as stuck). The footer keeps empty paper under its last row, as tall as the button plus its gap from the edge (`FOOTER_CLEARANCE` in `components/footer.tsx`), so at the very bottom the button sits there and never over a footer link. `z nav`.
+- **Click:** `window.scrollTo({ top: 0 })`, smooth through the page's `scroll-behavior` (instant under reduced motion), and focus moves to the nav's "gp" home link (`preventScroll`) so keyboard users land at the top too.
+- Hidden in print.
 ---
 
 ## 7. Home page `/`

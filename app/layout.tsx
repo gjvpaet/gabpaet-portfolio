@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Shantell_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { BackToTop } from "@/components/back-to-top";
 import { Footer } from "@/components/footer";
 import { InkFilters } from "@/components/ink/ink-filters";
 import { PenCursor } from "@/components/pen-cursor";
@@ -164,6 +165,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SkipLink />
         <Nav shortName={profile.shortName} />
         {children}
+        <BackToTop />
         <Footer />
         <PencilLayer />
         <PenCursor />
