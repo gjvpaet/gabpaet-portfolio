@@ -497,6 +497,8 @@ Gabriel's signature as a transparent PNG (`assets/signature.png`), traced by `sc
 
 Unchanged from v2 and already built: `metadataBase`, title and description from `profile`, per-page canonicals, sitemap, robots, JSON-LD `Person` + `WebSite`, and the 8 permanent redirects in `next.config.ts`. Section IDs stay `#experience`, `#projects`, `#about` and `#contact` so those redirects still land.
 
+**Titles** (2026-10-19, after aahil-khan.xyz): the browser tab on `/` reads just `profile.name` ("Gabriel Joshua Paet"); other pages use `%s | Gabriel Joshua Paet`. Link previews keep the role: the Open Graph and X titles are "Gabriel Joshua Paet, Software Developer".
+
 **Share images and icons (redo):**
 
 - `app/opengraph-image.tsx` (1200×630) through `lib/og.tsx`: `--paper` with the dot grid as an SVG pattern (Satori ignores repeating CSS gradients); a Hand "hi, I'm" in pen; `profile.name` in Bricolage ExtraBold (100px, two lines); "Senior Programmer" circled in pen (the `circle` path, unfiltered: Satori has no SVG filters, and it is sized from the text because Satori cannot size an SVG to its parent); the location; and the how-I-build napkin taped at the right, rotated 3deg, its boxes drawn with the `ogBox` path. Per-project images reuse it with a "case study" note, the project name and its summary.

@@ -16,6 +16,8 @@ import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { tokens } from "@/lib/tokens";
 import "./globals.css";
 
+// The browser tab shows just the name (after aahil-khan.xyz); link previews
+// (Open Graph, X) keep the role, where there is room to say who this is.
 const SITE_TITLE = `${profile.name}, ${profile.role}`;
 
 // Structure layer (spec 4.2). Variable on weight and optical size; display
@@ -42,7 +44,7 @@ const shantell = Shantell_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(profile.site),
   title: {
-    default: SITE_TITLE,
+    default: profile.name,
     template: `%s | ${profile.name}`,
   },
   description: profile.metaDescription,
