@@ -7,7 +7,7 @@ import { Footer } from "@/components/footer";
 import { InkFilters } from "@/components/ink/ink-filters";
 import { PenCursor } from "@/components/pen-cursor";
 import { PencilLayer } from "@/components/pencil-layer";
-import { SplashSignature } from "@/components/splash-signature";
+import { SplashName } from "@/components/splash-name";
 import { Nav } from "@/components/nav";
 import { SkipLink } from "@/components/skip-link";
 import { profile } from "@/content/profile";
@@ -163,7 +163,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <InkFilters />
-        <SplashSignature />
+        <SplashName />
         <SkipLink />
         <Nav shortName={profile.shortName} />
         {children}

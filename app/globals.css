@@ -469,12 +469,12 @@ h3 {
     animation-play-state: paused;
   }
 
-  /* While the splash signature plays, the hero's pen waits (a paused
+  /* While the splash writes the name, the hero's pen waits (a paused
      animation's delay does not run either), then draws as the sheet lifts. */
   html.splash-signing .ink-draw {
     animation-play-state: paused;
   }
-  /* The nav ring waits a little longer, so it draws as the signature lands
+  /* The nav ring waits a little longer, so it draws as the name lands
      in it. */
   html.splash header .ink-draw {
     animation-delay: calc(var(--d, 0s) + 0.3s);
@@ -644,7 +644,7 @@ h3 {
   }
 }
 
-/* Splash signature (spec 6.15). Only exists under html.splash, which the
+/* Splash name (spec 6.15). Only exists under html.splash, which the
    pre-paint script in lib/splash.ts sets on a first home visit. */
 .splash-sheet {
   display: none;
@@ -656,8 +656,8 @@ html.splash .splash-sheet {
   z-index: var(--z-splash);
   place-items: center;
 }
-/* The exit: the signature becomes the logo. The paper fades to the hero
-   while the signature shrinks and glides into the nav's "gp" mark (the
+/* The exit: the name becomes the logo. The paper fades to the hero
+   while the name shrinks and glides into the nav's "gp" mark (the
    component measures --fly-x/y/s), fading as it lands; the mark's ring
    draws in behind it. */
 html.splash .splash-sheet[data-phase="lift"] {
@@ -674,16 +674,16 @@ html.splash .splash-sheet[data-phase="lift"] {
 [data-phase="lift"] > .splash-paper {
   opacity: 0;
 }
-.splash-signature {
+.splash-name {
   position: relative;
-  width: min(78vw, 520px);
+  width: min(88vw, 640px);
   height: auto;
   overflow: visible;
   transition:
     transform 0.65s cubic-bezier(0.65, 0, 0.25, 1),
     opacity 0.2s ease-in 0.45s;
 }
-[data-phase="lift"] > .splash-signature {
+[data-phase="lift"] > .splash-name {
   transform: translate(var(--fly-x, 0px), var(--fly-y, 0px)) scale(var(--fly-s, 1));
   opacity: 0;
 }
