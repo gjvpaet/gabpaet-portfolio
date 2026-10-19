@@ -149,7 +149,10 @@ export function PencilLayer() {
             // Icon-only on phones, so the bar keeps a 16px gutter at 375px.
             <button
               type="button"
-              onClick={() => setStrokes([])}
+              onClick={() => {
+                pencilSound.erase();
+                setStrokes([]);
+              }}
               aria-label="Erase"
               className={buttonClasses("secondary", "max-sm:w-11 max-sm:px-0", "sm")}
             >

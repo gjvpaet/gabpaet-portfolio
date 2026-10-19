@@ -51,13 +51,26 @@ function filter(context: AudioContext, type: BiquadFilterType, frequency: number
   return node;
 }
 
+// The shared context and noise, made on first use (always inside a user
+// gesture: a pointerdown or the Erase click).
+function audio(): { context: AudioContext; grain: AudioBuffer } | null {
+  if (typeof window === "undefined" || !("AudioContext" in window)) return null;
+  ctx ??= new AudioContext();
+  if (ctx.state === "suspended") void ctx.resume();
+  noise ??= makeNoise(ctx);
+  return { context: ctx, grain: noise };
+}
+
+/** The eraser: three rubs, back and forth, each a little lighter. */
+const RUBS = [1, 0.8, 0.55];
+const RUB_S = 0.11;
+const RUB_GAP_S = 0.025;
+const ERASE_LOUDNESS = 0.07;
+
 export const pencilSound = {
   /** Pencil touches the paper. */
   start() {
-    if (typeof window === "undefined" || !("AudioContext" in window)) return;
-    ctx ??= new AudioContext();
-    if (ctx.state === "suspended") void ctx.resume();
-    noise ??= makeNoise(ctx);
+    if (!audio() || !ctx || !noise) return;
     pencilSound.stop();
 
     const source = ctx.createBufferSource();
@@ -102,6 +115,41 @@ export const pencilSound = {
   rest() {
     if (!ctx || !voice) return;
     voice.level.gain.setTargetAtTime(0, ctx.currentTime, 0.04);
+  },
+
+  /** Erase: a rubber eraser scrubbing the page, duller and lower than the
+      pencil (band-pass 1 to 1.5kHz, nothing past 4kHz, a rubbery body at
+      280Hz). The band slides up on one rub and down on the next, so the
+      strokes read as back and forth. About 0.4s. */
+  erase() {
+    const a = audio();
+    if (!a) return;
+    const { context, grain } = a;
+    const source = context.createBufferSource();
+    source.buffer = grain;
+    source.loop = true;
+    const level = context.createGain();
+    level.gain.value = 0;
+
+    const band = filter(context, "bandpass", 1200, 0.8);
+    source.connect(band).connect(filter(context, "lowpass", 4000)).connect(level);
+    const body = context.createGain();
+    body.gain.value = 2;
+    source.connect(filter(context, "bandpass", 280, 1)).connect(body).connect(level);
+    level.connect(context.destination);
+
+    const t0 = context.currentTime + 0.01;
+    RUBS.forEach((weight, i) => {
+      const t = t0 + i * (RUB_S + RUB_GAP_S);
+      const [from, to] = i % 2 ? [1500, 1000] : [1000, 1500];
+      level.gain.setValueAtTime(0, t);
+      level.gain.linearRampToValueAtTime(ERASE_LOUDNESS * weight, t + RUB_S * 0.3);
+      level.gain.setTargetAtTime(0, t + RUB_S * 0.65, RUB_S * 0.2);
+      band.frequency.setValueAtTime(from, t);
+      band.frequency.linearRampToValueAtTime(to, t + RUB_S);
+    });
+    source.start(t0, Math.random() * 2.5);
+    source.stop(t0 + RUBS.length * (RUB_S + RUB_GAP_S) + 0.15);
   },
 
   /** Pencil lifted. */
