@@ -98,7 +98,7 @@ export function PencilLayer() {
     const dt = e.timeStamp - last.t;
     if (dt > 0) {
       const speed = Math.hypot(e.clientX - last.x, e.clientY - last.y) / dt;
-      pencilSound.move(speed, e.pointerType === "pen" ? e.pressure : 0.5);
+      pencilSound.move(speed, e.pointerType === "pen" ? e.pressure : 0.5, e.clientX, e.clientY);
       lastMove.current = { x: e.clientX, y: e.clientY, t: e.timeStamp };
     }
   }

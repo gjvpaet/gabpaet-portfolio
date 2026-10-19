@@ -17,6 +17,25 @@ let ctx: AudioContext | null = null;
 let voice: { source: AudioBufferSourceNode; sheen: BiquadFilterNode; level: GainNode } | null = null;
 let restTimer: ReturnType<typeof setTimeout> | undefined;
 
+/** A new stroke starts when the hand turns further than this (radians, about 55deg). */
+const TURN = 0.95;
+/** How far (px) the hand travels before its heading counts, so jitter does not. */
+const HEADING_PX = 6;
+/** The current stroke: where its heading was last measured, its last two
+    headings, and when it began. */
+let stroke: { x: number; y: number; headings: number[]; start: number; settle: number } | null = null;
+
+// Freeze a parameter where it is now, so a new shape can start from there.
+function hold(param: AudioParam, at: number) {
+  if (typeof param.cancelAndHoldAtTime === "function") {
+    param.cancelAndHoldAtTime(at);
+  } else {
+    const value = param.value;
+    param.cancelScheduledValues(at);
+    param.setValueAtTime(value, at);
+  }
+}
+
 /** The eraser: three rubs, back and forth, each a little lighter. */
 const RUBS = [1, 0.8, 0.55];
 const RUB_S = 0.11;
@@ -130,14 +149,57 @@ export const pencilSound = {
     voice = { source, sheen, level };
   },
 
-  /** Pencil moved: `speed` in px per ms, `pressure` 0 to 1 (0.5 for a mouse). */
-  move(speed: number, pressure = 0.5) {
+  /** Pencil moved to (`x`, `y`) at `speed` px per ms, `pressure` 0 to 1
+      (0.5 for a mouse). Each stroke sounds like a stroke of the check mark
+      (`check()`): when the hand turns a corner (a new stroke of a letter or a
+      scribble) the sound dips, swells past the hand's level and settles,
+      while the graphite brightens; a long stroke eases down to 60%. Between
+      corners it follows the speed. */
+  move(speed: number, pressure: number, x: number, y: number) {
     if (!ctx || !voice) return;
-    const pace = Math.min(speed / FULL_SPEED, 1);
     const now = ctx.currentTime;
-    voice.level.gain.setTargetAtTime(LOUDNESS * pace ** 0.7 * (0.6 + pressure * 0.8), now, 0.03);
-    // A quicker stroke opens up a little lower.
-    voice.sheen.frequency.setTargetAtTime(1000 - pace * 300, now, 0.06);
+    // Strokes are timed on the page clock: the audio clock stands still
+    // while the context is still waking up.
+    const wall = performance.now() / 1000;
+    const pace = Math.min(speed / FULL_SPEED, 1);
+    const target = LOUDNESS * pace ** 0.7 * (0.6 + pressure * 0.8);
+
+    let turned = false;
+    if (!stroke) {
+      stroke = { x, y, headings: [], start: wall, settle: 0 };
+      turned = true;
+    } else if (Math.hypot(x - stroke.x, y - stroke.y) >= HEADING_PX) {
+      // Against the heading two steps back: a sharp corner often falls
+      // across two samples, half the turn in each, while a gentle curve
+      // (the loop of an "o") still stays under the threshold.
+      const heading = Math.atan2(y - stroke.y, x - stroke.x);
+      const before = stroke.headings[0];
+      if (before !== undefined) {
+        let turn = Math.abs(heading - before);
+        if (turn > Math.PI) turn = 2 * Math.PI - turn;
+        turned = turn > TURN && wall - stroke.start > 0.04;
+      }
+      stroke.headings = turned ? [] : [...stroke.headings, heading].slice(-2);
+      stroke.x = x;
+      stroke.y = y;
+    }
+
+    const { level, sheen } = voice;
+    if (turned) {
+      stroke.start = wall;
+      stroke.settle = wall + 0.045;
+      hold(level.gain, now);
+      level.gain.linearRampToValueAtTime(target * 0.15, now + 0.012);
+      level.gain.linearRampToValueAtTime(target * 1.2, now + 0.045);
+      level.gain.setTargetAtTime(target * 0.7, now + 0.045, 0.08);
+      hold(sheen.frequency, now);
+      sheen.frequency.linearRampToValueAtTime(1000, now + 0.012);
+      sheen.frequency.linearRampToValueAtTime(750, now + 0.11);
+    } else if (wall >= stroke.settle) {
+      const age = wall - stroke.start;
+      level.gain.setTargetAtTime(target * (0.6 + 0.4 * Math.exp(-age / 0.12)), now, 0.03);
+    }
+
     // No move events while the hand holds still: go quiet after a beat.
     clearTimeout(restTimer);
     restTimer = setTimeout(pencilSound.rest, 70);
@@ -145,6 +207,8 @@ export const pencilSound = {
 
   /** Pencil paused on the paper: fade to silence but keep the voice. */
   rest() {
+    // Moving again after a pause starts a fresh stroke.
+    stroke = null;
     if (!ctx || !voice) return;
     voice.level.gain.setTargetAtTime(0, ctx.currentTime, 0.04);
   },
@@ -215,6 +279,7 @@ export const pencilSound = {
   /** Pencil lifted. */
   stop() {
     clearTimeout(restTimer);
+    stroke = null;
     if (!ctx || !voice) return;
     const { source, level } = voice;
     voice = null;
