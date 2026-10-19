@@ -10,11 +10,13 @@ import { Illustration } from "@/components/illustration";
 import { StickerBoard } from "@/components/home/sticker-board";
 import { HowIBuildNapkin } from "@/components/napkins/how-i-build";
 import { PaperCard } from "@/components/paper-card";
+import { ThisMonth } from "@/components/this-month";
 import { profile } from "@/content/profile";
+import { thisMonth } from "@/lib/dates";
 
 const rise = (i: number) => ({ "--i": i }) as CSSProperties;
 
-// Spec 7.1: split hero. Left: the location line, a "hi, I'm" note, the
+// Spec 7.1: split hero. Left: a dated entry header, a "hi, I'm" note, the
 // name, the crossed-out draft and the circled title, one line, two buttons.
 // Right: the napkin card with taped logo stickers around it. The pen draws in
 // after the text rises.
@@ -23,11 +25,15 @@ export function Hero() {
     <HeroPaper>
       <div className="grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-end lg:gap-14">
         <div className="min-w-0">
-          {/* Where I live, as a fact (structure layer): small caps and a thin
-              rule running off to the right. */}
-          <p className="type-eyebrow rise mb-7 flex items-center gap-4 text-ink-soft" style={rise(0)}>
-            <span className="shrink-0">{profile.location}</span>
-            <span aria-hidden="true" className="h-[1.5px] max-w-72 flex-1 bg-ink-soft/40" />
+          {/* The top of a dated notebook entry: where I am, and this month,
+              over a 2px ink rule. Facts, so structure layer. From lg it stops
+              16px short of the column, clear of the stickers on the right. */}
+          <p
+            className="rise mb-7 flex items-baseline justify-between gap-4 border-b-2 border-ink pb-2 text-[0.9375rem] leading-tight lg:mr-4"
+            style={rise(0)}
+          >
+            <span className="font-semibold">{profile.location}</span>
+            <ThisMonth built={thisMonth()} className="shrink-0 font-medium text-ink-soft" />
           </p>
           <div className="rise mb-1.5 flex items-end gap-1.5" style={rise(0)}>
             <p className="type-hand-lg -rotate-3 text-pen">hi, I&apos;m</p>

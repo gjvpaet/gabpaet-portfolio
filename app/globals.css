@@ -218,15 +218,6 @@ h3 {
   line-height: 1;
 }
 
-/* The hero's location line (after aahil-khan.xyz): small, letter-spaced caps. */
-@utility type-eyebrow {
-  font-weight: 600;
-  font-size: 0.8125rem;
-  line-height: 1;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
 @utility type-chip {
   font-weight: 500;
   font-size: 0.875rem;
