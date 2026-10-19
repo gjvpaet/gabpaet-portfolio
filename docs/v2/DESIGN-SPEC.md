@@ -302,6 +302,8 @@ Tech label: 1.5px `--ink` border, pill, padding `3px 12px`, Chip type, static. T
 
 v2 behaviour (Clipboard API, select-text fallback "Press ⌘C to copy", `aria-live`), restyled as `secondary`.
 
+**Sound** (added 2026-10-19): when the copy succeeds, the pencil ticks it off: `pencilSound.check()` (`lib/pencil-sound.ts`) draws a check mark in the pencil's own voice, a short stroke down (50ms) and a longer one up (110ms, starting 65ms later), each swelling and fading, peak gain 0.06, with the graphite opening as the stroke speeds up. About 0.18s. The audio wakes inside the click (`prepare()`), since the tick only plays after the Clipboard API answers. No sound for the "Press ⌘C" fallback.
+
 ### 6.14 `Illustration` (server)
 
 - Traced ink illustrations (section 10.3) are rendered as **CSS masks**: each layer is a span with `mask: url(/illustrations/<name>-<layer>.svg) center / contain no-repeat` and a token background, so they re-ink in dark mode and stay cacheable. Layers: `ink` (`--ink`, always), `pen` (`--pen`, one element: the lamp's rays, the plane's dotted path) and `fill` (`--sheet`, an opaque silhouette for art that overlaps something: the hero hand). The layers stack in one grid cell, so the root is a plain `div` that callers position freely.

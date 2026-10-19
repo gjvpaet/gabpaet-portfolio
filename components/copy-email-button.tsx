@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { buttonClasses } from "@/components/button";
+import { pencilSound } from "@/lib/pencil-sound";
 
 type Status = "idle" | "copied" | "manual";
 
@@ -48,8 +49,11 @@ export function CopyEmailButton({
   }
 
   async function copy() {
+    // Audio must wake inside the click; the tick plays once the copy lands.
+    pencilSound.prepare();
     try {
       await navigator.clipboard.writeText(email);
+      pencilSound.check();
       show("copied");
     } catch {
       selectAddress();

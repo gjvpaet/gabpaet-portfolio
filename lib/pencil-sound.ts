@@ -64,6 +64,38 @@ function slide(context: AudioContext, grain: AudioBuffer, at: number, length: nu
   source.stop(at + length + 0.02);
 }
 
+// The pencil's voice: looping noise through the graphite (900Hz up, a +5dB
+// sheen at 11.5kHz 1.2 octaves wide, rolled off past 15kHz) and the body (a
+// wide band, Q 0.7, around 550Hz, 12dB up), into a level that starts silent.
+function graphite(context: AudioContext, grain: AudioBuffer) {
+  const source = context.createBufferSource();
+  source.buffer = grain;
+  source.loop = true;
+  const level = context.createGain();
+  level.gain.value = 0;
+
+  const sheen = filter(context, "highpass", 900);
+  source
+    .connect(sheen)
+    .connect(filter(context, "peaking", 11500, 1.17, 5))
+    .connect(filter(context, "lowpass", 15000))
+    .connect(level);
+
+  const body = context.createGain();
+  body.gain.value = 4;
+  source.connect(filter(context, "bandpass", 550, 0.7)).connect(body).connect(level);
+
+  level.connect(context.destination);
+  return { source, sheen, level };
+}
+
+/** A check mark: a short stroke down, then a longer, quicker one up. */
+const CHECK_STROKES = [
+  { at: 0, length: 0.05, peak: 0.6 },
+  { at: 0.065, length: 0.11, peak: 1 },
+];
+const CHECK_LOUDNESS = 0.06;
+
 export const pencilSound = {
   /** Picking the pencil up: it slides off the desk, then a light, high tick
       as it leaves the wood. About 0.1s. */
@@ -93,27 +125,7 @@ export const pencilSound = {
     pencilSound.stop();
     ctx = a.context;
 
-    const source = ctx.createBufferSource();
-    source.buffer = a.grain;
-    source.loop = true;
-    const level = ctx.createGain();
-    level.gain.value = 0;
-
-    // The graphite: 900Hz up, a +5dB sheen at 11.5kHz (1.2 octaves wide),
-    // rolled off past 15kHz.
-    const sheen = filter(ctx, "highpass", 900);
-    source
-      .connect(sheen)
-      .connect(filter(ctx, "peaking", 11500, 1.17, 5))
-      .connect(filter(ctx, "lowpass", 15000))
-      .connect(level);
-
-    // The body: a wide band (Q 0.7) around 550Hz, 12dB up.
-    const body = ctx.createGain();
-    body.gain.value = 4;
-    source.connect(filter(ctx, "bandpass", 550, 0.7)).connect(body).connect(level);
-
-    level.connect(ctx.destination);
+    const { source, sheen, level } = graphite(ctx, a.grain);
     source.start(0, Math.random() * 2.5);
     voice = { source, sheen, level };
   },
@@ -170,6 +182,34 @@ export const pencilSound = {
     });
     source.start(t0, Math.random() * 2.5);
     source.stop(t0 + RUBS.length * (RUB_S + RUB_GAP_S) + 0.15);
+  },
+
+  /** Ticking something off (Copy email): the pencil draws a quick check
+      mark, two strokes about 0.18s in all. Call `prepare()` first, inside the
+      click, if the tick itself only plays after an await. */
+  check() {
+    const a = audio();
+    if (!a) return;
+    const { context, grain } = a;
+    const { source, sheen, level } = graphite(context, grain);
+    const t0 = context.currentTime + 0.01;
+    for (const stroke of CHECK_STROKES) {
+      const t = t0 + stroke.at;
+      level.gain.setValueAtTime(0, t);
+      level.gain.linearRampToValueAtTime(CHECK_LOUDNESS * stroke.peak, t + stroke.length * 0.35);
+      level.gain.linearRampToValueAtTime(0, t + stroke.length);
+      // Each stroke speeds up as it goes, so the graphite opens a little.
+      sheen.frequency.setValueAtTime(1000, t);
+      sheen.frequency.linearRampToValueAtTime(750, t + stroke.length);
+    }
+    const end = CHECK_STROKES.at(-1)!;
+    source.start(t0, Math.random() * 2.5);
+    source.stop(t0 + end.at + end.length + 0.05);
+  },
+
+  /** Wake the audio inside a user gesture, for a sound that follows later. */
+  prepare() {
+    audio();
   },
 
   /** Pencil lifted. */
