@@ -55,7 +55,7 @@ const yearsShipping = yearsSince("2017-05");
 export const profile = {
   name: "Gabriel Joshua Paet",
   shortName: "Gabriel Paet",
-  role: "Senior Programmer",
+  role: "Software Developer",
   location: "Pasay City, Philippines",
   address: { locality: "Pasay City", region: "NCR", country: "PH" },
   yearsShipping,
@@ -70,7 +70,7 @@ export const profile = {
   resumePdf: "/gabriel-paet-resume.pdf",
 
   /** Search results and link previews. */
-  metaDescription: `Senior programmer with ${yearsShipping} years building web and mobile applications, workflow automation and cloud infrastructure. Based in Pasay City, Philippines.`,
+  metaDescription: `Software developer with ${yearsShipping} years building web and mobile applications, workflow automation and cloud infrastructure. Based in Pasay City, Philippines.`,
 
   /** Crossed out above the title in the hero (spec 5.2): the joke draft. */
   heroDraft: "Full-stack ninja",

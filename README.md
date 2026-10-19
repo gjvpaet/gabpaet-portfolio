@@ -1,6 +1,6 @@
 # gabpaet.dev
 
-Personal portfolio for **Gabriel Joshua Paet**, senior programmer.
+Personal portfolio for **Gabriel Joshua Paet**, software developer.
 
 This branch (`v2`) is a rebuild styled as a working engineering notebook (clean type with a hand-drawn pen layer): one scrolling home page (experience, projects, about, contact), short case-study pages for side projects, and a printable `/resume`. The design spec lives in [`docs/v2/DESIGN-SPEC.md`](docs/v2/DESIGN-SPEC.md).
 

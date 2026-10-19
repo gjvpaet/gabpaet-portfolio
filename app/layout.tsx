@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   keywords: [
     "Gabriel Joshua Paet",
     "gabpaet",
-    "senior programmer",
+    "software developer",
     "full-stack developer",
     "Next.js",
     "React",
