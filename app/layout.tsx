@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Footer } from "@/components/footer";
 import { InkFilters } from "@/components/ink/ink-filters";
+import { PenCursor } from "@/components/pen-cursor";
 import { PencilLayer } from "@/components/pencil-layer";
 import { SplashSignature } from "@/components/splash-signature";
 import { Nav } from "@/components/nav";
@@ -165,6 +166,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <Footer />
         <PencilLayer />
+        <PenCursor />
         <Analytics />
         <SpeedInsights />
       </body>

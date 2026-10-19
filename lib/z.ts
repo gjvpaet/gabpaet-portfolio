@@ -10,4 +10,5 @@ export const z = {
   toast: 60,
   grain: 65,
   splash: 70,
+  cursor: 80,
 } as const;

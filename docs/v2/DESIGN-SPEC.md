@@ -163,7 +163,7 @@ Highlighter swipes use an uneven radius (`3px 9px 4px 8px`) so they read as a ma
 
 ### 4.6 Z-index scale (`lib/z.ts`, mirrored as `--z-*`)
 
-`base 0` · `sticker 10` · `sticker-dragging 20` · `pencil 30` · `nav 40` · `mobile-menu 50` · `toast 60` · `grain 65` · `splash 70`.
+`base 0` · `sticker 10` · `sticker-dragging 20` · `pencil 30` · `nav 40` · `mobile-menu 50` · `toast 60` · `grain 65` · `splash 70` · `cursor 80`.
 
 The grain sits above everything but the splash (it is click-through), so taped-in paper and the nav carry the same texture as the page. It has no blend mode: a blended fixed layer would repaint what is under it on every scroll.
 
@@ -183,7 +183,7 @@ Every animated component is a `"use client"` leaf, or plain CSS. Everything coll
 | **Lift** (buttons, stickers, paper links) | Hover `translateY(-2px) rotate(-0.6deg)`; active `translateY(1px) scale(.98)`; 0.25s `cubic-bezier(.16,1,.3,1)`; hover only under `(hover: hover)`. | Tactile feedback. |
 | **Copy email** | Label "Copy email" → "Copied" with a 150ms crossfade; reverts after 2s. | State change. |
 
-Banned: marquees, scroll listeners, parallax, infinite loops, custom cursors, GSAP, animating grain or any full-section filter.
+Banned: marquees, scroll listeners, parallax, infinite loops, GSAP, animating grain or any full-section filter.
 
 ### 5.2 Easter eggs
 
@@ -196,6 +196,19 @@ Banned: marquees, scroll listeners, parallax, infinite loops, custom cursors, GS
 | **Taped stickers** | Six hand-traced logo stickers taped around the napkin card, draggable (6.6). |
 | **Hidden margin notes** | At most 2 on the whole site: a short handwritten aside that appears (draws in) on hover or focus of its anchor. Draft: on the Tong Masters "Play it" link, "bring two friends". VERIFY. |
 | **Desk lamp** | The theme toggle is a desk lamp (6.7). |
+
+### 5.3 Pen cursor (`components/pen-cursor.tsx`, client)
+
+Added 2026-10-19 (option A of the cursor playground; inspired by aahil-khan.xyz, which uses a plain dot and circle).
+
+- **Who gets it:** mouse and trackpad only (`(hover: hover) and (pointer: fine)` and a `pointerType` of `mouse`). The component adds `html.has-pen-cursor` on the first mouse move, and only then does CSS hide the system cursor, so touch, pen, keyboard and no-JS visitors never lose it. Leaving the window hides the dot; it reappears where the pointer comes back.
+- **Resting:** an 8px `--pen` dot with a 1.5px `--paper` halo (visible over ink buttons and screenshots). It eases after the pointer (exponential follow, 45ms time constant, written straight to `transform` in a `requestAnimationFrame` loop that stops once it catches up; never React state).
+- **Over a link or button** (`a[href]`, `button`, `[role=button]`, `summary`, `label[for]`): the dot shrinks away and the "gp" mark's `ring` (`lib/ink.ts`, rough `#ink-a`, 40px) draws around the pointer in 0.35s, and undraws on the way out.
+- **Over text** (an element with words of its own): the dot becomes a 2px caret, its height 1.15 × the element's font size (14 to 56px).
+- **Pressing:** the dot scales to 0.7 and the ring to 0.88.
+- **System cursor instead:** fields, `select`, `contenteditable`, draggable stickers (`grab` / `grabbing`), disabled controls (`not-allowed`), while the pencil is out (its crosshair), and while the splash signs.
+- **Reduced motion:** the dot sits exactly on the pointer, and every state change is instant.
+- `z cursor`, `aria-hidden`, `pointer-events: none`, hidden in print.
 
 ---
 
