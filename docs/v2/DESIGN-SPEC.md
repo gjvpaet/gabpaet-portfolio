@@ -355,6 +355,7 @@ Footer
 ### 7.1 Hero (`<section aria-labelledby="hero-name">`)
 
 - Left column (`lg`: 1.15fr):
+  0. Location line (added 2026-10-19, after aahil-khan.xyz): `profile.location` ("Metro Manila, Philippines"; it was "Pasay City, Philippines" everywhere until then, and the JSON-LD keeps Pasay City as the locality with Metro Manila as the region) in `type-eyebrow` (600, 13px, letter-spacing 0.16em, caps), `--ink-soft`, followed by a 1.5px `--ink-soft` 40% rule up to 18rem that runs off to the right. Structure layer: it is a fact. Rises with the note below it.
   1. Hand note **"hi, I'm"** (`--pen`, rotated -3deg) with a small `InkArrow down-right` toward the name.
   2. **H1:** `profile.name` ("Gabriel Joshua Paet") at Display. It wraps naturally ("Gabriel / Joshua Paet" at 1280 and on phones).
   3. Title row: `profile.heroDraft` ("Full-stack ninja") in Hand `--ink-soft` with `InkStrike`, then **`profile.role`** ("Software Developer", changed from "Senior Programmer" on 2026-10-19; the job titles under Experience stay as they were, Bricolage 650, 28px) with `InkCircle` in `--pen`.
