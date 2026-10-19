@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import { buttonClasses } from "@/components/button";
 import { Tape } from "@/components/ink/tape";
 import { pencil, usePencil } from "@/lib/pencil";
+import { pencilSound } from "@/lib/pencil-sound";
 
 type Point = [x: number, y: number, pressure: number];
 
@@ -30,8 +31,9 @@ function toPath(points: Point[]): string {
 }
 
 // The pencil easter egg (spec 5.2, 6.10). While the pencil is out, a layer
-// over the whole document catches the pointer and draws ink strokes; a pinned
-// bar holds the way out. Doodles stay when the pencil goes down, until Erase
+// over the whole document catches the pointer and draws ink strokes, with a
+// soft scratch that follows the speed of the hand (lib/pencil-sound.ts); a
+// pinned bar holds the way out. Doodles stay when the pencil goes down, until Erase
 // or the next page. Nothing is saved.
 //
 // The live stroke is written straight to its <path> through a ref, so drawing
@@ -42,6 +44,8 @@ export function PencilLayer() {
   const [strokes, setStrokes] = useState<string[]>([]);
   const [height, setHeight] = useState(0);
   const live = useRef<Point[] | null>(null);
+  // Where and when the pointer last was, for the scratch's speed.
+  const lastMove = useRef({ x: 0, y: 0, t: 0 });
   const livePath = useRef<SVGPathElement>(null);
 
   // A new page starts clean, with the pencil down.
@@ -58,6 +62,12 @@ export function PencilLayer() {
     observer.observe(document.body);
     return () => observer.disconnect();
   }, []);
+
+  // Putting the pencil down (or leaving the page) mid-stroke silences it.
+  useEffect(() => {
+    if (!active) pencilSound.stop();
+  }, [active]);
+  useEffect(() => () => pencilSound.stop(), []);
 
   // Esc puts the pencil down.
   useEffect(() => {
@@ -76,15 +86,25 @@ export function PencilLayer() {
     e.currentTarget.setPointerCapture(e.pointerId);
     live.current = [point(e)];
     livePath.current?.setAttribute("d", toPath(live.current));
+    lastMove.current = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+    pencilSound.start();
   }
 
   function onPointerMove(e: ReactPointerEvent<SVGSVGElement>) {
     if (!live.current) return;
     live.current.push(point(e));
     livePath.current?.setAttribute("d", toPath(live.current));
+    const last = lastMove.current;
+    const dt = e.timeStamp - last.t;
+    if (dt > 0) {
+      const speed = Math.hypot(e.clientX - last.x, e.clientY - last.y) / dt;
+      pencilSound.move(speed, e.pointerType === "pen" ? e.pressure : 0.5);
+      lastMove.current = { x: e.clientX, y: e.clientY, t: e.timeStamp };
+    }
   }
 
   function onPointerUp() {
+    pencilSound.stop();
     if (!live.current) return;
     const d = toPath(live.current);
     live.current = null;
