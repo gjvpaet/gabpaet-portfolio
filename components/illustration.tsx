@@ -14,7 +14,7 @@ const ART = {
   cards: { w: 2616, h: 1795, layers: ["ink"] },
   lamp: { w: 1934, h: 2380, layers: ["ink", "pen"] },
   plane: { w: 1427, h: 424, layers: ["ink", "pen"] },
-  nap: { w: 2229, h: 883, layers: ["ink", "pen"] },
+  nap: { w: 2231, h: 940, layers: ["ink", "pen"] },
 } satisfies Record<string, { w: number; h: number; layers: Layer[] }>;
 
 export type IllustrationName = keyof typeof ART;
