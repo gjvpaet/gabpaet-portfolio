@@ -738,6 +738,16 @@ html.has-pen-cursor :is(:disabled, [aria-disabled="true"]) {
 .pen-cursor[data-on]:not([data-state="native"]) {
   opacity: 1;
 }
+/* On a purple button the purple ring would vanish: draw it in the button's
+   own label colour (near-white in light mode, the night paper in dark), with
+   a hairline of the button colour so the part past the button's edge still
+   shows on the paper. */
+.pen-cursor[data-on-btn] {
+  color: var(--on-btn);
+}
+.pen-cursor[data-on-btn] > .pen-cursor-ring {
+  filter: drop-shadow(0 0 0.75px var(--btn)) drop-shadow(0 0 0.75px var(--btn));
+}
 html.splash-signing .pen-cursor {
   opacity: 0;
 }

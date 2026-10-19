@@ -16,10 +16,35 @@ type State = "" | "link" | "text" | "native";
 /** Seconds for the dot to close most of the gap to the pointer. */
 const FOLLOW = 0.045;
 
-function classify(target: EventTarget | null): { state: State; caret?: number } {
+// A colour as [r, g, b, alpha]: "#rrggbb" from a token, "rgb(a)(...)" from
+// getComputedStyle.
+function rgba(value: string): number[] | null {
+  const v = value.trim();
+  if (v.startsWith("#") && v.length === 7) {
+    return [1, 3, 5].map((i) => parseInt(v.slice(i, i + 2), 16)).concat(1);
+  }
+  const n = v.match(/[\d.]+/g)?.map(Number);
+  return n && n.length >= 3 ? [n[0], n[1], n[2], n[3] ?? 1] : null;
+}
+
+// Does this control sit on the pen's own purple (a primary button)? The
+// purple ring would vanish there, so it takes the button's label colour.
+function onPenPurple(control: Element): boolean {
+  const root = getComputedStyle(document.documentElement);
+  const purples = ["--pen", "--btn"].map((name) => rgba(root.getPropertyValue(name)));
+  for (let node: Element | null = control; node; node = node.parentElement) {
+    const bg = rgba(getComputedStyle(node).backgroundColor);
+    if (!bg || bg[3] === 0) continue;
+    return purples.some((p) => p && Math.hypot(p[0] - bg[0], p[1] - bg[1], p[2] - bg[2]) < 48);
+  }
+  return false;
+}
+
+function classify(target: EventTarget | null): { state: State; caret?: number; onButton?: boolean } {
   if (!(target instanceof Element)) return { state: "" };
   if (target.closest(NATIVE)) return { state: "native" };
-  if (target.closest(INTERACTIVE)) return { state: "link" };
+  const control = target.closest(INTERACTIVE);
+  if (control) return { state: "link", onButton: onPenPurple(control) };
   // Text: the element holds words of its own, as the browser's I-beam does.
   const hasText = Array.from(target.childNodes).some(
     (n) => n.nodeType === Node.TEXT_NODE && n.textContent?.trim(),
@@ -31,9 +56,10 @@ function classify(target: EventTarget | null): { state: State; caret?: number } 
 
 // The pen cursor (spec 5.3): on a mouse or trackpad the arrow becomes a
 // small --pen dot that eases after the pointer. Over a link or button it
-// draws the "gp" mark's ring around itself; over text it becomes a caret
-// sized to the type. Fields, stickers and the pencil keep the system cursor
-// (while the pencil is out, everywhere).
+// draws the "gp" mark's ring around itself (in the label colour on a purple
+// button); over text it becomes a caret sized to the type. Fields, stickers
+// and the pencil keep the system cursor (while the pencil is out,
+// everywhere).
 // Position is written straight to the element each frame, never to React.
 export function PenCursor() {
   const root = useRef<HTMLDivElement>(null);
@@ -83,9 +109,14 @@ export function PenCursor() {
       el.toggleAttribute("data-on", pen);
     };
 
+    // Only when the pointer reaches a new element: classifying reads styles.
+    let under: EventTarget | null = null;
     const setState = (target: EventTarget | null) => {
-      const { state, caret } = classify(target);
+      if (target === under) return;
+      under = target;
+      const { state, caret, onButton } = classify(target);
       if (el.dataset.state !== state) el.dataset.state = state;
+      el.toggleAttribute("data-on-btn", !!onButton);
       if (caret) el.style.setProperty("--caret", `${Math.round(caret)}px`);
     };
 
