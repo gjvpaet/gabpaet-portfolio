@@ -702,7 +702,7 @@ html.splash .splash-sheet[data-phase="lift"] {
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: ink-draw var(--dur) cubic-bezier(0.4, 0, 0.6, 1) var(--d) forwards paused;
+  animation: ink-draw var(--dur) var(--ease) var(--d) forwards paused;
 }
 .splash-name {
   position: relative;

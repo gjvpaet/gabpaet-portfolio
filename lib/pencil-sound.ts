@@ -26,7 +26,7 @@ const HEADING_PX = 6;
 let stroke: { x: number; y: number; headings: number[]; start: number; settle: number } | null = null;
 
 // Freeze a parameter where it is now, so a new shape can start from there.
-function hold(param: AudioParam, at: number) {
+export function hold(param: AudioParam, at: number) {
   if (typeof param.cancelAndHoldAtTime === "function") {
     param.cancelAndHoldAtTime(at);
   } else {
@@ -86,7 +86,8 @@ function slide(context: AudioContext, grain: AudioBuffer, at: number, length: nu
 // The pencil's voice: looping noise through the graphite (900Hz up, a +5dB
 // sheen at 11.5kHz 1.2 octaves wide, rolled off past 15kHz) and the body (a
 // wide band, Q 0.7, around 550Hz, 12dB up), into a level that starts silent.
-function graphite(context: AudioContext, grain: AudioBuffer) {
+// The splash's sketching and writing use it too (lib/splash-sound.ts).
+export function graphite(context: AudioContext, grain: AudioBuffer) {
   const source = context.createBufferSource();
   source.buffer = grain;
   source.loop = true;

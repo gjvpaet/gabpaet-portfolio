@@ -2,14 +2,16 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
-import { writtenName } from "@/lib/written-name";
 import { SPLASH_HOLD_MS, SPLASH_LIFT_MS, SPLASH_PORTRAIT, SPLASH_SIGN_MS } from "@/lib/splash";
+import { splashSound } from "@/lib/splash-sound";
+import { writtenName } from "@/lib/written-name";
 
 // Both clocks start once the portrait's ink has loaded (s). The portrait
 // shades in first; the pen touches down only after it is fully drawn, plus a
 // short beat, so the eye goes to one thing at a time.
 const SHADE_START = 0.1;
 const SHADE_DRAW = 1.2;
+const SHADE_EASE: [number, number, number, number] = [0.4, 0, 0.6, 1];
 const SIGN_START = SHADE_START + SHADE_DRAW + 0.15;
 const SIGN_DRAW = SPLASH_SIGN_MS / 1000 - SIGN_START;
 const TOTAL_LENGTH = writtenName.strokes.reduce((sum, s) => sum + s.length, 0);
@@ -27,7 +29,8 @@ const STROKES = writtenName.strokes.reduce<Array<{ d: string; delay: number; dur
 // pencil that shades it in: one loose zigzag of thick hatch strokes from top
 // to bottom, drawn as an SVG mask over the ink.
 const { w: PW, h: PH } = SPLASH_PORTRAIT;
-const HATCH = Array.from({ length: 16 }, (_, i) => {
+const HATCH_POINTS = 16;
+const HATCH = Array.from({ length: HATCH_POINTS }, (_, i) => {
   const y = -0.06 * PH + i * 0.072 * PH;
   return i % 2 ? `${Math.round(1.06 * PW)} ${Math.round(y + 0.14 * PH)}` : `${Math.round(-0.06 * PW)} ${Math.round(y)}`;
 }).join("L");
@@ -78,6 +81,7 @@ export function SplashName() {
     const lift = () => {
       if (lifted) return;
       lifted = true;
+      splashSound.stop();
       timers.current.forEach(clearTimeout);
       aim();
       setPhase("lift");
@@ -91,9 +95,22 @@ export function SplashName() {
     const events = ["pointerdown", "keydown", "wheel", "touchmove"] as const;
     events.forEach((type) => window.addEventListener(type, lift, { passive: true }));
 
+    splashSound.prepare();
     const portrait = new Image();
     portrait.src = SPLASH_PORTRAIT.src;
-    const ink = () => setInked(true);
+    // Both clocks start here; so does the pencil's sound, where the browser
+    // allows it (lib/splash-sound.ts).
+    let started = false;
+    const ink = () => {
+      if (started || lifted) return;
+      started = true;
+      setInked(true);
+      splashSound.play(
+        performance.now(),
+        { delay: SHADE_START, duration: SHADE_DRAW, strokes: HATCH_POINTS - 1, ease: SHADE_EASE },
+        STROKES,
+      );
+    };
     portrait.decode().then(ink, ink);
     timers.current.push(setTimeout(ink, 600));
 
@@ -107,6 +124,7 @@ export function SplashName() {
     timers.current.push(setTimeout(lift, SPLASH_SIGN_MS + SPLASH_HOLD_MS + 1500));
 
     return () => {
+      splashSound.stop();
       timers.current.forEach(clearTimeout);
       events.forEach((type) => window.removeEventListener(type, lift));
     };
@@ -126,7 +144,13 @@ export function SplashName() {
                 pathLength={1}
                 strokeWidth={0.16 * PW}
                 className="splash-hatch"
-                style={{ "--d": `${SHADE_START}s`, "--dur": `${SHADE_DRAW}s` } as CSSProperties}
+                style={
+                  {
+                    "--d": `${SHADE_START}s`,
+                    "--dur": `${SHADE_DRAW}s`,
+                    "--ease": `cubic-bezier(${SHADE_EASE.join(", ")})`,
+                  } as CSSProperties
+                }
               />
             </mask>
             {/* The crop at mid-chest trails off instead of stopping hard. */}
