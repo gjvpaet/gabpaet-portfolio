@@ -270,7 +270,7 @@ Per-project sketches drawn in SVG with pen primitives plus `<text>` labels in Sh
 - Sticky, 72px, `--paper` fill. No bottom rule while scrolling, so it never competes with the progress line; a 2px ink rule shows only while the phone menu sheet is open. (Until 2026-10-18 the rule appeared once the hero left the view.)
 - Scroll progress: a 3px `--pen` line (the `progress` wave in `lib/ink.ts`, stretched to the full width) draws along the bar's bottom edge from 0 at the top of the page to full at the bottom. Pure CSS: a scroll-driven animation (`animation-timeline: scroll(root block)`) on its `stroke-dashoffset`, behind `@supports`, so there is no scroll listener. Where unsupported (Firefox without the flag) or on a page that cannot scroll, the line stays hidden. Hidden in print.
 - Left: the "gp" mark linking to `/`, the same as the favicon: a 48px `--pen` `ring` (draws in on load, boils on hover) around "gp" in Shantell 700, 22px, `--ink`. `aria-label` "Gabriel Paet, home"; the focus ring is round. (It replaced the "Gabriel Paet" wordmark on 2026-10-18.)
-- Right on `lg+`: links **Experience / Projects / About / Contact** (16px, 500). The active section gets a 3px `--pen` drawn underline. Then `PencilButton`, `LampToggle` and `ButtonLink secondary sm` **"Résumé"** → `/resume`.
+- Right on `lg+`: links **About / Experience / Projects / Contact** (page order; 16px, 500). The active section gets a 3px `--pen` drawn underline. Then `PencilButton`, `LampToggle` and `ButtonLink secondary sm` **"Résumé"** → `/resume`.
 - Below `lg`: the mark, pencil, lamp, menu button (`List` / `X`). The menu is the v2 sheet (focus trap, Esc, closes on navigation), restyled as taped-in paper, with the links in Bricolage 32px and the Résumé button.
 
 ### 6.9 `Chip`
@@ -340,14 +340,14 @@ Added 2026-10-19, after aahil-khan.xyz. Rendered in the root layout.
 
 ## 7. Home page `/`
 
-Single scroll. Every section uses a different layout family. No eyebrows: handwritten notes do the labelling.
+Single scroll. Every section uses a different layout family. No eyebrows: handwritten notes do the labelling. About comes straight after the hero (moved up on 2026-10-19, after aahil-khan.xyz), and the nav lists the sections in page order: About, Experience, Projects, Contact.
 
 ```
 Nav
 Hero         split: name + title + buttons | napkin card + stickers + illustration #1
+About        lead paragraph | pinned lavender note + illustration #3
 Experience   margin-note rows: date margin | entry | note
 Projects     napkin vs shipped two-up, then a v1 row
-About        lead paragraph | pinned lavender note + illustration #3
 Contact      giant "Say hi." + email + note + illustration #4
 Footer
 ```

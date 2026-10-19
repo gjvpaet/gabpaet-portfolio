@@ -13,9 +13,9 @@ import { PencilButton } from "@/components/pencil-button";
 import { cn } from "@/lib/cn";
 
 const SECTIONS = [
+  { id: "about", label: "About" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
-  { id: "about", label: "About" },
   { id: "contact", label: "Contact" },
 ] as const;
 

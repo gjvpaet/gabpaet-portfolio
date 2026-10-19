@@ -16,9 +16,9 @@ export default function HomePage() {
   return (
     <main id="main" className="mx-auto max-w-[1200px] px-5 md:px-10">
       <Hero />
+      <About />
       <Experience />
       <Projects />
-      <About />
       <Contact />
     </main>
   );
