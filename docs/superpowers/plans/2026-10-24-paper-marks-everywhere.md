@@ -10,6 +10,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-24-paper-marks-everywhere-design.md`
 
+**Note (after review):** Task 2's `click` listener was replaced by pointer-event tap detection, with a drag slop, a bottom clamp and `overflow-x-clip` on the page layer. See `components/paper-marks.tsx` and the amendment at the top of the design doc.
+
 **Repo rules that apply here (from `CLAUDE.md`):**
 - **No test setup.** The checks are `corepack pnpm typecheck` and `corepack pnpm build`, plus the browser check in Task 4.
 - **Committing.** Use `GIT_CONFIG_GLOBAL=/dev/null git -c user.name="Gabriel Joshua Paet" -c user.email="gjvpaet@gmail.com" commit ...`. Never add a Co-Authored-By trailer. Every git command needs `GIT_CONFIG_GLOBAL=/dev/null`.

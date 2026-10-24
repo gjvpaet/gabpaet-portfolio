@@ -77,7 +77,7 @@ export const ink = {
   /** To-do checkbox tick (drawn over an InkBox). */
   check: mark("0 0 22 22", ["M5 11 C 7 13, 8 15, 9 17 C 12 11, 15 7, 21 1"], 2.4),
 
-  /** Hero click marks (spec 5.2), in rotation. */
+  /** Click marks (spec 5.2, components/paper-marks.tsx), in rotation. */
   markStar: mark(
     "0 0 48 48",
     ["M24 5 L29.5 18.5 L44 19 L32.5 28 L36.5 42.5 L24 34 L11.5 42.5 L15.5 28 L4 19 L18.5 18.5 Z"],

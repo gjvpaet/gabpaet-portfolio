@@ -7,6 +7,7 @@ export const INTERACTIVE = 'a[href], button, [role="button"], summary, label[for
 
 /** Things that keep the system cursor (it says something the dot cannot):
     fields, draggable stickers, disabled controls. globals.css repeats the
-    fields and stickers under html.has-pen-cursor; keep them in step. */
+    fields, stickers and disabled controls under html.has-pen-cursor; keep
+    them in step. */
 export const NATIVE =
   'input, textarea, select, [contenteditable=""], [contenteditable="true"], .sticker-grab, :disabled, [aria-disabled="true"]';

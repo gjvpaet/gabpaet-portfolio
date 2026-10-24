@@ -2,6 +2,8 @@
 
 Date: 2026-10-24. Status: approved design.
 
+**Amended 2026-10-24, after implementation:** `PaperMarks` does not listen for `click`. iOS Safari sends no `click` for a tap on plain paper when the only listener is on `document`, so taps are read from capture-phase `pointerdown` and `pointerup` on `document`. Every exclusion is decided at `pointerdown`; the text selection is checked at `pointerup`. A press that moves more than 8px, a `pointercancel` or a `contextmenu` leaves no mark. The nav is matched as `body > header`. Page marks are clamped so they never reach past `scrollHeight`, and the page layer is `overflow-x-clip`. `components/paper-marks.tsx` is the reference; where the text below says `click`, read "tap".
+
 ## Goal
 
 The hero's ink-marks easter egg (spec 5.2, "Ink marks") works on every page of the site: the home sections, project pages, the résumé, the 404, the nav and the footer. Clicking empty paper anywhere drops a hand-drawn mark.
