@@ -246,16 +246,17 @@ Per-project sketches drawn in SVG with pen primitives plus `<text>` labels in Sh
 
 - `primary`: `--btn` fill, `--on-btn` text, 2px `--ink` border, 12px radius. `secondary`: `--sheet` fill, `--ink` text, same border.
 - Heights 52px (`md`) / 44px (`sm`), 44×44 (`icon`). Lift motion. Optional Phosphor icon (20px, bold).
+- A group of buttons (hero, Contact, `/resume`) stacks below `sm` as full-width buttons, one per row; from `sm` it is a wrapping row at natural widths.
 - `focus-visible`: `outline: 3px solid var(--pen); outline-offset: 4px`.
 - Disabled: 50% opacity, no lift.
 
 ### 6.6 `Sticker` (client) and `StickerBoard`
 
-- Paper scrap: `--sheet`, 3px radius, paper lift, one tape strip across the top, 80px square (60px on phones), brand mark 40px in `--ink` with the rough filter at scale 1.5. The `>_` keycap is Shantell 600 30px.
+- Paper scrap: `--sheet`, 3px radius, paper lift, one tape strip across the top, 80px square (on phones each fills a column of the one-line row, at most 60px), brand mark 40px in `--ink` with the rough filter at scale 1.5. The `>_` keycap is Shantell 600 30px.
 - Set and rest rotation, clustered around the napkin card's top and right edges: Claude -8deg, Next.js 6deg, `>_` -4deg, Node.js 10deg, PostgreSQL -6deg, Docker 4deg.
-- Drag (from v2): `drag`, `dragConstraints` = hero board, `dragElastic 0.2`, `dragSnapToOrigin`, spring `{stiffness 300, damping 20}`; `whileDrag` scale 1.06, rotate 0, `z sticker-dragging`. Enabled only under `(pointer: fine)` with motion allowed. Boils while hovered.
+- Drag (from v2): `drag`, `dragConstraints` = hero board, `dragElastic 0.2`, `dragSnapToOrigin`, spring `{stiffness 300, damping 20}`; `whileDrag` scale 1.06, rotate 0, `z sticker-dragging`. Enabled only from `md` under `(pointer: fine)` with motion allowed. Boils while hovered.
 - `aria-hidden`, plus a visually hidden sentence: "Tools I use daily: Claude, Next.js, Node.js, PostgreSQL and Docker."
-- Phones: a static wrapping row under the hero buttons.
+- Phones: a static one-line row of six under the hero buttons, a 6-column grid with 8px gaps (about 40px stickers at 320px, 49px at 375px).
 
 ### 6.7 `LampToggle` (client)
 
@@ -398,7 +399,7 @@ Computed notes come from a helper (`lib/dates.ts`) so they can never drift from 
 - `lg+` grid `minmax(0,1fr) | 300px`, stacked below.
 - Left: H2 **"About"**, then the bio lead (`profile.bio`, first sentence) at Lead size with `profile.bioMark` ("I love building things that interest me") highlighted, then the rest of the bio in Body `--ink-soft`. **Never mentions Lumora or the current role.** Bio VERIFY.
 - Under the bio, in the left column: a pinned `--note` card (rotate -2deg, max 360px, indented 48px from `sm`): Hand "always view problems as an opportunity." and a smaller Hand line "my motto, for what it's worth".
-- Right: illustration #3 (desk lamp over a notebook, rays in `--pen`), level with the bio from `lg`; on phones 200px wide, right-aligned under the note.
+- Right: illustration #3 (desk lamp over a notebook, rays in `--pen`), level with the bio from `lg`. From `sm` to `lg` it shares the note's row (a 200px column on the right, bottoms aligned, 32px clear of the bio); on phones it is 170px wide, right-aligned just under the note.
 
 ### 7.5 Contact (`#contact`)
 
@@ -557,6 +558,7 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
       - Redirects: all 8 return 308. Em and en dashes: 0 on every page. No VERIFY text anywhere.
       - Lighthouse 12 (mobile / desktop): home 88/100/96/100 and 99/100/96/100; résumé 90/100/96/100 and 100/100/96/100; Tong Masters 89/100/96/100 and 100/100/96/100. CLS 0 everywhere. Home mobile moved 89 → 88, within run-to-run noise; the hero hand adds two small mask files above the fold. Best practices 96 is the local 404 on the Vercel scripts.
       - Still open: mobile performance on home and the case study, 1 to 2 points under 90 (same font lever as above).
+    - Responsive pass on 2026-10-24 (`docs/superpowers/specs/2026-10-24-responsive-pass-design.md`): the audit found no sideways scroll at 320 to 1280px but awkward layouts below 1024px. Fixed: the hero stickers sit in one row on phones and drag only from `md`; the hero's bottom space is shorter below `lg`; the About lamp shares the motto note's row; margin notes are balanced; napkins are capped at 520px below `lg`; the case-study phone shot is 200px on phones; button groups stack full-width on phones; résumé dates sit under their titles on phones and the headline breaks before the location.
 19. [x] Merge `v2` → `main`. Merged by Gabriel on 2026-10-18 (merge commit `7799ad9`); the neo-brutalist take stays on the `v2-brutalist` tag.
 
 ---
