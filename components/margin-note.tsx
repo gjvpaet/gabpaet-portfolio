@@ -33,7 +33,7 @@ export function MarginNote({
         <InkArrow dir={arrow} delay={delay} className={arrow === "up-right" ? "-mt-2" : "mt-1"} />
       )}
       {/* Only the margin column is narrow; notes elsewhere stay on one line.
-          Balanced, so a wrapped note never leaves one word on its last line. */}
+          Balanced, so a wrapped note breaks evenly instead of orphaning a word. */}
       <span className={cn("text-balance", arrow === "left" && "max-w-[24ch]")}>{children}</span>
     </p>
   );
