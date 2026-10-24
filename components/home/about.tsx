@@ -16,8 +16,9 @@ function splitBio() {
 
 // Spec 7.4: a lead paragraph with the pinned lavender motto note under it,
 // and the desk lamp (illustration #3). From lg the lamp has the right column
-// beside the bio; from sm it shares the note's row; on phones it sits just
-// under the note. Personal; never mentions the current employer.
+// beside the bio; from sm it shares the note's row; phones skip it, since
+// alone under the note it reads as a stray. Personal; never mentions the
+// current employer.
 export function About() {
   const { before, after, rest } = splitBio();
 
@@ -42,7 +43,7 @@ export function About() {
         </Reveal>
         <Reveal
           index={2}
-          className="mt-2 w-[170px] justify-self-end sm:col-start-2 sm:row-start-2 sm:mt-8 sm:w-full sm:self-end lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-start lg:pt-16"
+          className="hidden sm:col-start-2 sm:row-start-2 sm:mt-8 sm:block sm:self-end lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-start lg:pt-16"
         >
           <Illustration name="lamp" className="w-full" />
         </Reveal>
