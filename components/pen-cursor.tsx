@@ -4,12 +4,9 @@ import { useEffect, useRef } from "react";
 
 import { ink } from "@/lib/ink";
 import { pencil } from "@/lib/pencil";
+import { INTERACTIVE, NATIVE } from "@/lib/pointer-targets";
 
-// What sits under the pointer decides the cursor's shape.
-const INTERACTIVE = 'a[href], button, [role="button"], summary, label[for]';
-// Things that keep the system cursor (it says something the dot cannot):
-// fields, draggable stickers, disabled controls.
-const NATIVE = 'input, textarea, select, [contenteditable=""], [contenteditable="true"], .sticker-grab, :disabled, [aria-disabled="true"]';
+// What sits under the pointer decides the cursor's shape (lib/pointer-targets.ts).
 
 type State = "" | "link" | "text" | "native";
 
