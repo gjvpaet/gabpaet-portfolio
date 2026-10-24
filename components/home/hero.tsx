@@ -22,7 +22,7 @@ const rise = (i: number) => ({ "--i": i }) as CSSProperties;
 // (components/paper-marks.tsx); the caption under the card is the hint.
 export function Hero() {
   return (
-    <section id="hero" aria-labelledby="hero-name" className="relative pt-10 pb-20 md:pt-14 md:pb-28">
+    <section id="hero" aria-labelledby="hero-name" className="relative pt-10 pb-12 md:pt-14 md:pb-16 lg:pb-28">
       <div className="grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-end lg:gap-14">
         <div className="min-w-0">
           {/* The top of a dated notebook entry: where I am, and this month,
@@ -53,7 +53,8 @@ export function Hero() {
           <p className="type-lead rise mt-7 max-w-[34ch] text-ink-soft" style={rise(3)}>
             {profile.heroLine}
           </p>
-          <div className="rise mt-8 flex flex-wrap gap-3.5" style={rise(4)}>
+          {/* Full-width stack on phones, a row from sm. */}
+          <div className="rise mt-8 grid gap-3.5 sm:flex sm:flex-wrap" style={rise(4)}>
             <ButtonLink href="/resume" variant="primary" icon={<FileText size={20} weight="bold" />}>
               Résumé
             </ButtonLink>
@@ -64,7 +65,7 @@ export function Hero() {
         </div>
 
         {/* lg:pr-10 leaves room for the stickers taped over the right edge. */}
-        <div className="mx-auto w-full max-w-[500px] md:pt-6 md:pb-10 lg:pt-12 lg:pb-0 lg:pr-10 xl:pr-0">
+        <div className="mx-auto w-full max-w-[500px] md:pt-6 lg:pt-12 lg:pr-10 xl:pr-0">
           <StickerBoard tools="Tools I use daily: Claude, Next.js, Node.js, PostgreSQL and Docker.">
             <PaperCard rotate={1.4} tape="top" className="ink-boil px-6 pt-9 pb-6 sm:px-8.5 sm:pt-10 sm:pb-7 md:pb-24">
               <HowIBuildNapkin delay={0.9} />

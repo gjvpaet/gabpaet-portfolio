@@ -27,7 +27,8 @@ export function Contact() {
           >
             <InkUnderline variant="full">{profile.email}</InkUnderline>
           </a>
-          <div className="flex flex-wrap gap-3">
+          {/* Full-width stack on phones, a row beside the address from sm. */}
+          <div className="grid w-full gap-3 sm:flex sm:w-auto sm:flex-wrap">
             <CopyEmailButton email={profile.email} selectTargetId="contact-email" />
             <ButtonLink href={profile.links.linkedin} icon={<LinkedinLogo size={20} weight="bold" />}>
               LinkedIn
