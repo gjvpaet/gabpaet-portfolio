@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { BackToTop } from "@/components/back-to-top";
 import { Footer } from "@/components/footer";
 import { InkFilters } from "@/components/ink/ink-filters";
+import { PaperMarks } from "@/components/paper-marks";
 import { PenCursor } from "@/components/pen-cursor";
 import { PencilLayer } from "@/components/pencil-layer";
 import { SplashName } from "@/components/splash-name";
@@ -169,6 +170,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <BackToTop />
         <Footer />
+        <PaperMarks />
         <PencilLayer />
         <PenCursor />
         <Analytics />

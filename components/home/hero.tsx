@@ -5,7 +5,6 @@ import { ButtonLink } from "@/components/button";
 import { InkArrow } from "@/components/ink/ink-arrow";
 import { InkCircle } from "@/components/ink/ink-circle";
 import { InkStrike } from "@/components/ink/ink-strike";
-import { HeroPaper } from "@/components/home/hero-paper";
 import { Illustration } from "@/components/illustration";
 import { StickerBoard } from "@/components/home/sticker-board";
 import { HowIBuildNapkin } from "@/components/napkins/how-i-build";
@@ -19,10 +18,11 @@ const rise = (i: number) => ({ "--i": i }) as CSSProperties;
 // Spec 7.1: split hero. Left: a dated entry header, a "hi, I'm" note, the
 // name, the crossed-out draft and the circled title, one line, two buttons.
 // Right: the napkin card with taped logo stickers around it. The pen draws in
-// after the text rises.
+// after the text rises. Its paper takes click marks like every page's
+// (components/paper-marks.tsx); the caption under the card is the hint.
 export function Hero() {
   return (
-    <HeroPaper>
+    <section id="hero" aria-labelledby="hero-name" className="relative pt-10 pb-20 md:pt-14 md:pb-28">
       <div className="grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-end lg:gap-14">
         <div className="min-w-0">
           {/* The top of a dated notebook entry: where I am, and this month,
@@ -79,6 +79,6 @@ export function Hero() {
           <p className="type-hand mt-8 -rotate-2 text-right text-pen md:mt-20 md:text-left lg:mb-1.5">click the paper, it leaves a mark</p>
         </div>
       </div>
-    </HeroPaper>
+    </section>
   );
 }
