@@ -37,8 +37,9 @@ function subscribeFinePointer(onChange: () => void) {
 
 // Spec 5.2 + 6.6. From md the stickers sit around `children` (the napkin
 // card), draggable with a mouse or trackpad and springing home on release.
-// Below md they are a static row above the card. Touch screens and reduced
-// motion get static stickers, so dragging never fights scrolling.
+// Below md they are a static one-line row above the card, each filling a
+// column of at most 60px. Touch screens and reduced motion get static
+// stickers, so dragging never fights scrolling.
 export function StickerBoard({ tools, children }: { tools: string; children: ReactNode }) {
   const boundsRef = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -54,7 +55,7 @@ export function StickerBoard({ tools, children }: { tools: string; children: Rea
       {/* Drag bounds: the card plus a margin all round. */}
       <div ref={boundsRef} aria-hidden="true" className="pointer-events-none absolute -inset-14 hidden md:block" />
       <p className="sr-only">{tools}</p>
-      <div className="flex flex-wrap gap-4 md:contents">
+      <div className="grid grid-cols-[repeat(6,minmax(0,3.75rem))] gap-2 md:contents">
         {STICKERS.map((s, i) => (
           <motion.span
             key={s.key}
@@ -83,10 +84,12 @@ export function StickerBoard({ tools, children }: { tools: string; children: Rea
               <BrandIcon
                 icon={s.icon}
                 decorative
-                className="sticker-logo pointer-events-none size-7 md:size-9"
+                className="sticker-logo pointer-events-none size-[46%] md:size-9"
               />
             ) : (
-              <span className="type-hand pointer-events-none text-2xl font-semibold md:text-[1.875rem]">&gt;_</span>
+              <span className="type-hand pointer-events-none text-[clamp(1rem,5.5vw,1.5rem)] font-semibold md:text-[1.875rem]">
+                &gt;_
+              </span>
             )}
           </motion.span>
         ))}
