@@ -6,8 +6,6 @@ import { ink } from "@/lib/ink";
 import { pencil } from "@/lib/pencil";
 import { INTERACTIVE, NATIVE } from "@/lib/pointer-targets";
 
-// What sits under the pointer decides the cursor's shape (lib/pointer-targets.ts).
-
 type State = "" | "link" | "text" | "native";
 
 /** Seconds for the dot to close most of the gap to the pointer. */
@@ -37,6 +35,7 @@ function onPenPurple(control: Element): boolean {
   return false;
 }
 
+// What sits under the pointer decides the cursor's shape (lib/pointer-targets.ts).
 function classify(target: EventTarget | null): { state: State; caret?: number; onButton?: boolean } {
   if (!(target instanceof Element)) return { state: "" };
   if (target.closest(NATIVE)) return { state: "native" };
