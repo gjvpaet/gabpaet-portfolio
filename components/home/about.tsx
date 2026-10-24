@@ -42,7 +42,7 @@ export function About() {
         </Reveal>
         <Reveal
           index={2}
-          className="mt-2 w-[170px] justify-self-end sm:col-start-2 sm:row-start-2 sm:mt-0 sm:w-full sm:self-end lg:row-span-2 lg:row-start-1 lg:self-start lg:pt-16"
+          className="mt-2 w-[170px] justify-self-end sm:col-start-2 sm:row-start-2 sm:mt-8 sm:w-full sm:self-end lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-start lg:pt-16"
         >
           <Illustration name="lamp" className="w-full" />
         </Reveal>
