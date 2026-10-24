@@ -32,12 +32,13 @@ const NOT_PAPER = `${INTERACTIVE}, ${NATIVE}, .sticker-drop`;
 /** The site nav, the only <header> directly in <body>. */
 const NAV = "body > header";
 
-// The whole site as paper you can mark (spec 5.2). Tapping or clicking empty paper
-// anywhere (not a control, field or sticker; not while the pencil is out,
-// the splash is up, text is selected or the mobile menu is open) drops a
-// hand-drawn star, check, scribble or burst that draws in and fades away.
-// Marks sit on the page and scroll with it, like the pencil's doodles; one
-// dropped on the sticky nav stays on the nav. A new page starts clean.
+// The whole site as paper you can mark (spec 5.2). Tapping or clicking
+// empty paper anywhere (not a control, field or sticker; not while the
+// pencil is out, the splash is up, text is selected or the mobile menu is
+// open) drops a hand-drawn star, check, scribble or burst that draws in and
+// fades away. Marks sit on the page and scroll with it, like the pencil's
+// doodles; one dropped on the sticky nav stays on the nav. A new page starts
+// clean.
 export function PaperMarks() {
   const pathname = usePathname();
   const [marks, setMarks] = useState<Mark[]>([]);
@@ -61,7 +62,7 @@ export function PaperMarks() {
       if (!(target instanceof Element) || target.closest(NOT_PAPER)) return;
       // The mobile menu is open: this press closes it, or lands in it.
       if (document.querySelector(`${NAV} [aria-expanded="true"]`)) return;
-      // The splash: still writing, or lifting after this very press.
+      // The splash: still writing (this press will skip it), or lifting.
       if (document.documentElement.classList.contains("splash-signing") || document.querySelector(".splash-sheet")) return;
       down = { x: e.clientX, y: e.clientY, onNav: target.closest(NAV) !== null };
     };
@@ -94,13 +95,20 @@ export function PaperMarks() {
       down = null;
     };
 
+    // Ctrl-click or a long-press opened a context menu: not a tap.
+    const onContextMenu = () => {
+      down = null;
+    };
+
     document.addEventListener("pointerdown", onPointerDown, true);
     document.addEventListener("pointerup", onPointerUp, true);
     document.addEventListener("pointercancel", onPointerCancel, true);
+    document.addEventListener("contextmenu", onContextMenu, true);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown, true);
       document.removeEventListener("pointerup", onPointerUp, true);
       document.removeEventListener("pointercancel", onPointerCancel, true);
+      document.removeEventListener("contextmenu", onContextMenu, true);
     };
   }, []);
 
