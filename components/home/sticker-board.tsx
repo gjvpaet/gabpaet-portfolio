@@ -27,7 +27,7 @@ const STICKERS: StickerSpec[] = [
   { key: "docker", icon: siDocker, rotate: 4, at: { left: 8, top: 94 } },
 ];
 
-const FINE_POINTER = "(pointer: fine)";
+const FINE_POINTER = "(pointer: fine) and (min-width: 48rem)";
 
 function subscribeFinePointer(onChange: () => void) {
   const mq = window.matchMedia(FINE_POINTER);

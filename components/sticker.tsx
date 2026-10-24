@@ -8,7 +8,7 @@ export function stickerClasses(className?: string): string {
   return cn("paper relative grid aspect-square w-full place-items-center text-ink md:size-20", className);
 }
 
-/** The strip of tape across a sticker's top edge, 80% of its width. */
+/** The strip of tape across a sticker's top edge: 80% of its width on phones, 56px from md. */
 export function StickerTape() {
   return (
     <Tape
