@@ -132,7 +132,8 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
 
       {/* The napkin, then what it became. */}
       <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
-        <Reveal as="figure">
+        {/* Capped below lg, where it would otherwise fill the column. */}
+        <Reveal as="figure" className="max-w-[520px] lg:max-w-none">
           <PaperCard rotate={-1.6} tape="top" className="ink-boil px-5.5 pt-6 pb-4">
             <ProjectNapkin slug={project.slug} />
           </PaperCard>
@@ -162,8 +163,8 @@ export default async function ProjectPage({ params }: { params: Promise<Params> 
               shot={phone}
               rotate={1}
               caption={CAPTION.phone}
-              sizes="(min-width: 768px) 250px, 260px"
-              className="w-full max-w-[260px] md:max-w-none"
+              sizes="(min-width: 768px) 250px, 200px"
+              className="w-full max-w-[200px] md:max-w-none"
             />
           ) : null}
         </div>

@@ -32,8 +32,9 @@ export function MarginNote({
       {(arrow === "up-right" || arrow === "down-right") && (
         <InkArrow dir={arrow} delay={delay} className={arrow === "up-right" ? "-mt-2" : "mt-1"} />
       )}
-      {/* Only the margin column is narrow; notes elsewhere stay on one line. */}
-      <span className={arrow === "left" ? "max-w-[24ch]" : undefined}>{children}</span>
+      {/* Only the margin column is narrow; notes elsewhere stay on one line.
+          Balanced, so a wrapped note never leaves one word on its last line. */}
+      <span className={cn("text-balance", arrow === "left" && "max-w-[24ch]")}>{children}</span>
     </p>
   );
 }
