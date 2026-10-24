@@ -46,9 +46,14 @@ function RoleEntry({ role }: { role: Role }) {
             {role.company}
             {role.companyNote ? <span className="font-normal text-ink-soft">, {role.companyNote}</span> : null}
           </h3>
+          {/* Below sm the dates always sit under the title, so the rows line
+              up; from sm (and on paper) they sit on the right. */}
           <ul className="mt-1 grid gap-0.5">
             {role.titles.map((t) => (
-              <li key={t.title} className="flex flex-wrap items-baseline justify-between gap-x-4">
+              <li
+                key={t.title}
+                className="grid sm:flex sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-x-4 print:flex print:flex-wrap print:items-baseline print:justify-between print:gap-x-4"
+              >
                 <span className="font-semibold">{t.title}</span>
                 <span className="text-base text-ink-soft tabular-nums">
                   {formatMonth(t.from)} to {t.to ? formatMonth(t.to) : "now"}
@@ -79,7 +84,7 @@ export default function ResumePage() {
       <header className="grid max-w-[760px] gap-4">
         <h1 className="type-h2">{profile.name}</h1>
         <p className="text-[1.25rem] font-semibold">
-          {profile.role}, {profile.location}
+          {profile.role}, <span className="whitespace-nowrap">{profile.location}</span>
         </p>
         <ul className="flex flex-wrap gap-x-5 gap-y-1 text-base">
           <li>
@@ -96,7 +101,8 @@ export default function ResumePage() {
           ))}
         </ul>
         <p className="max-w-[65ch] text-ink-soft">{profile.heroLine}</p>
-        <div className="mt-2 flex flex-wrap gap-3.5 print:hidden">
+        {/* Full-width stack on phones, a row from sm. */}
+        <div className="mt-2 grid gap-3.5 sm:flex sm:flex-wrap print:hidden">
           <ButtonLink
             href={profile.resumePdf}
             variant="primary"
