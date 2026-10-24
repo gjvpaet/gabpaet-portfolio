@@ -599,7 +599,7 @@ h3 {
    Easter eggs (spec 5.2)
    ========================================================= */
 
-/* Hero click marks: draw in fast, then fade. Under reduced motion they just
+/* Click marks (components/paper-marks.tsx): draw in fast, then fade. Under reduced motion they just
    appear and go. */
 .ink-mark {
   animation: ink-fade 0.7s ease-in 1.6s forwards;
