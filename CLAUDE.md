@@ -15,10 +15,10 @@ v1 (the VS Code-themed site) is preserved on the git tag `v1` and stays live at 
 Package manager is **pnpm**. It is not on PATH on this machine; use `corepack pnpm`.
 
 - `corepack pnpm dev` (or the `portfolio` preview config, port 3200)
-- `corepack pnpm build`
+- `corepack pnpm build`. If the shell sets `NODE_ENV=development`, the build fails prerendering `/_global-error` ("Cannot read properties of null (reading 'useContext')"); run `NODE_ENV=production corepack pnpm build`.
 - `corepack pnpm typecheck` (`tsc --noEmit`; there is no lint or test setup). If it reports missing `app/(ide)` modules, `.next/dev/types` is stale from an old v1 dev run: delete `.next/dev`. The Turbopack dev cache in `.next/dev` can also keep serving old CSS after `globals.css` changes (a production build is correct); stop the dev server, delete `.next/dev`, restart.
 
-Global git config on this machine has a broken `gpg.format`; commit with `GIT_CONFIG_GLOBAL=/dev/null git -c user.name="Gabriel Joshua Paet" -c user.email="gjvpaet@gmail.com" commit ...`. Never add Co-Authored-By trailers. Pushing needs Gabriel's credentials, so he pushes.
+Plain `git` works: the global config's author is Gabriel Joshua Paet <gjvpaet@gmail.com> (the old broken `gpg.format` line was removed on 2026-10-24, so no `GIT_CONFIG_GLOBAL` prefix is needed). Never add Co-Authored-By trailers. Pushing needs Gabriel's credentials, so he pushes.
 
 ## Stack
 
