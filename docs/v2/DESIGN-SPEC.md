@@ -252,7 +252,7 @@ Per-project sketches drawn in SVG with pen primitives plus `<text>` labels in Sh
 
 ### 6.6 `Sticker` (client) and `StickerBoard`
 
-- Paper scrap: `--sheet`, 3px radius, paper lift, one tape strip across the top, 80px square (on phones each fills a column of the one-line row, at most 60px), brand mark 40px in `--ink` with the rough filter at scale 1.5. The `>_` keycap is Shantell 600 30px.
+- Paper scrap: `--sheet`, 3px radius, paper lift, one tape strip across the top, 80px square (on phones each fills a column of the one-line row, at most 60px, and the mark, keycap and tape scale with it), brand mark 36px in `--ink` with the rough filter at scale 1.5. The `>_` keycap is Shantell 600 30px.
 - Set and rest rotation, clustered around the napkin card's top and right edges: Claude -8deg, Next.js 6deg, `>_` -4deg, Node.js 10deg, PostgreSQL -6deg, Docker 4deg.
 - Drag (from v2): `drag`, `dragConstraints` = hero board, `dragElastic 0.2`, `dragSnapToOrigin`, spring `{stiffness 300, damping 20}`; `whileDrag` scale 1.06, rotate 0, `z sticker-dragging`. Enabled only from `md` under `(pointer: fine)` with motion allowed. Boils while hovered.
 - `aria-hidden`, plus a visually hidden sentence: "Tools I use daily: Claude, Next.js, Node.js, PostgreSQL and Docker."
@@ -396,7 +396,7 @@ Computed notes come from a helper (`lib/dates.ts`) so they can never drift from 
 
 ### 7.4 About (`#about`)
 
-- `lg+` grid `minmax(0,1fr) | 300px`, stacked below.
+- `lg+` grid `minmax(0,1fr) | 300px`; from `sm` `minmax(0,1fr) | 200px` with the bio spanning both columns; one column on phones.
 - Left: H2 **"About"**, then the bio lead (`profile.bio`, first sentence) at Lead size with `profile.bioMark` ("I love building things that interest me") highlighted, then the rest of the bio in Body `--ink-soft`. **Never mentions Lumora or the current role.** Bio VERIFY.
 - Under the bio, in the left column: a pinned `--note` card (rotate -2deg, max 360px, indented 48px from `sm`): Hand "always view problems as an opportunity." and a smaller Hand line "my motto, for what it's worth".
 - Right: illustration #3 (desk lamp over a notebook, rays in `--pen`), level with the bio from `lg`. From `sm` to `lg` it shares the note's row (a 200px column on the right, bottoms aligned, 32px clear of the bio); on phones it is 170px wide, right-aligned just under the note.
@@ -558,7 +558,11 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
       - Redirects: all 8 return 308. Em and en dashes: 0 on every page. No VERIFY text anywhere.
       - Lighthouse 12 (mobile / desktop): home 88/100/96/100 and 99/100/96/100; résumé 90/100/96/100 and 100/100/96/100; Tong Masters 89/100/96/100 and 100/100/96/100. CLS 0 everywhere. Home mobile moved 89 → 88, within run-to-run noise; the hero hand adds two small mask files above the fold. Best practices 96 is the local 404 on the Vercel scripts.
       - Still open: mobile performance on home and the case study, 1 to 2 points under 90 (same font lever as above).
-    - Responsive pass on 2026-10-24 (`docs/superpowers/specs/2026-10-24-responsive-pass-design.md`): the audit found no sideways scroll at 320 to 1280px but awkward layouts below 1024px. Fixed: the hero stickers sit in one row on phones and drag only from `md`; the hero's bottom space is shorter below `lg`; the About lamp shares the motto note's row; margin notes are balanced; napkins are capped at 520px below `lg`; the case-study phone shot is 200px on phones; button groups stack full-width on phones; résumé dates sit under their titles on phones and the headline breaks before the location.
+    - **Responsive pass, 2026-10-24** (`docs/superpowers/specs/2026-10-24-responsive-pass-design.md`). The audit found no sideways scroll at 320 to 1280px but awkward layouts below 1024px. Fixed: the hero stickers sit in one row on phones and drag only from `md`; the hero's bottom space is shorter below `lg`; the About lamp shares the motto note's row; margin notes are balanced; napkins are capped at 520px below `lg`; the case-study phone shot is 200px on phones; button groups stack full-width on phones; résumé dates sit under their titles on phones and the headline breaks before the location. Production build:
+      - 5 pages (home, both case studies, résumé, 404) × 320 / 375 / 430 / 768 / 1024 / 1280: no sideways scroll, nothing past the viewport.
+      - 1024 and 1280: home, Tong Masters and résumé element boxes identical to `main`.
+      - Phones: emulated at 320 and 375, and mobile Safari on the iOS Simulator (393px), light and dark.
+      - Print: not printed; the `print:` variants repeat the `sm:` layout and `print:hidden` sorts after `sm:flex`, so paper is unchanged and the PDF was not regenerated.
 19. [x] Merge `v2` → `main`. Merged by Gabriel on 2026-10-18 (merge commit `7799ad9`); the neo-brutalist take stays on the `v2-brutalist` tag.
 
 ---
