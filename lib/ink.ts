@@ -119,6 +119,24 @@ export const ink = {
     7,
   ),
 
+  /** Loops around a circled Toolbox chip (ToolChip). Three hands, used in
+      turn so a row of them never looks stamped. Stretched to fit. */
+  chipLoopA: mark(
+    "0 0 100 40",
+    ["M8 22 C 6 6, 60 2, 90 9 C 102 14, 98 34, 60 37 C 30 39, 4 34, 6 20 C 7 14, 14 10, 22 9"],
+    2.4,
+  ),
+  chipLoopB: mark(
+    "0 0 100 40",
+    ["M12 8 C 40 1, 92 4, 95 18 C 98 33, 50 40, 20 35 C 2 31, 3 12, 18 7 C 24 5, 30 5, 36 6"],
+    2.4,
+  ),
+  chipLoopC: mark(
+    "0 0 100 40",
+    ["M90 10 C 70 1, 14 3, 6 17 C 0 32, 48 40, 80 35 C 100 31, 99 14, 84 8 C 80 7, 74 6, 70 6"],
+    2.4,
+  ),
+
   /** The lamp's light, drawn under the shade of Phosphor's Lamp icon in
       light mode (LampToggle). Same 24px box as the icon; left of the stem,
       clear of the pull cord on the right. */
@@ -128,3 +146,5 @@ export const ink = {
 export type InkName = keyof typeof ink;
 
 export const CLICK_MARKS = ["markStar", "markCheck", "markScribble", "markBurst"] as const satisfies readonly InkName[];
+
+export const CHIP_LOOPS = ["chipLoopA", "chipLoopB", "chipLoopC"] as const satisfies readonly InkName[];
