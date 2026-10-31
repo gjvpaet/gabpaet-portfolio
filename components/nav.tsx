@@ -14,6 +14,7 @@ import { cn } from "@/lib/cn";
 
 const SECTIONS = [
   { id: "about", label: "About" },
+  { id: "toolbox", label: "Toolbox" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "contact", label: "Contact" },
