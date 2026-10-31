@@ -22,7 +22,7 @@ Plain `git` works: the global config's author is Gabriel Joshua Paet <gjvpaet@gm
 
 ## Stack
 
-Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`), `motion` (import from `motion/react`), `@phosphor-icons/react` (always `weight="bold"`, UI icons only), `simple-icons` (sticker logos only), `perfect-freehand` (pencil doodles), Vercel Analytics + Speed Insights. Fonts: Bricolage Grotesque (structure) and Shantell Sans (handwriting) via `next/font`.
+Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`), `motion` (import from `motion/react`), `@phosphor-icons/react` (always `weight="bold"`, UI icons only), `simple-icons` (sticker and Toolbox logos only), `perfect-freehand` (pencil doodles), Vercel Analytics + Speed Insights. Fonts: Bricolage Grotesque (structure) and Shantell Sans (handwriting) via `next/font`.
 
 ## The two-layer rule
 

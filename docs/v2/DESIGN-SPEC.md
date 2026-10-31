@@ -59,7 +59,7 @@ corepack pnpm add perfect-freehand
 - `perfect-freehand` (1.2.3, MIT, maintained): tapered pen strokes for the pencil doodle layer (5.2).
 - **Not used:** Rough.js (last release 2023) and rough-notation (last release 2020). Every pen mark is a static SVG path from `lib/ink.ts`, roughened by a shared SVG filter (4.4). That keeps SSR deterministic (no `Math.random()`, no hydration mismatch), costs no JavaScript, and survives resize without re-measuring.
 - Icons: Phosphor, `weight="bold"`, for UI only (`Lamp`, `PencilSimple`, `Eraser`, `Copy`, `Check`, `ArrowRight`, `ArrowUpRight`, `DownloadSimple`, `Printer`, `List`, `X`, `GithubLogo`, `LinkedinLogo`). Icons stay clean (structure layer); they never get the rough filter.
-- Brand marks for the stickers come from `simple-icons` path data through `<BrandIcon>`, never redrawn.
+- Brand marks for the stickers and the Toolbox chips come from `simple-icons` path data through `<BrandIcon>`, never redrawn. A tool Simple Icons has no mark for shows its name only.
 
 Fonts via `next/font/google` (self-hosted, `display: "swap"`):
 
@@ -271,7 +271,7 @@ Per-project sketches drawn in SVG with pen primitives plus `<text>` labels in Sh
 - Sticky, 72px, `--paper` fill. No bottom rule while scrolling, so it never competes with the progress line; a 2px ink rule shows only while the phone menu sheet is open. (Until 2026-10-18 the rule appeared once the hero left the view.)
 - Scroll progress: a 3px `--pen` line (the `progress` wave in `lib/ink.ts`, stretched to the full width) draws along the bar's bottom edge from 0 at the top of the page to full at the bottom. Pure CSS: a scroll-driven animation (`animation-timeline: scroll(root block)`) on its `stroke-dashoffset`, behind `@supports`, so there is no scroll listener. Where unsupported (Firefox without the flag) or on a page that cannot scroll, the line stays hidden. Hidden in print.
 - Left: the "gp" mark linking to `/`, the same as the favicon: a 48px `--pen` `ring` (draws in on load, boils on hover) around "gp" in Shantell 700, 22px, `--ink`. `aria-label` "Gabriel Paet, home"; the focus ring is round. (It replaced the "Gabriel Paet" wordmark on 2026-10-18.)
-- Right on `lg+`: links **About / Experience / Projects / Contact** (page order; 16px, 500). The active section gets a 3px `--pen` drawn underline. Then `PencilButton`, `LampToggle` and `ButtonLink secondary sm` **"Résumé"** → `/resume`.
+- Right on `lg+`: links **About / Toolbox / Experience / Projects / Contact** (page order; 16px, 500; Toolbox added 2026-10-31). The active section gets a 3px `--pen` drawn underline. Then `PencilButton`, `LampToggle` and `ButtonLink secondary sm` **"Résumé"** → `/resume`.
 - Below `lg`: the mark, pencil, lamp, menu button (`List` / `X`). The menu is the v2 sheet (focus trap, Esc, closes on navigation), restyled as taped-in paper, with the links in Bricolage 32px and the Résumé button.
 
 ### 6.9 `Chip`
@@ -339,16 +339,24 @@ Added 2026-10-19, after aahil-khan.xyz. Rendered in the root layout.
 - **Placement:** `position: fixed` in the screen's corner all the way down (an earlier take parked it above the footer at the end of the page, which read as stuck). The footer keeps empty paper under its last row, as tall as the button plus its gap from the edge (`FOOTER_CLEARANCE` in `components/footer.tsx`), so at the very bottom the button sits there and never over a footer link. `z nav`.
 - **Click:** `window.scrollTo({ top: 0 })`, smooth through the page's `scroll-behavior` (instant under reduced motion), and focus moves to the nav's "gp" home link (`preventScroll`) so keyboard users land at the top too.
 - Hidden in print.
+
+### 6.18 `ToolChip` (server)
+
+Added 2026-10-31 for the Toolbox (7.6). A bigger sibling of `Chip` (6.9): 38px tall, full pill radius, 1.5px `--ink` border, `--sheet` fill, Bricolage 15px weight 550, no wrap, 14px side padding (10px on the left when there is a logo). Logo: `BrandIcon` 18px in `--ink`, decorative (the name is beside it), no filter. A static label, never a link or focusable.
+
+- **Circled** (`loop` set): one of three hand loops (`chipLoopA/B/C` in `lib/ink.ts`, viewBox 100×40, stroke 2.4) stretched 9px above and below and 12px past each side, in `--pen`, taken in turn across the Toolbox so neighbours differ. It draws in with its group's reveal, about 0.08s after the chip before it. The chip carries `ink-boil`, so the loop boils while the chip is hovered. Reduced motion: drawn, never boils. Hidden in print.
+
 ---
 
 ## 7. Home page `/`
 
-Single scroll. Every section uses a different layout family. No eyebrows: handwritten notes do the labelling. About comes straight after the hero (moved up on 2026-10-19, after aahil-khan.xyz), and the nav lists the sections in page order: About, Experience, Projects, Contact.
+Single scroll. Every section uses a different layout family. No eyebrows: handwritten notes do the labelling. About comes straight after the hero (moved up on 2026-10-19, after aahil-khan.xyz), and the nav lists the sections in page order: About, Toolbox, Experience, Projects, Contact. The Toolbox (2026-10-31, after aahil-khan.xyz's) sits between About and Experience.
 
 ```
 Nav
 Hero         split: name + title + buttons | napkin card + stickers + illustration #1
 About        lead paragraph | pinned lavender note + illustration #3
+Toolbox      five labelled groups of logo chips, 3 columns; daily tools circled
 Experience   margin-note rows: date margin | entry | note
 Projects     napkin vs shipped two-up, then a v1 row
 Contact      giant "Say hi." + email + note + illustration #4
@@ -407,6 +415,16 @@ Computed notes come from a helper (`lib/dates.ts`) so they can never drift from 
 - `hello@gabpaet.dev` (`mailto:`), 42px Bricolage 650, with a 5px `--pen` `InkUnderline`; next to it `CopyEmailButton`, then `secondary` buttons LinkedIn and GitHub.
 - `MarginNote` with an `InkArrow up-right`: **"not actively looking, open to a chat"** (from `profile.status`).
 - Illustration #4 (paper plane with a looping dotted path in `--pen`) at the top right on `lg+`, beside "Say hi.", `min(40vw, 440px)` wide.
+
+### 7.6 Toolbox (`#toolbox`)
+
+Added 2026-10-31, after the Toolbox on aahil-khan.xyz, redrawn as labelled chips (option B of three mockups, laid out in three columns rather than label rows, which echoed Experience).
+
+- H2 **"Toolbox"** (pen underline) with the line **"What I build with, day to day."**
+- Groups from `profile.skills`, in order: Languages, Web, Cloud & DevOps, AI & automation, Workbench. Each is a Bricolage 700 19px label over a 2px `--ink` rule, then its `ToolChip`s (6.18) wrapping with 12px row and 10px column gaps. One column on phones, 2 from `sm`, 3 from `lg` (44px row gap, 40px column gap); 3 + 2 at `lg`.
+- Logos from Simple Icons where it has one (TypeScript, JavaScript, Node.js, Express, React, Next.js, PostgreSQL, React Native as React, GitHub Actions, GCP as Google Cloud, Docker, LangChain, LangGraph, n8n, Claude Code as Claude, Warp, GitKraken, DBeaver); SQL, AWS, Elastic Beanstalk, S3, Azure, OpenAI API, AWS Bedrock Agents, Vertex AI, VS Code and Granola show their names only.
+- `profile.dailyTools` are circled (Docker, VS Code, DBeaver, Warp, GitKraken, Granola, Claude Code, Next.js, PostgreSQL); a build-time check fails if one is not a `skills` item. The legend, Hand **"circled = open every day"** in `--pen` rotated -2deg, is the grid's last cell (the empty sixth at 2 and 3 columns, bottom-aligned; after Workbench on phones). Hidden in print.
+- The heading and each group reveal in turn. `/resume` lists the same five groups with plain `Chip`s.
 
 ---
 
