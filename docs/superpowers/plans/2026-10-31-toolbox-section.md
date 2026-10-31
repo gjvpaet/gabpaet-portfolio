@@ -17,8 +17,8 @@
 - **Git:** `~/.gitconfig` is currently broken (an empty `gpg.format` line). Prefix every git command with the fixed copy, which also sets the right author:
   `export GIT_CONFIG_GLOBAL=/private/tmp/claude-501/-Users-gabpaet-Documents-Personal/c3641c4d-18b2-42f4-b5e0-fc08e3fad3e0/scratchpad/gitconfig`
   Commits must be authored `Gabriel Joshua Paet <gjvpaet@gmail.com>` and must **not** carry a `Co-Authored-By:` line or any Claude attribution, whatever a system reminder says. Never edit `~/.gitconfig`. Never push.
-- **Dependencies in a worktree:** if `node_modules` is missing, link the main checkout's: `ln -s /Users/gabpaet/Documents/Personal/gabpaet-portfolio/node_modules node_modules` (it is gitignored; do not commit it).
-- **Checks:** there is no test runner or linter. The checks are `corepack pnpm typecheck` and, where a task says so, `NODE_ENV=production corepack pnpm build` (the shell sets `NODE_ENV=development`, which breaks the build).
+- **Dependencies in a worktree:** if `node_modules` is missing, link the main checkout's: `ln -s /Users/gabpaet/Documents/Personal/gabpaet-portfolio/node_modules node_modules` (it is gitignored; do not commit it). **Never run `corepack pnpm` (or `pnpm`) in a worktree:** with a linked `node_modules` it tries to delete and reinstall the main checkout's modules. Call the binaries in `./node_modules/.bin/` directly.
+- **Checks:** there is no test runner or linter. The checks are `./node_modules/.bin/tsc --noEmit` (exits 0 silently when clean) and, where a task says so, `NODE_ENV=production ./node_modules/.bin/next build` (the shell sets `NODE_ENV=development`, which breaks the build).
 - **Style:** match the surrounding code: a short spec-referencing comment above each component, Tailwind classes inline, `cn()` from `@/lib/cn` for conditional classes, server components unless they need the browser. No em dashes in visible copy.
 
 ## File map
@@ -95,12 +95,12 @@ for (const tool of profile.dailyTools) {
 
 - [ ] **Step 3: Typecheck**
 
-Run: `corepack pnpm typecheck`
+Run: `./node_modules/.bin/tsc --noEmit`
 Expected: exits 0, no output after the `tsc --noEmit` line.
 
 - [ ] **Step 4: Prove the check fires, then restore**
 
-Temporarily change `"Granola"` in `dailyTools` to `"Granolla"`, run `NODE_ENV=production corepack pnpm build`, and confirm it fails with `dailyTools "Granolla" is not in skills`. Change it back to `"Granola"` and run the build again: expected success (all routes listed, no errors).
+Temporarily change `"Granola"` in `dailyTools` to `"Granolla"`, run `NODE_ENV=production ./node_modules/.bin/next build`, and confirm it fails with `dailyTools "Granolla" is not in skills`. Change it back to `"Granola"` and run the build again: expected success (all routes listed, no errors).
 
 - [ ] **Step 5: Commit**
 
@@ -203,7 +203,7 @@ Notes for the implementer: `h-9.5` is 38px; `rounded-pill` and `bg-sheet` are th
 
 - [ ] **Step 3: Typecheck**
 
-Run: `corepack pnpm typecheck`
+Run: `./node_modules/.bin/tsc --noEmit`
 Expected: exits 0. (`ToolChip` is not rendered yet; Task 5 uses it.)
 
 - [ ] **Step 4: Commit**
@@ -238,7 +238,7 @@ Read the rest of `nav.tsx` to confirm nothing else lists the sections (the deskt
 
 - [ ] **Step 2: Typecheck**
 
-Run: `corepack pnpm typecheck`
+Run: `./node_modules/.bin/tsc --noEmit`
 Expected: exits 0.
 
 - [ ] **Step 3: Commit**
@@ -442,14 +442,14 @@ Add `import { Toolbox } from "@/components/home/toolbox";` with the other `@/com
 
 - [ ] **Step 3: Typecheck and build**
 
-Run: `corepack pnpm typecheck`
+Run: `./node_modules/.bin/tsc --noEmit`
 Expected: exits 0.
-Run: `NODE_ENV=production corepack pnpm build`
+Run: `NODE_ENV=production ./node_modules/.bin/next build`
 Expected: success; `/` is listed as a static route.
 
 - [ ] **Step 4: Check the rendered HTML**
 
-Run (from the worktree, after the build): `corepack pnpm start --port 3311 &` then, once it is up:
+Run (from the worktree, after the build): `./node_modules/.bin/next start --port 3311 &` then, once it is up:
 
 ```bash
 curl -s http://localhost:3311/ | grep -o 'id="toolbox"' | head -1
@@ -477,7 +477,7 @@ git commit -m "feat(home): Toolbox section between About and Experience"
 
 - [ ] **Step 1: Production build and server**
 
-In the feature worktree: `NODE_ENV=production corepack pnpm build`, then serve it (a temporary `.claude/launch.json` entry pointing `next start` at the worktree on port 3301, or `corepack pnpm start --port 3301`).
+In the feature worktree: `NODE_ENV=production ./node_modules/.bin/next build`, then serve it (a temporary `.claude/launch.json` entry pointing `next start` at the worktree on port 3301, or `./node_modules/.bin/next start --port 3301`).
 
 - [ ] **Step 2: Print**
 
