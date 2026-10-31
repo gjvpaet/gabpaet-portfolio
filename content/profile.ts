@@ -85,20 +85,32 @@ export const profile = {
 
   motto: "Always view problems as an opportunity.",
 
+  /** Toolbox (spec 7.6), /resume and JSON-LD `knowsAbout`, in this order. */
   skills: [
     {
-      label: "AI & automation",
-      items: ["LangChain", "LangGraph", "OpenAI API", "AWS Bedrock Agents", "Vertex AI", "n8n", "Claude Code"],
+      label: "Languages",
+      items: ["TypeScript", "JavaScript", "SQL"],
+    },
+    {
+      label: "Web",
+      items: ["Node.js", "Express", "React", "Next.js", "PostgreSQL", "React Native"],
     },
     {
       label: "Cloud & DevOps",
       items: ["AWS", "Elastic Beanstalk", "S3", "GitHub Actions", "Azure", "GCP", "Docker"],
     },
     {
-      label: "Web",
-      items: ["Node.js", "Express", "React", "Next.js", "PostgreSQL", "React Native"],
+      label: "AI & automation",
+      items: ["LangChain", "LangGraph", "OpenAI API", "AWS Bedrock Agents", "Vertex AI", "n8n", "Claude Code"],
+    },
+    {
+      label: "Workbench",
+      items: ["VS Code", "Warp", "GitKraken", "DBeaver", "Granola"],
     },
   ],
+
+  /** The tools the Toolbox circles in pen: open every day. Each must be a `skills` item. */
+  dailyTools: ["Docker", "VS Code", "DBeaver", "Warp", "GitKraken", "Granola", "Claude Code", "Next.js", "PostgreSQL"],
 
   /** Newest first. */
   roles: [
@@ -184,5 +196,12 @@ if (!profile.bio.includes(profile.bioMark)) {
 for (const role of profile.roles) {
   if (role.mark && !role.homeLine.includes(role.mark)) {
     throw new Error(`content/profile.ts: mark "${role.mark}" is not in ${role.company}'s homeLine`);
+  }
+}
+
+const skillItems: readonly string[] = profile.skills.flatMap((group) => group.items);
+for (const tool of profile.dailyTools) {
+  if (!skillItems.includes(tool)) {
+    throw new Error(`content/profile.ts: dailyTools "${tool}" is not in skills`);
   }
 }
