@@ -46,7 +46,7 @@ This spec is the first of possibly several. Games (an arcade) and live, backend-
 
 ## 3. Cards
 
-A card is a taped-in sheet (`--sheet`, `--r-paper`, `--shadow-lift`, one piece of tape on the top edge): a title bar (Bricolage, 2px `--ink` rule under it, the card's Phosphor icon, and a round × button labelled "Put away <card>"), then the body. Width 360px; bodies taller than 440px scroll inside the card, and the body carries React Flow's `nowheel` and `nodrag` classes so the wheel scrolls the card and text can be selected.
+A card is a taped-in sheet (`--sheet`, `--r-paper`, `--shadow-lift`, one piece of tape on the top edge): a title bar (Bricolage, 2px `--ink` rule under it, the card's Phosphor icon, and a round × button labelled "Put away <card>"), then the body. A card never scrolls: each has its own width, wide enough for its whole body (`CARD_SIZE` in `lib/notebook.ts`: About 560px, Experience and Toolbox 760px landscape, the rest 360px). On a landscape card the body lays out in columns through a container query (Experience two by two, Toolbox one row per group), so the phone sheet, which is not a container, keeps one column. The body carries React Flow's `nodrag` class so text can be selected; the wheel over it pans the desk.
 
 Every fact comes from `content/profile.ts` and `content/projects.ts` (or is computed by `lib/dates.ts`); nothing is typed into the card components.
 

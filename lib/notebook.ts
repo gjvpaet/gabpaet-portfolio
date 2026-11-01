@@ -18,29 +18,39 @@ export const CARD_TITLES: Record<CardId, string> = {
 export type Point = { x: number; y: number };
 export type Rect = Point & { width: number; height: number };
 
-/** Card width in desk units (px at 100% zoom). */
-export const CARD_WIDTH = 360;
-/** The tallest a card gets: its title bar plus a body capped at 440px. */
-export const CARD_MAX_HEIGHT = 540;
+/** Each card's width in desk units (px at 100% zoom), and the most height
+    it takes at that width. Cards never scroll: each is wide enough for its
+    whole body, so Experience and Toolbox lie landscape. The heights were
+    measured in Chrome with a little room spare; re-measure them after a
+    content change makes a card taller. */
+export const CARD_SIZE: Record<CardId, { width: number; height: number }> = {
+  about: { width: 560, height: 460 },
+  projects: { width: 360, height: 470 },
+  experience: { width: 760, height: 600 },
+  toolbox: { width: 760, height: 640 },
+  contact: { width: 360, height: 320 },
+  resume: { width: 360, height: 300 },
+};
 
 /** The name node's box, centred on the desk's origin. */
 export const NAME_BOX: Rect = { x: -210, y: -130, width: 420, height: 260 };
 
 /** Where each card lies when first opened (its top-left corner), and its
-    settled tilt in degrees. Two columns either side of the name; all six
-    open at once never overlap at 100% (lib/notebook.test.ts). */
+    settled tilt in degrees. About sits above the name, the two landscape
+    sheets either side of it and the small cards below them; all six open at
+    once never overlap at 100% (lib/notebook.test.ts). */
 export const HOME: Record<CardId, { position: Point; tilt: number }> = {
-  projects: { position: { x: -660, y: -320 }, tilt: -1.2 },
-  experience: { position: { x: -660, y: 260 }, tilt: 0.8 },
-  about: { position: { x: 260, y: -300 }, tilt: 1.2 },
-  toolbox: { position: { x: 680, y: -300 }, tilt: -0.6 },
-  contact: { position: { x: 260, y: 280 }, tilt: -1 },
-  resume: { position: { x: 680, y: 280 }, tilt: 1.4 },
+  experience: { position: { x: -1100, y: -620 }, tilt: 0.6 },
+  projects: { position: { x: -700, y: 40 }, tilt: -1.2 },
+  about: { position: { x: -280, y: -620 }, tilt: 0.8 },
+  toolbox: { position: { x: 340, y: -620 }, tilt: -0.5 },
+  contact: { position: { x: 340, y: 80 }, tilt: -1 },
+  resume: { position: { x: 740, y: 80 }, tilt: 1.4 },
 };
 
 /** The most room a card can take at its home position. */
 export function homeRect(id: CardId): Rect {
-  return { ...HOME[id].position, width: CARD_WIDTH, height: CARD_MAX_HEIGHT };
+  return { ...HOME[id].position, ...CARD_SIZE[id] };
 }
 
 export function overlaps(a: Rect, b: Rect): boolean {

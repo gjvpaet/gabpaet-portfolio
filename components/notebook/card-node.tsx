@@ -7,14 +7,16 @@ import type { CSSProperties } from "react";
 import { Tape } from "@/components/ink/tape";
 import { CardIcon } from "@/components/notebook/card-icon";
 import { useCardBody, useDeskActions } from "@/components/notebook/desk-context";
-import { CARD_TITLES, CARD_WIDTH, HOME, type CardId } from "@/lib/notebook";
+import { CARD_SIZE, CARD_TITLES, HOME, type CardId } from "@/lib/notebook";
 
 export type CardNodeType = Node<{ id: CardId }, "card">;
 
 // A taped-in sheet on the desk (notebook spec 3): a title bar to drag it by
 // (React Flow's dragHandle, `.card-handle`), × to put it away, and the body,
-// which scrolls inside the card (`nowheel`) and keeps text selectable
-// (`nodrag`). It settles at its own tilt; globals.css lifts and straightens
+// which never scrolls (each card is sized to fit it, lib/notebook.ts) and
+// keeps text selectable (`nodrag`). The body is a size container, so a
+// landscape card can lay its body out in columns (`@2xl:`); the phone sheet
+// is not one, so there the same body stays a single column. It settles at its own tilt; globals.css lifts and straightens
 // it while dragged.
 export function CardNode({ data }: NodeProps<CardNodeType>) {
   const { id } = data;
@@ -27,7 +29,7 @@ export function CardNode({ data }: NodeProps<CardNodeType>) {
     <section
       aria-labelledby={`card-${id}-h`}
       className="desk-card paper relative"
-      style={{ width: CARD_WIDTH, "--tilt": `${tilt}deg` } as CSSProperties}
+      style={{ width: CARD_SIZE[id].width, "--tilt": `${tilt}deg` } as CSSProperties}
     >
       <Tape className="-top-3 left-1/2 h-6.5 w-20 -ml-10" style={{ rotate: `${-tilt * 2}deg` }} />
       <header className="mx-5 flex items-center gap-2.5 border-b-2 border-ink pt-3 pb-2">
@@ -54,7 +56,7 @@ export function CardNode({ data }: NodeProps<CardNodeType>) {
           </span>
         </button>
       </header>
-      <div className="nowheel nodrag max-h-[440px] cursor-auto overflow-y-auto overscroll-contain px-5 pt-4 pb-5 select-text">
+      <div className="nodrag @container cursor-auto px-5 pt-4 pb-5 select-text">
         {body}
       </div>
     </section>
