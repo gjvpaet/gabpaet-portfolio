@@ -5,6 +5,7 @@ import {
   HOME,
   NAME_BOX,
   cardSearch,
+  clampZoom,
   homeRect,
   isCardId,
   overlaps,
@@ -72,5 +73,13 @@ describe("zoomLabel", () => {
     expect(zoomLabel(0.996)).toBe("100%");
     expect(zoomLabel(0.4)).toBe("40%");
     expect(zoomLabel(1.5)).toBe("150%");
+  });
+});
+
+describe("clampZoom", () => {
+  it("holds a zoom within the desk's range", () => {
+    expect(clampZoom(0.1)).toBe(0.4);
+    expect(clampZoom(0.8)).toBe(0.8);
+    expect(clampZoom(3)).toBe(1.5);
   });
 });

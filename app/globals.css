@@ -744,8 +744,8 @@ html.splash .splash-sheet[data-phase="lift"] {
 /* Pen cursor (spec 5.3, components/pen-cursor.tsx). The component adds
    html.has-pen-cursor once a mouse moves, so touch, no-JS and keyboard visitors
    keep the system cursor. It stays native while the splash signs, over
-   fields, stickers and disabled controls, and on the whole page while the
-   pencil is out (the component drops the class). */
+   fields, stickers, notebook card title bars and disabled controls, and on
+   the whole page while the pencil is out (the component drops the class). */
 html.has-pen-cursor:not(.splash-signing),
 html.has-pen-cursor:not(.splash-signing) * {
   cursor: none;
@@ -753,10 +753,10 @@ html.has-pen-cursor:not(.splash-signing) * {
 html.has-pen-cursor :is(input, textarea, select, [contenteditable=""], [contenteditable="true"]) {
   cursor: auto;
 }
-html.has-pen-cursor .sticker-grab {
+html.has-pen-cursor :is(.sticker-grab, .card-handle) {
   cursor: grab;
 }
-html.has-pen-cursor .sticker-grab:active {
+html.has-pen-cursor :is(.sticker-grab, .card-handle):active {
   cursor: grabbing;
 }
 html.has-pen-cursor :is(:disabled, [aria-disabled="true"]) {
@@ -920,5 +920,44 @@ html.splash-signing .pen-cursor {
      element on hover. Unlayered, so it beats the utilities. */
   .lift:is(:hover, :active) {
     transform: none;
+  }
+}
+
+/* =========================================================
+   The notebook desk (/notebook, components/notebook/). React Flow brings
+   only its base CSS; every colour here is a token, so the lamp's night
+   page works on the desk too.
+   ========================================================= */
+.desk:focus-visible {
+  outline-offset: -4px;
+}
+/* The name never blocks a drag, with no rule here: React Flow puts an
+   inline `pointer-events: none` on a node that is neither draggable nor
+   selectable, so a press on the name pans the desk. (Cards opt back in
+   with their own inline style; components/notebook/notebook.tsx.) */
+.desk.desk-pencil-out .react-flow__pane {
+  cursor: crosshair;
+}
+.desk-card {
+  rotate: var(--tilt);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .desk-card {
+    transition:
+      rotate 0.25s var(--ease-out),
+      box-shadow 0.25s var(--ease-out);
+  }
+  /* Picked up: straight, and lifted further off the paper. */
+  .react-flow__node.dragging .desk-card {
+    rotate: 0deg;
+    box-shadow:
+      0 34px 60px -24px var(--lift),
+      0 2px 0 var(--lift);
+  }
+}
+/* Touch screens learn to drag from the tour instead. */
+@media (hover: none) {
+  .desk-hint {
+    display: none;
   }
 }

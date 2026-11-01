@@ -72,6 +72,16 @@ export function cardSearch(search: string, open: readonly CardId[]): string {
 /** The desk's zoom range and the zoom buttons' step. */
 export const ZOOM = { min: 0.4, max: 1.5, step: 0.1 } as const;
 
+/** A zoom held within the desk's range. */
+export function clampZoom(zoom: number): number {
+  return Math.min(ZOOM.max, Math.max(ZOOM.min, zoom));
+}
+
+/** Easing for the desk's animated glides and zooms: an ease-out quart,
+    which approximates --ease-out (cubic-bezier(0.16, 1, 0.3, 1)) in
+    app/globals.css. React Flow takes a function, not a CSS curve. */
+export const EASE_OUT = (t: number): number => 1 - Math.pow(1 - t, 4);
+
 /** The zoom readout: 0.996 is "100%". */
 export function zoomLabel(zoom: number): string {
   return `${Math.round(zoom * 100)}%`;
