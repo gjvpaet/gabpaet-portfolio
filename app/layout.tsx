@@ -2,14 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Shantell_Sans } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { BackToTop } from "@/components/back-to-top";
-import { Footer } from "@/components/footer";
 import { InkFilters } from "@/components/ink/ink-filters";
-import { PaperMarks } from "@/components/paper-marks";
 import { PenCursor } from "@/components/pen-cursor";
-import { PencilLayer } from "@/components/pencil-layer";
 import { SplashName } from "@/components/splash-name";
-import { Nav } from "@/components/nav";
 import { SkipLink } from "@/components/skip-link";
 import { profile } from "@/content/profile";
 import { SPLASH_INIT_SCRIPT } from "@/lib/splash";
@@ -166,12 +161,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <InkFilters />
         <SplashName />
         <SkipLink />
-        <Nav shortName={profile.shortName} />
         {children}
-        <BackToTop />
-        <Footer />
-        <PaperMarks />
-        <PencilLayer />
         <PenCursor />
         <Analytics />
         <SpeedInsights />

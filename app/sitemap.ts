@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${BASE}/`, lastModified: now, changeFrequency: "monthly", priority: 1 },
     { url: `${BASE}/resume`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${BASE}/notebook`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     ...projects.map((p) => ({
       url: `${BASE}/projects/${p.slug}`,
       lastModified: now,
