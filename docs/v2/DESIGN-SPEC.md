@@ -165,6 +165,8 @@ Highlighter swipes use an uneven radius (`3px 9px 4px 8px`) so they read as a ma
 
 `base 0` · `sticker 10` · `sticker-dragging 20` · `pencil 30` · `nav 40` · `mobile-menu 50` · `toast 60` · `grain 65` · `splash 70` · `cursor 80`.
 
+`/notebook` has no nav or mobile menu, so its desk UI reuses their levels: `desk-ui 40` (toolbar, dock, zoom) · `desk-sheet 50` (phone sheet) · `desk-tour 55` (tour notes).
+
 The grain sits above everything but the splash (it is click-through), so taped-in paper and the nav carry the same texture as the page. It has no blend mode: a blended fixed layer would repaint what is under it on every scroll.
 
 ---
@@ -426,6 +428,10 @@ Added 2026-10-31, after the Toolbox on aahil-khan.xyz, redrawn as labelled chips
 - `profile.dailyTools` are circled (Docker, VS Code, DBeaver, Warp, GitKraken, Granola, Claude Code, Next.js, PostgreSQL); a build-time check fails if one is not a `skills` item. The legend, Hand **"circled = open every day"** in `--pen` rotated -2deg, is the grid's last cell (the empty sixth at 2 and 3 columns, bottom-aligned; after Workbench on phones). Hidden in print.
 - The heading and each group reveal in turn. `/resume` lists the same five groups with plain `Chip`s.
 
+### 7.7 Notebook teaser
+
+Added 2026-11-01 (`components/home/notebook-teaser.tsx`, server). A `PaperCard` (rotate -0.8deg, top tape, `max-w-[520px]`, centred) after Contact, the page's closing note, revealed on scroll. H3 **"This page is the tidy half."**, one line of `--ink-soft` below it ("The rest of the notebook is loose pages on a desk: drag them around, zoom out, doodle in the margins."), then a `primary` `ButtonLink` **"Open the notebook"** (Phosphor `ArrowRight`) to `/notebook`, with the Hand note **"bring a pencil"** (`--pen`, rotated -2deg, `aria-hidden`) beside it. Hidden in print. Copy VERIFY.
+
 ---
 
 ## 8. Project case studies `/projects/[slug]`
@@ -582,6 +588,14 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
       - Phones: emulated at 320 and 375, and mobile Safari on the iOS Simulator (393px), light and dark.
       - Print: not printed; the `print:` variants repeat the `sm:` layout and `print:hidden` sorts after `sm:flex`, so paper is unchanged and the PDF was not regenerated.
 19. [x] Merge `v2` → `main`. Merged by Gabriel on 2026-10-18 (merge commit `7799ad9`); the neo-brutalist take stays on the `v2-brutalist` tag.
+20. [x] Route group: the site's chrome (nav, back-to-top, footer, ink marks, pencil) moved into `components/site-chrome.tsx`, and home, case studies and `/resume` into `app/(site)/`, so `/notebook` can sit outside it. No URL changed.
+21. [x] Notebook desk (`/notebook`): React Flow on dot-grid paper with the written name in the middle, the toolbar, the dock, the zoom control and `?card=` deep links (section 17).
+22. [x] The six cards: About, Projects, Experience, Toolbox, Contact and Résumé, server-rendered from content, dragged by their title bar, tilted at rest and lifted while dragged.
+23. [x] Phone bottom sheet below 48rem, in place of desk cards.
+24. [x] First-visit tour: four taped notes, stored once under `gp-notebook-tour`.
+25. [x] Desk pencil, with the pencil's stroke maths shared with the site's `PencilLayer` in `lib/stroke.ts`.
+26. [x] Paper sounds (`lib/paper-sound.ts`), off on arrival; Vitest set up for the pure `lib/` functions.
+27. [x] Home teaser (7.7) linking to `/notebook`.
 
 ---
 
@@ -598,3 +612,21 @@ Order matters; each step leaves the site buildable. Reuse v2 code wherever the b
 - Splash about 3s and only after the name is fully written, ending with the name flying into the nav mark, skippable, once per session, home only; never on reduced motion, hash links or no-JS.
 - Copy self-audit: no em dashes, no invented metrics, every VERIFY resolved.
 - Both themes, reduced motion and print tested.
+
+---
+
+## 17. Notebook desk `/notebook`
+
+Added 2026-11-01. The detail is in `docs/superpowers/specs/2026-11-01-notebook-desk-design.md`; this is what shipped.
+
+- The route sits outside the `app/(site)` group, so it has no nav or footer. `components/site-chrome.tsx` holds that chrome for the group and the 404. The desk has its own toolbar and dock.
+- A React Flow desk (`components/notebook/notebook.tsx`) on dot-grid paper, with the written name in the middle. `/notebook` is a client desk fed by server-rendered card bodies.
+- Six cards from content (About, Projects, Experience, Toolbox, Contact, Résumé). Each is dragged by its title bar, rests at its own small tilt and lifts and straightens while dragged. × puts it away.
+- The dock has one button per card (open ones take the wash and a pen dot). The toolbar holds Fit all, Tidy up (desktop only), Pencil, Sound, the lamp and Back to the site. Zoom runs 0.4 to 1.5 in steps of 0.1, with buttons and a readout from 48rem.
+- `?card=` names the most recently opened card still open, and a link to it opens that card first. The URL follows the desk without adding history entries.
+- Under 48rem a card opens in a bottom sheet above the dock instead of on the desk. It closes with ×, a swipe down, Esc or a tap on the bare desk.
+- The first-visit tour is four taped notes, one at a time, each beside what it describes. It is stored once under `gp-notebook-tour`, the only thing `/notebook` stores.
+- The desk pencil draws on bare paper in desk coordinates, so doodles stay put as the desk pans and zooms. Erase clears them; nothing is saved. On touch screens the desk holds still while the pencil is out; put it down to pinch.
+- Paper sounds (a card sliding, a card taped back down) are off on arrival. The lamp and the pencil are quiet while Sound is off.
+- Z levels (`lib/z.ts`): `deskUi` 40 (toolbar, dock, zoom), `deskSheet` 50, `deskTour` 55, mirrored as `--z-desk-*`.
+- Esc handles the innermost thing first: the focused card, the phone sheet, the pencil, then the tour.

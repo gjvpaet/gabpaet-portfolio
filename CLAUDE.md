@@ -16,13 +16,14 @@ Package manager is **pnpm**. It is not on PATH on this machine; use `corepack pn
 
 - `corepack pnpm dev` (or the `portfolio` preview config, port 3200)
 - `corepack pnpm build`. If the shell sets `NODE_ENV=development`, the build fails prerendering `/_global-error` ("Cannot read properties of null (reading 'useContext')"); run `NODE_ENV=production corepack pnpm build`.
-- `corepack pnpm typecheck` (`tsc --noEmit`; there is no lint or test setup). If it reports missing `app/(ide)` modules, `.next/dev/types` is stale from an old v1 dev run: delete `.next/dev`. The Turbopack dev cache in `.next/dev` can also keep serving old CSS after `globals.css` changes (a production build is correct); stop the dev server, delete `.next/dev`, restart.
+- `corepack pnpm typecheck` (`tsc --noEmit`; there is no lint setup). If it reports missing `app/(ide)` modules, `.next/dev/types` is stale from an old v1 dev run: delete `.next/dev`. The Turbopack dev cache in `.next/dev` can also keep serving old CSS after `globals.css` changes (a production build is correct); stop the dev server, delete `.next/dev`, restart.
+- `corepack pnpm test` runs Vitest (`vitest.config.mts`) over pure `lib/` functions only (no DOM). Run one file with one worker: `corepack pnpm test lib/notebook.test.ts --maxWorkers=1`.
 
 Plain `git` works: the global config's author is Gabriel Joshua Paet <gjvpaet@gmail.com> (the old broken `gpg.format` line was removed on 2026-10-24, so no `GIT_CONFIG_GLOBAL` prefix is needed). Never add Co-Authored-By trailers. Pushing needs Gabriel's credentials, so he pushes.
 
 ## Stack
 
-Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`), `motion` (import from `motion/react`), `@phosphor-icons/react` (always `weight="bold"`, UI icons only), `simple-icons` (sticker and Toolbox logos only), `perfect-freehand` (pencil doodles), Vercel Analytics + Speed Insights. Fonts: Bricolage Grotesque (structure) and Shantell Sans (handwriting) via `next/font`.
+Next.js 16 (App Router) + React 19 + TypeScript + Tailwind v4 (via `@tailwindcss/postcss`, no `tailwind.config.*`), `motion` (import from `motion/react`), `@phosphor-icons/react` (always `weight="bold"`, UI icons only), `simple-icons` (sticker and Toolbox logos only), `perfect-freehand` (pencil doodles), `@xyflow/react` (React Flow, used only by `/notebook`), Vitest, Vercel Analytics + Speed Insights. Fonts: Bricolage Grotesque (structure) and Shantell Sans (handwriting) via `next/font`.
 
 ## The two-layer rule
 
@@ -44,6 +45,7 @@ Everything belongs to one layer (spec section 1):
 - **Illustrations:** traced SVGs in `public/illustrations/` (`<name>-ink`, optional `-pen` and `-fill` layers), rendered as CSS masks by `components/illustration.tsx` so they re-ink with the theme (spec 6.14, 10.3). Sources are in `assets/illustrations/`; retrace with `scripts/trace-illustrations.py` (needs Pillow, numpy, potrace), and keep the viewBox sizes in the component in step with its output. Layouts must work without them.
 - **Canonical URLs:** set per page via `metadata.alternates.canonical`, never in the root layout.
 - **Resume PDF:** `public/gabriel-paet-resume.pdf` is a printout of `/resume`. After any change to `content/profile.ts` or `content/projects.ts`, regenerate it from a production build (`portfolio-prod` preview config, port 3300), never the dev server. Then rebuild before checking it locally: `next start` only serves `public/` files that existed at build time. Print styles live at the bottom of `globals.css`; every pen component, illustration and the grain hide on paper with `print:hidden`.
+- **Notebook desk:** `/notebook` (`app/notebook/page.tsx`, `components/notebook/`) is a React Flow desk outside the `app/(site)` route group, so it has no nav or footer; `components/site-chrome.tsx` holds that chrome for the group and the 404. Card bodies are server components in `components/notebook/cards/`. Pure desk data (card ids, home positions, zoom, `?card=`) is in `lib/notebook.ts`, the pencil's stroke maths in `lib/stroke.ts`, the Toolbox's logos and loops in `lib/toolbox.ts`. Spec: `docs/superpowers/specs/2026-11-01-notebook-desk-design.md`.
 
 ## Rules that are easy to break
 
@@ -57,3 +59,4 @@ Everything belongs to one layer (spec section 1):
 - No em dashes in visible copy. Copy marked VERIFY must not ship until Gabriel confirms it.
 - Share images and icons render through `lib/og.tsx` with static TTFs in `assets/fonts/` and hex values from `lib/tokens.ts`. Satori cannot use CSS variables, variable font axes, SVG filters or repeating CSS gradients (the dot grid is an SVG pattern), and cannot size an SVG to its parent (give it numbers).
 - Old v1 URLs redirect (308) via `next.config.ts`, and section IDs (`#experience`, `#projects`, `#about`, `#contact`) are what those redirects land on; keep both when touching routes.
+- On `/notebook`, an Esc press does one thing, innermost first: the focused card (desk), the phone sheet (window capture), the pencil (document), then the tour (only while its note has focus). A handler skips a press that is already `defaultPrevented` and calls `preventDefault()` when it acts.
