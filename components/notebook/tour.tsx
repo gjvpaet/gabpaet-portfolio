@@ -12,7 +12,10 @@ type Place = "center" | "zoom" | "dock" | "toolbar";
 
 // Written out in full: Tailwind only generates classes it can read whole.
 const PLACE: Record<Place, string> = {
-  center: "top-[22%] left-1/2 -translate-x-1/2",
+  // From md the first view opens About beside the name, so the note sits
+  // top left, clear of both.
+  center:
+    "top-[22%] left-1/2 -translate-x-1/2 md:top-[calc(max(0.75rem,env(safe-area-inset-top))_+_5rem)] md:left-4 md:translate-x-0",
   // From lg up the base offset also clears the dock's right-hand buttons,
   // which this note would otherwise overlap between about 1024 and 1380px.
   zoom: "right-3 bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))_+_5rem)] md:max-lg:bottom-[calc(max(0.75rem,env(safe-area-inset-bottom))_+_10rem)]",

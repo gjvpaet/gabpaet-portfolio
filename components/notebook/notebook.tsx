@@ -100,6 +100,11 @@ const ARIA_LABELS: Partial<AriaLabelConfig> = {
   "edge.a11yDescription.default": "",
 };
 
+/** Room every fit leaves around what it shows: clear of the toolbar (about
+    68px from the top) and the dock (about 91px from the bottom), so a fitted
+    card never runs under either. */
+const FIT_PADDING = { top: "92px", bottom: "116px", x: "48px" } as const;
+
 /** Keyboard panning, in screen pixels per press. */
 const PAN_STEP = 80;
 const PAN_KEYS: Record<string, [dx: number, dy: number]> = {
@@ -168,7 +173,7 @@ function Desk({ desktop, ready, onReady }: { desktop: boolean; ready: boolean; o
     void flow
       .fitView({
         nodes: ids.map((id) => ({ id })),
-        padding: 0.2,
+        padding: FIT_PADDING,
         maxZoom: 1,
         duration: instant ? 0 : duration,
         ease: EASE_OUT,
@@ -191,7 +196,8 @@ function Desk({ desktop, ready, onReady }: { desktop: boolean; ready: boolean; o
       setNodes([NAME_NODE, cardNode(card, HOME[card].position, top.current)]);
       setOpen([card]);
       setSheet(null);
-      setFocusOn({ ids: linked ? [linked] : ["name", card], instant: true });
+      // The name comes along, so a ?card= link still shows whose notebook it is.
+      setFocusOn({ ids: ["name", card], instant: true });
     } else {
       setNodes([NAME_NODE]);
       setOpen([]);
@@ -248,7 +254,7 @@ function Desk({ desktop, ready, onReady }: { desktop: boolean; ready: boolean; o
   const toggle = (id: CardId) => (isOpen(id) ? closeCard(id) : openCard(id));
 
   function fitAll() {
-    void flow.fitView({ padding: 0.15, maxZoom: 1, duration, ease: EASE_OUT });
+    void flow.fitView({ padding: FIT_PADDING, maxZoom: 1, duration, ease: EASE_OUT });
   }
 
   function tidy() {
