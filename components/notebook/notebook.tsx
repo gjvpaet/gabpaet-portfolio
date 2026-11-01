@@ -265,6 +265,10 @@ function Desk({ desktop, ready, onReady }: { desktop: boolean; ready: boolean; o
   // zoom in the zoom buttons' steps.
   function onKeyDown(e: ReactKeyboardEvent<HTMLDivElement>) {
     if (e.key === "Escape") {
+      // One Esc does one thing, innermost first: this card put-away, then
+      // the phone sheet (sheet.tsx), the pencil (desk-pencil.tsx) and the
+      // tour (tour.tsx), each of which skips a press already taken.
+      // preventDefault marks this one as taken.
       const id = e.target instanceof Element ? e.target.closest(".react-flow__node")?.getAttribute("data-id") : null;
       if (desktop && isCardId(id) && open.includes(id)) {
         e.preventDefault();
@@ -332,7 +336,8 @@ function Desk({ desktop, ready, onReady }: { desktop: boolean; ready: boolean; o
               if (soundOn) paperSound.press();
             }}
             onPaneClick={() => {
-              if (!desktop && sheet) closeCard(sheet);
+              // A pencil stroke ends in a pane click: it must not close the sheet.
+              if (!desktop && sheet && !pencilOut) closeCard(sheet);
             }}
             proOptions={{ hideAttribution: true }}
           >
