@@ -10,18 +10,22 @@ const listeners = new Set<() => void>();
 
 export const pencil = {
   get: () => active,
-  set(next: boolean) {
+  /** `silent` skips the pick-up and put-down sounds: the notebook desk
+      while its Sound toggle is off. */
+  set(next: boolean, silent = false) {
     if (next === active) return;
     active = next;
     // Every way in and out comes through here (the nav button, the bar,
     // Esc, a new page), mostly straight from a click or key, which is the
     // user gesture audio needs.
-    if (next) pencilSound.pickUp();
-    else pencilSound.putDown();
+    if (!silent) {
+      if (next) pencilSound.pickUp();
+      else pencilSound.putDown();
+    }
     listeners.forEach((listener) => listener());
   },
-  toggle() {
-    pencil.set(!active);
+  toggle(silent = false) {
+    pencil.set(!active, silent);
   },
   subscribe(listener: () => void) {
     listeners.add(listener);

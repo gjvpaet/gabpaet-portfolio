@@ -23,7 +23,17 @@ function subscribe(onChange: () => void) {
 // Spec 6.7: the theme switch is a desk lamp. Light mode is the lamp on (two
 // pen strokes of light under the shade); dark mode, the "night page", is the
 // lamp off. Every visit starts light; a click switches and is remembered.
-export function LampToggle({ className }: { className?: string }) {
+export function LampToggle({
+  className,
+  bare = false,
+  silent = false,
+}: {
+  className?: string;
+  /** Borderless, for a framed toolbar (the notebook desk). */
+  bare?: boolean;
+  /** No pull-cord click: the notebook desk while its Sound is off. */
+  silent?: boolean;
+}) {
   // null during SSR and hydration, so server and client markup match.
   const theme = useSyncExternalStore<Theme | null>(subscribe, getTheme, () => null);
   const isDark = theme === "dark";
@@ -37,7 +47,7 @@ export function LampToggle({ className }: { className?: string }) {
 
   function toggle() {
     const next: Theme = getTheme() === "dark" ? "light" : "dark";
-    lampSound.pull(next === "light");
+    if (!silent) lampSound.pull(next === "light");
     document.documentElement.setAttribute("data-theme", next);
     try {
       localStorage.setItem(THEME_STORAGE_KEY, next);
@@ -55,7 +65,8 @@ export function LampToggle({ className }: { className?: string }) {
       title={isDark ? "Turn the lamp on" : "Turn the lamp off"}
       onClick={toggle}
       className={cn(
-        "lift relative grid size-11 shrink-0 cursor-pointer place-items-center rounded-control border-2 border-ink bg-sheet text-ink",
+        "relative grid size-11 shrink-0 cursor-pointer place-items-center rounded-control text-ink",
+        bare ? "hover:bg-wash" : "lift border-2 border-ink bg-sheet",
         className,
       )}
     >

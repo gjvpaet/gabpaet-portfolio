@@ -67,7 +67,16 @@ export function PencilLayer() {
   useEffect(() => {
     if (!active) pencilSound.stop();
   }, [active]);
-  useEffect(() => () => pencilSound.stop(), []);
+  // Leaving the site's pages (for /notebook, outside the route group) unmounts
+  // this layer before the pathname reset can run, so put the pencil down
+  // here too, quietly.
+  useEffect(
+    () => () => {
+      pencilSound.stop();
+      pencil.set(false, true);
+    },
+    [],
+  );
 
   // Esc puts the pencil down.
   useEffect(() => {
