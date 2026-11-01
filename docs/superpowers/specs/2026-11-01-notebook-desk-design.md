@@ -57,7 +57,7 @@ Every fact comes from `content/profile.ts` and `content/projects.ts` (or is comp
 | Experience | `Briefcase` | One row per role in `profile.roles`: company, current title, date range and work mode (from `lib/dates.ts`), and its `homeLine`. Ends with a "Full history on the résumé →" link to `/resume`. |
 | Toolbox | `Wrench` | The five `profile.skills` groups as `ToolChip`s, `profile.dailyTools` circled in pen, as on the home page. The logo map and loop order move from `components/home/toolbox.tsx` into `lib/toolbox.ts`, shared by both. |
 | Contact | `EnvelopeSimple` | `profile.email` with the existing `CopyEmailButton` (and its pen tick), GitHub and LinkedIn from `profile.links`, and `profile.status`. |
-| Résumé | `FileText` | One line, "The formal version, one page." (VERIFY), and two buttons: **Open résumé** (`/resume`) and **Download PDF** (`profile.resumePdf`). |
+| Résumé | `FileText` | One line, "The formal version, with the full history." (VERIFY; the PDF is two pages), and two buttons: **Open résumé** (`/resume`) and **Download PDF** (`profile.resumePdf`). |
 
 Two-layer rule: card text, rows, links and buttons are structure. Tape, the motto sticky, the "gp" ring, the hint under the name and pencil doodles are the pen layer.
 
@@ -89,6 +89,7 @@ Two-layer rule: card text, rows, links and buttons are structure. Tape, the mott
   3. "The tabs open pages." Drag a card by its title; × puts it away. (Touch: tap a tab to read it.)
   4. "The pencil is in the toolbar." Doodle anywhere; Erase clears it.
 - Note titles are structure (Bricolage), bodies are structure; no handwriting beyond the tape. Copy is VERIFY.
+- Touch or mouse wording is chosen by screen width (the same 48rem split as cards versus sheet), while the name's hint hides on `(hover: none)`; a touch tablet at 48rem or wider therefore gets mouse wording. Accepted.
 - Shown once per browser: a `localStorage` key (`gp-notebook-tour`, value `"seen"`) is set on Skip or Got it; reads and writes are wrapped so a blocked storage just shows the tour again next time. It is the only thing `/notebook` stores.
 - The tour does not block the desk: it can be panned and zoomed while a note is up. Esc skips. Focus moves to the note when it appears and back to the desk when it closes.
 

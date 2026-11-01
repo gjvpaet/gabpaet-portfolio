@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { buttonClasses } from "@/components/button";
+import { useSoundOn } from "@/components/sound-gate";
 import { pencilSound } from "@/lib/pencil-sound";
 
 type Status = "idle" | "copied" | "manual";
@@ -27,6 +28,7 @@ export function CopyEmailButton({
   const [shortcut, setShortcut] = useState("Ctrl+C");
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const reduce = useReducedMotion();
+  const soundOn = useSoundOn();
 
   useEffect(() => () => {
     if (timer.current) clearTimeout(timer.current);
@@ -50,10 +52,10 @@ export function CopyEmailButton({
 
   async function copy() {
     // Audio must wake inside the click; the tick plays once the copy lands.
-    pencilSound.prepare();
+    if (soundOn) pencilSound.prepare();
     try {
       await navigator.clipboard.writeText(email);
-      pencilSound.check();
+      if (soundOn) pencilSound.check();
       show("copied");
     } catch {
       selectAddress();

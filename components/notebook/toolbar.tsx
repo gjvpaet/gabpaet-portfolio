@@ -80,7 +80,7 @@ export function Toolbar({
       </button>
       <LampToggle bare silent={!soundOn} />
       <Divider />
-      <Link href="/" className={ITEM}>
+      <Link href="/" aria-label="Back to the site" className={ITEM}>
         <ArrowLeft aria-hidden="true" size={18} weight="bold" />
         <span className="md:hidden">Site</span>
         <span className="max-md:hidden">Back to the site</span>

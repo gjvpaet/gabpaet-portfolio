@@ -36,6 +36,7 @@ import { Toolbar } from "@/components/notebook/toolbar";
 import { Tour } from "@/components/notebook/tour";
 import { useIsDesktop } from "@/components/notebook/use-is-desktop";
 import { Zoom, useZoomBy } from "@/components/notebook/zoom";
+import { SoundGate } from "@/components/sound-gate";
 import { cn } from "@/lib/cn";
 import {
   CARD_TITLES,
@@ -271,6 +272,7 @@ function Desk({ desktop, ready, onReady }: { desktop: boolean; ready: boolean; o
   // zoom in the zoom buttons' steps.
   function onKeyDown(e: ReactKeyboardEvent<HTMLDivElement>) {
     if (e.key === "Escape") {
+      if (e.defaultPrevented) return;
       // One Esc does one thing, innermost first: this card put-away, then
       // the phone sheet (sheet.tsx), the pencil (desk-pencil.tsx) and the
       // tour (tour.tsx), each of which skips a press already taken.
@@ -302,6 +304,8 @@ function Desk({ desktop, ready, onReady }: { desktop: boolean; ready: boolean; o
   // fixed toolbar and dock.
   return (
     <DeskActions.Provider value={actions}>
+      {/* The cards' own small sounds (the copy tick) follow the desk's Sound too. */}
+      <SoundGate.Provider value={soundOn}>
       <div className="fixed inset-0 overflow-hidden bg-paper">
         <Toolbar
           desktop={desktop}
@@ -367,6 +371,7 @@ function Desk({ desktop, ready, onReady }: { desktop: boolean; ready: boolean; o
         />
         <Tour desktop={desktop} />
       </div>
+      </SoundGate.Provider>
     </DeskActions.Provider>
   );
 }
