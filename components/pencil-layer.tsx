@@ -2,33 +2,13 @@
 
 import { Eraser } from "@phosphor-icons/react";
 import { usePathname } from "next/navigation";
-import { getStroke } from "perfect-freehand";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 import { buttonClasses } from "@/components/button";
 import { Tape } from "@/components/ink/tape";
 import { pencil, usePencil } from "@/lib/pencil";
 import { pencilSound } from "@/lib/pencil-sound";
-
-type Point = [x: number, y: number, pressure: number];
-
-// Spec 6.10: a pencil line, tapered by perfect-freehand.
-const STROKE = { size: 4.5, thinning: 0.6, smoothing: 0.5, streamline: 0.5 } as const;
-
-// perfect-freehand returns the outline of a stroke as a polygon; this turns
-// it into a smooth closed SVG path (the library's recommended helper).
-function toPath(points: Point[]): string {
-  const outline = getStroke(points, { ...STROKE, simulatePressure: points.every((p) => p[2] === 0.5) });
-  if (outline.length < 2) return "";
-  const [first, ...rest] = outline;
-  let d = `M${first[0].toFixed(1)} ${first[1].toFixed(1)} Q`;
-  for (let i = 0; i < rest.length; i++) {
-    const [x0, y0] = outline[i];
-    const [x1, y1] = rest[i];
-    d += `${x0.toFixed(1)} ${y0.toFixed(1)} ${((x0 + x1) / 2).toFixed(1)} ${((y0 + y1) / 2).toFixed(1)} `;
-  }
-  return `${d}Z`;
-}
+import { toPath, type StrokePoint } from "@/lib/stroke";
 
 // The pencil easter egg (spec 5.2, 6.10). While the pencil is out, a layer
 // over the whole document catches the pointer and draws ink strokes, with a
@@ -43,7 +23,7 @@ export function PencilLayer() {
   const pathname = usePathname();
   const [strokes, setStrokes] = useState<string[]>([]);
   const [height, setHeight] = useState(0);
-  const live = useRef<Point[] | null>(null);
+  const live = useRef<StrokePoint[] | null>(null);
   // Where and when the pointer last was, for the scratch's speed.
   const lastMove = useRef({ x: 0, y: 0, t: 0 });
   const livePath = useRef<SVGPathElement>(null);
@@ -88,7 +68,7 @@ export function PencilLayer() {
     return () => window.removeEventListener("keydown", onKey);
   }, [active]);
 
-  const point = (e: ReactPointerEvent): Point => [e.pageX, e.pageY, e.pointerType === "pen" ? e.pressure : 0.5];
+  const point = (e: ReactPointerEvent): StrokePoint => [e.pageX, e.pageY, e.pointerType === "pen" ? e.pressure : 0.5];
 
   function onPointerDown(e: ReactPointerEvent<SVGSVGElement>) {
     if (e.button !== 0) return;
